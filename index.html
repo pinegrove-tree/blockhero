@@ -1,0 +1,2591 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>블록 히어로</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%B1%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --accent: #ffd166;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #14141f;
+    overflow: hidden;
+    font-family: 'Trebuchet MS', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    user-select: none;
+  }
+
+  #gameContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1280px;
+    height: 720px;
+    transform-origin: center center;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    background: radial-gradient(circle at 50% 20%, #23233a 0%, #14141f 70%);
+    box-sizing: border-box;
+  }
+
+  .left-panel, .right-panel {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .panel-label {
+    color: var(--accent);
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 #7a4b00;
+  }
+
+  canvas {
+    background: #0d0d16;
+    border: 4px solid var(--accent);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    display: block;
+  }
+
+  .board-wrap {
+    position: relative;
+  }
+
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 160px;
+  }
+
+  .stats > div {
+    background: #23233a;
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .stats span {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .new-record {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff56b;
+    animation: recordPulse 1s ease-in-out infinite;
+  }
+
+  .new-record.hidden {
+    display: none;
+  }
+
+  @keyframes recordPulse {
+    0%, 100% { opacity: 1; text-shadow: 0 0 4px #fff56b; }
+    50% { opacity: 0.35; text-shadow: 0 0 14px #fff56b; }
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 20, 0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    gap: 14px;
+    z-index: 10;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .overlay.hidden {
+    display: none;
+  }
+
+  #themeUnlockOverlay {
+    z-index: 20;
+  }
+
+  .overlay h1 {
+    font-size: 52px;
+    margin: 0;
+    color: var(--accent);
+    text-shadow: 3px 3px 0 #7a4b00;
+  }
+
+  .overlay h2 {
+    font-size: 42px;
+    margin: 0;
+    color: #ff6b6b;
+    text-shadow: 3px 3px 0 #6a1414;
+  }
+
+  .overlay p {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .overlay .controls {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #cfcfe6;
+    background: #1c1c2e;
+    border: 2px solid #4a4a70;
+    border-radius: 10px;
+    padding: 10px 18px;
+  }
+
+  .total-score-display {
+    font-size: 15px;
+    color: #cfcfe6;
+    margin: 0;
+  }
+
+  .theme-select-row {
+    display: flex;
+    gap: 14px;
+  }
+
+  .theme-card {
+    width: 140px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #1c1c2e;
+    border: 3px solid #4a4a70;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .theme-card:not(.locked):hover {
+    transform: translateY(-3px);
+  }
+
+  .theme-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .theme-card.locked {
+    cursor: default;
+    filter: grayscale(0.85) brightness(0.55);
+  }
+
+  .theme-card-icon {
+    font-size: 30px;
+    line-height: 1.1;
+  }
+
+  .theme-card-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    margin: 4px 0;
+  }
+
+  .theme-card-chips {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .theme-card-chips .chip {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+
+  .lock-badge {
+    display: none;
+    font-size: 20px;
+    margin-top: 2px;
+  }
+
+  .theme-card.locked .lock-badge {
+    display: block;
+  }
+
+  .unlock-req {
+    display: none;
+    font-size: 10px;
+    color: #ffd9d9;
+    margin-top: 2px;
+  }
+
+  .theme-card.locked .unlock-req {
+    display: block;
+  }
+
+  .bigBtn {
+    font-size: 26px;
+    font-weight: bold;
+    color: #14141f;
+    background: linear-gradient(180deg, #ffe08a, #ffb400);
+    border: none;
+    border-radius: 14px;
+    padding: 14px 42px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #a06400;
+    transition: transform 0.05s ease;
+  }
+
+  .bigBtn:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 #a06400;
+  }
+
+  .unlock-btn-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .bigBtn.small {
+    font-size: 18px;
+    padding: 12px 20px;
+  }
+
+  .trophy {
+    font-size: 60px;
+    line-height: 1;
+    animation: trophyPop 0.7s cubic-bezier(.36, 1.6, .4, 1);
+  }
+
+  .trophy.hidden {
+    display: none;
+  }
+
+  @keyframes trophyPop {
+    0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+    60% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .new-record-label {
+    color: #fff56b;
+    font-weight: bold;
+    font-size: 20px;
+    text-shadow: 0 0 10px #fff56b;
+    margin: 0;
+  }
+
+  .new-record-label.hidden {
+    display: none;
+  }
+
+  .theme-palette {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .theme-palette .chip {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+
+  .mute-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 30;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: #1c1c2e;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.1s ease;
+  }
+
+  .mute-btn:active {
+    transform: scale(0.9);
+  }
+
+  .keycaps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 620px;
+  }
+
+  .keycap-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 40px;
+    padding: 0 10px;
+    background: linear-gradient(180deg, #3a3a56, #23233a);
+    border: 2px solid #5a5a80;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 19px;
+    font-weight: bold;
+    box-shadow: 0 3px 0 #14141f;
+  }
+
+  .keycap-label {
+    font-size: 13px;
+    color: #cfcfe6;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameContainer">
+
+  <button id="muteBtn" class="mute-btn" title="음소거 토글 (M)" aria-label="음소거 토글">🔊</button>
+
+  <div id="startOverlay" class="overlay">
+    <h1 id="gameTitleH1">🧱 블록 히어로</h1>
+    <p id="totalScoreDisplay" class="total-score-display">누적 0점</p>
+    <div id="themeSelectRow" class="theme-select-row"></div>
+    <div class="keycaps">
+      <div class="keycap-item"><span class="keycap">←→</span><span class="keycap-label">이동</span></div>
+      <div class="keycap-item"><span class="keycap">↑</span><span class="keycap-label">회전</span></div>
+      <div class="keycap-item"><span class="keycap">↓</span><span class="keycap-label">빨리</span></div>
+      <div class="keycap-item"><span class="keycap">Space</span><span class="keycap-label">쿵!</span></div>
+      <div class="keycap-item"><span class="keycap">C</span><span class="keycap-label">보관</span></div>
+      <div class="keycap-item"><span class="keycap">P</span><span class="keycap-label">멈춤</span></div>
+    </div>
+    <div class="controls">💣 폭탄 블록 · 🐌 슬로우 블록이 가끔 나타나요!</div>
+    <button id="startBtn" class="bigBtn">시작하기</button>
+  </div>
+
+  <div id="pausedOverlay" class="overlay hidden">
+    <h2>⏸ 일시정지</h2>
+    <p>P 키를 눌러서 계속하기</p>
+    <div class="keycaps">
+      <div class="keycap-item"><span class="keycap">←→</span><span class="keycap-label">이동</span></div>
+      <div class="keycap-item"><span class="keycap">↑</span><span class="keycap-label">회전</span></div>
+      <div class="keycap-item"><span class="keycap">↓</span><span class="keycap-label">빨리</span></div>
+      <div class="keycap-item"><span class="keycap">Space</span><span class="keycap-label">쿵!</span></div>
+      <div class="keycap-item"><span class="keycap">C</span><span class="keycap-label">보관</span></div>
+      <div class="keycap-item"><span class="keycap">P</span><span class="keycap-label">멈춤</span></div>
+    </div>
+  </div>
+
+  <div id="gameOverOverlay" class="overlay hidden">
+    <h2>게임 오버!</h2>
+    <div id="trophyIcon" class="trophy hidden">🏆</div>
+    <p id="newRecordLabel" class="new-record-label hidden">신기록 달성!</p>
+    <p id="finalScore">점수: 0</p>
+    <p id="finalLines">지운 줄: 0</p>
+    <p id="finalBest">최고 기록: 0</p>
+    <div id="gameOverThemeSelectRow" class="theme-select-row"></div>
+    <button id="restartBtn" class="bigBtn">다시 하기</button>
+  </div>
+
+  <div id="themeUnlockOverlay" class="overlay hidden">
+    <h2>🎉 새 테마 해금!</h2>
+    <div id="unlockThemeIcon" style="font-size:60px; line-height:1;"></div>
+    <p id="unlockThemeName" style="font-size:22px; font-weight:bold; margin:0;"></p>
+    <div id="unlockThemePalette" class="theme-palette"></div>
+    <div class="unlock-btn-row">
+      <button id="unlockConfirmBtn" class="bigBtn small">신난다!</button>
+      <button id="unlockPlayNowBtn" class="bigBtn small">이 테마로 바로 하기</button>
+    </div>
+  </div>
+
+  <div class="left-panel">
+    <div class="panel-label">HOLD</div>
+    <canvas id="holdCanvas" width="160" height="160"></canvas>
+  </div>
+
+  <div class="board-wrap">
+    <canvas id="boardCanvas" width="320" height="640"></canvas>
+  </div>
+
+  <div class="right-panel">
+    <div class="panel-label">NEXT</div>
+    <canvas id="nextCanvas" width="160" height="480"></canvas>
+    <div class="stats">
+      <div>점수<br><span id="scoreText">0</span><span id="newRecordBadge" class="new-record hidden">🏆 신기록!</span></div>
+      <div>레벨<br><span id="levelText">1</span></div>
+      <div>지운 줄<br><span id="linesText">0</span></div>
+      <div>최고 점수<br><span id="bestText">0</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+// 여기 숫자만 바꾸면 난이도/확률/연출 타이밍을 조정할 수 있다. 게임 로직 코드는 건드릴 필요 없음.
+const CONFIG = {
+  GAME_TITLE: '블록 히어로', // 게임 이름. 여기만 바꾸면 <title>, 시작화면 타이틀에 전부 반영됨
+
+  BOARD_COLS: 10,
+  BOARD_ROWS: 20,
+  BLOCK_SIZE: 32,
+
+  NEXT_COUNT: 3,
+
+  LOCK_DELAY: 500,          // ms, 바닥에 닿은 후 고정까지 유예 시간
+  MAX_LOCK_RESETS: 15,      // 락 딜레이 리셋 허용 횟수, 초과 시 즉시 고정
+
+  SOFT_DROP_INTERVAL: 30,   // ms, ↓ 누르고 있을 때 한 칸 내려가는 간격
+
+  LINES_PER_LEVEL: 10,
+  LEVEL_SPEEDS: [1000, 850, 720, 600, 500, 420, 350, 300, 260, 230], // ms/칸, 레벨1~10
+  // 레벨10 이후는 LEVEL_SPEEDS 마지막 값(230) 고정
+
+  SCORE_TABLE: { 1: 100, 2: 300, 3: 500, 4: 800 }, // x 현재 레벨
+  COMBO_BONUS: 50,          // x 콤보수 x 레벨 (콤보 2 이상부터 적용)
+
+  DAS_DELAY: 170,  // ms, 키를 누르고 처음 반복이 시작되기까지
+  ARR_RATE: 40,     // ms, 이후 반복 이동 간격
+
+  STORAGE_KEY: 'bh_highScore',
+  TOTAL_SCORE_KEY: 'bh_totalScore',
+  UNLOCKED_THEMES_KEY: 'bh_unlockedThemes',
+  SELECTED_THEME_KEY: 'bh_selectedTheme',
+
+  // --- 연출(EFFECTS) 밸런싱 ---
+  LINE_FLASH_DURATION: 150,     // ms, 줄 클리어 전 흰색 플래시 지속 시간
+  MAX_PARTICLES: 300,           // 파티클 최대 개수 상한 (성능 보호)
+  CLEAR_PARTICLES_PER_CELL: 6,  // 줄 클리어 시 칸당 파티클 수
+  LANDING_DUST_COUNT: 4,        // 하드드롭 착지 시 열당 먼지 파티클 수
+  COMBO_POPUP_DURATION: 700,    // ms, 콤보 팝업 지속 시간
+  QUAD_CLEAR_BANNER_DURATION: 1000, // ms, "퍼펙트!!" 배너 지속 시간
+  LEVELUP_BANNER_DURATION: 900, // ms, "LEVEL n" 배너 지속 시간
+  EDGE_FLASH_DURATION: 500,     // ms, 레벨업 가장자리 플래시 지속 시간
+  SHAKE_DURATION: 400,          // ms, 4줄 클리어(퍼펙트) 화면 흔들림 지속 시간
+  SHAKE_MAGNITUDE: 14,          // px, 화면 흔들림 최대 진폭
+
+  // --- 아이템 블록 밸런싱 ---
+  BOMB_CHANCE: 0.05,             // 블록 생성 시 폭탄 블록이 될 확률
+  SLOW_CHANCE: 0.03,             // 폭탄이 아닐 때, 슬로우 블록이 될 확률
+  SLOW_DURATION: 10000,          // ms, 슬로우 효과 지속 시간
+  SLOW_FACTOR: 0.5,              // 낙하 속도 배율 (0.5배 = 2배 느리게)
+  BOMB_PARTICLE_COUNT: 24,       // 폭탄 발동 시 폭발 파티클 수
+  BOMB_SHAKE_DURATION: 300,      // ms, 폭탄 발동 화면 흔들림 지속 시간
+  BOMB_SHAKE_MAGNITUDE: 10,      // px, 폭탄 발동 화면 흔들림 진폭
+  BOMB_BANNER_DURATION: 700,     // ms, "BOOM!" 배너 지속 시간
+  SLOW_BANNER_DURATION: 800,     // ms, "SLOW!" 배너 지속 시간
+  SLOW_OVERLAY_FADE_DURATION: 600, // ms, 슬로우 발동 시 화면 오버레이 페이드 시간
+
+  // --- 테마 스킨 밸런싱 ---
+  THEME_UNLOCK_BANNER_DURATION: 1200, // ms, 테마 해금 배너 지속 시간
+
+  // --- 오디오 밸런싱 ---
+  MUTED_KEY: 'bh_muted',
+  SFX_VOLUME: 0.6,   // 효과음 마스터 볼륨 (개별 사운드 게인에 곱해짐)
+  BGM_VOLUME: 0.15,  // 배경음악 볼륨, 효과음보다 작게
+  BGM_BPM: 140,      // 배경음악 템포
+
+  // 테마 정의: 각 테마가 바꾸는 것은 블록 7색, 보드 배경, 그리드 선 색, 파티클 색, UI 강조색뿐이다.
+  // 폭탄/슬로우 아이템의 칸 색상·이펙트 색은 식별성을 위해 테마와 무관하게 항상 고정되어 있다
+  // (ITEMS.bomb/slow의 renderIcon만 테마 강조색을 발광 테두리 색으로 참조한다).
+  THEMES: [
+    {
+      id: 'neon',
+      name: '네온 클래식',
+      icon: '🎮',
+      unlockScore: 0,
+      blockColors: {
+        I: '#00d2d2', O: '#e0c300', T: '#a335e0', S: '#3ac13a',
+        Z: '#e03a3a', J: '#2f6fe0', L: '#e08b1f'
+      },
+      bgColor: '#0d0d16',
+      gridColor: 'rgba(255,255,255,0.05)',
+      particleColors: ['#ff6b6b', '#ffd166', '#6bffb0', '#6bc8ff', '#c77dff', '#ff8fab'],
+      uiAccent: '#ffd166'
+    },
+    {
+      id: 'dino',
+      name: '공룡 정글',
+      icon: '🦖',
+      unlockScore: 5000,
+      blockColors: {
+        I: '#2f9e44', O: '#d9a441', T: '#8b5a2b', S: '#57cc99',
+        Z: '#c1440e', J: '#4a7c59', L: '#e0b34c'
+      },
+      bgColor: '#0f1f10',
+      gridColor: 'rgba(140,255,140,0.06)',
+      particleColors: ['#7ee787', '#d9a441', '#c1440e', '#57cc99', '#e0b34c', '#4a7c59'],
+      uiAccent: '#7cd85a'
+    },
+    {
+      id: 'space',
+      name: '우주 탐험',
+      icon: '🚀',
+      unlockScore: 20000,
+      blockColors: {
+        I: '#00e5ff', O: '#7c4dff', T: '#536dfe', S: '#18ffff',
+        Z: '#3d5afe', J: '#651fff', L: '#00b8d4'
+      },
+      bgColor: '#04041a',
+      gridColor: 'rgba(150,150,255,0.07)',
+      particleColors: ['#00e5ff', '#7c4dff', '#536dfe', '#18ffff', '#651fff', '#ff6bcb'],
+      uiAccent: '#00e5ff'
+    }
+  ]
+};
+
+// ============================================================
+// STORAGE
+// ============================================================
+// localStorage 5개 키(최고점수/누적점수/해금테마/선택테마/음소거) 읽기·쓰기 함수 모음
+function loadBestScore() {
+  try {
+    const v = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY) || '0', 10);
+    return isNaN(v) ? 0 : v;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function saveBestScore(value) {
+  try {
+    localStorage.setItem(CONFIG.STORAGE_KEY, String(value));
+  } catch (e) {
+    // localStorage 사용 불가 시 무시
+  }
+}
+
+function loadTotalScore() {
+  try {
+    const v = parseInt(localStorage.getItem(CONFIG.TOTAL_SCORE_KEY) || '0', 10);
+    return isNaN(v) ? 0 : v;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function saveTotalScore(value) {
+  try {
+    localStorage.setItem(CONFIG.TOTAL_SCORE_KEY, String(value));
+  } catch (e) {
+    // 무시
+  }
+}
+
+function loadUnlockedThemes() {
+  try {
+    const raw = localStorage.getItem(CONFIG.UNLOCKED_THEMES_KEY);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length > 0) return arr;
+    }
+  } catch (e) {
+    // 무시
+  }
+  return [CONFIG.THEMES[0].id]; // 첫 테마는 항상 기본 해금
+}
+
+function saveUnlockedThemes(idArray) {
+  try {
+    localStorage.setItem(CONFIG.UNLOCKED_THEMES_KEY, JSON.stringify(idArray));
+  } catch (e) {
+    // 무시
+  }
+}
+
+function loadSelectedTheme() {
+  const unlocked = loadUnlockedThemes();
+  try {
+    const id = localStorage.getItem(CONFIG.SELECTED_THEME_KEY);
+    if (id && unlocked.includes(id)) return id;
+  } catch (e) {
+    // 무시
+  }
+  return CONFIG.THEMES[0].id;
+}
+
+function saveSelectedTheme(id) {
+  try {
+    localStorage.setItem(CONFIG.SELECTED_THEME_KEY, id);
+  } catch (e) {
+    // 무시
+  }
+}
+
+// ============================================================
+// PIECES
+// ============================================================
+// 테트로미노 7종의 회전 상태 정의, 7-bag 랜덤 큐
+const PIECE_TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+
+const PIECE_DEFS = {
+  I: { states: [
+    ['....', 'XXXX', '....', '....'],
+    ['..X.', '..X.', '..X.', '..X.'],
+    ['....', '....', 'XXXX', '....'],
+    ['.X..', '.X..', '.X..', '.X..']
+  ]},
+  O: { states: [
+    ['.XX.', '.XX.', '....', '....'],
+    ['.XX.', '.XX.', '....', '....'],
+    ['.XX.', '.XX.', '....', '....'],
+    ['.XX.', '.XX.', '....', '....']
+  ]},
+  T: { states: [
+    ['.X.', 'XXX', '...'],
+    ['.X.', '.XX', '.X.'],
+    ['...', 'XXX', '.X.'],
+    ['.X.', 'XX.', '.X.']
+  ]},
+  S: { states: [
+    ['.XX', 'XX.', '...'],
+    ['.X.', '.XX', '..X'],
+    ['...', '.XX', 'XX.'],
+    ['X..', 'XX.', '.X.']
+  ]},
+  Z: { states: [
+    ['XX.', '.XX', '...'],
+    ['..X', '.XX', '.X.'],
+    ['...', 'XX.', '.XX'],
+    ['.X.', 'XX.', 'X..']
+  ]},
+  J: { states: [
+    ['X..', 'XXX', '...'],
+    ['.XX', '.X.', '.X.'],
+    ['...', 'XXX', '..X'],
+    ['.X.', '.X.', 'XX.']
+  ]},
+  L: { states: [
+    ['..X', 'XXX', '...'],
+    ['.X.', '.X.', '.XX'],
+    ['...', 'XXX', 'X..'],
+    ['XX.', '.X.', '.X.']
+  ]}
+};
+
+const WALL_KICKS = [[0, 0], [-1, 0], [1, 0], [0, -1], [-2, 0], [2, 0], [0, 1]];
+
+let bagQueue = [];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function bagNext() {
+  if (bagQueue.length === 0) {
+    bagQueue = shuffle(PIECE_TYPES.slice());
+  }
+  return bagQueue.shift();
+}
+
+function getCells(type, rotation, x, y) {
+  const grid = PIECE_DEFS[type].states[rotation];
+  const cells = [];
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      if (grid[row][col] === 'X') {
+        cells.push([x + col, y + row]);
+      }
+    }
+  }
+  return cells;
+}
+
+function spawnX(type) {
+  const size = PIECE_DEFS[type].states[0].length;
+  return Math.floor((CONFIG.BOARD_COLS - size) / 2);
+}
+
+// ============================================================
+// BOARD
+// ============================================================
+// 보드(10x20) 생성, 충돌 판정, 줄 클리어 관련 순수 함수
+function createEmptyBoard() {
+  return Array.from({ length: CONFIG.BOARD_ROWS }, () => new Array(CONFIG.BOARD_COLS).fill(null));
+}
+
+function isValidPosition(board, cells) {
+  for (const [cx, cy] of cells) {
+    if (cx < 0 || cx >= CONFIG.BOARD_COLS) return false;
+    if (cy < 0 || cy >= CONFIG.BOARD_ROWS) return false;
+    if (board[cy][cx]) return false;
+  }
+  return true;
+}
+
+function findFullRows(board) {
+  const rows = [];
+  for (let r = 0; r < CONFIG.BOARD_ROWS; r++) {
+    if (board[r].every(cell => cell !== null)) rows.push(r);
+  }
+  return rows;
+}
+
+// 자연 클리어(꽉 찬 줄) + 아이템으로 강제 지정된 줄(forceClear)을 모두 제거
+function isRowClearable(row) {
+  return row.forceClear === true || row.every(cell => cell !== null);
+}
+
+function clearMarkedLines(board) {
+  let cleared = 0;
+  for (let r = CONFIG.BOARD_ROWS - 1; r >= 0; r--) {
+    if (isRowClearable(board[r])) {
+      board.splice(r, 1);
+      board.unshift(new Array(CONFIG.BOARD_COLS).fill(null));
+      cleared++;
+      r++; // 같은 인덱스를 다시 검사
+    }
+  }
+  return cleared;
+}
+
+// ============================================================
+// GAME STATE
+// ============================================================
+// 게임 진행 상태(game 객체)와 이동/회전/락딜레이/점수/게임오버 로직
+const game = {
+  state: 'start', // 'start' | 'playing' | 'clearing' | 'paused' | 'gameover'
+  board: createEmptyBoard(),
+  current: null,  // { type, rotation, x, y, item, bombCell }
+  nextQueue: [],  // [{ type, item, bombCell }, ...]
+  hold: null,     // { type, item, bombCell } | null
+  holdUsed: false,
+  score: 0,
+  level: 1,
+  lines: 0,
+  combo: 0,
+  dropAcc: 0,
+  lockTimer: 0,
+  lockResets: 0,
+  clearingRows: [],          // 'clearing' 상태에서 플래시 중인 행 인덱스
+  clearTimer: 0,             // 'clearing' 상태 경과 시간(ms)
+  pendingClearSnapshot: null, // 파티클 색상 계산용 스냅샷
+  isNewRecord: false,         // 이번 판에서 최고기록을 넘었는지
+  slow: { active: false, timer: 0, duration: 0 } // 슬로우 아이템 효과 상태
+};
+
+const input = { left: false, right: false, down: false };
+const das = {
+  left: { timer: 0, phase: 'idle' },
+  right: { timer: 0, phase: 'idle' }
+};
+
+function currentLevelSpeed() {
+  const idx = Math.min(game.level - 1, CONFIG.LEVEL_SPEEDS.length - 1);
+  return CONFIG.LEVEL_SPEEDS[idx];
+}
+
+function isGrounded() {
+  const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y + 1);
+  return !isValidPosition(game.board, cells);
+}
+
+function resetLockIfGrounded() {
+  if (isGrounded()) {
+    if (game.lockResets < CONFIG.MAX_LOCK_RESETS) {
+      game.lockTimer = 0;
+      game.lockResets++;
+    } else {
+      // 리셋 상한 초과: 다음 업데이트 틱에서 즉시 고정되도록 딜레이를 채워둠
+      game.lockTimer = CONFIG.LOCK_DELAY;
+    }
+  } else {
+    game.lockTimer = 0;
+    game.lockResets = 0;
+  }
+}
+
+function attemptMove(dx, dy) {
+  const nx = game.current.x + dx;
+  const ny = game.current.y + dy;
+  const cells = getCells(game.current.type, game.current.rotation, nx, ny);
+  if (isValidPosition(game.board, cells)) {
+    game.current.x = nx;
+    game.current.y = ny;
+    resetLockIfGrounded();
+    return true;
+  }
+  return false;
+}
+
+function rotateCurrent() {
+  if (game.state !== 'playing') return;
+  const type = game.current.type;
+  if (type === 'O') return;
+  const newRotation = (game.current.rotation + 1) % 4;
+  for (const [ox, oy] of WALL_KICKS) {
+    const nx = game.current.x + ox;
+    const ny = game.current.y + oy;
+    const cells = getCells(type, newRotation, nx, ny);
+    if (isValidPosition(game.board, cells)) {
+      game.current.rotation = newRotation;
+      game.current.x = nx;
+      game.current.y = ny;
+      resetLockIfGrounded();
+      sfxRotate();
+      return;
+    }
+  }
+}
+
+function hardDrop() {
+  if (game.state !== 'playing') return;
+  while (attemptMove(0, 1)) { /* keep dropping */ }
+  sfxHardDrop();
+  const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
+  spawnLandingDust(cells);
+  lockCurrentPiece();
+}
+
+function spawnFromQueue() {
+  const entry = game.nextQueue.shift();
+  while (game.nextQueue.length < CONFIG.NEXT_COUNT) {
+    game.nextQueue.push(nextQueueEntry());
+  }
+  game.current = {
+    type: entry.type, rotation: 0, x: spawnX(entry.type), y: 0,
+    item: entry.item, bombCell: entry.bombCell
+  };
+  game.dropAcc = 0;
+  game.lockTimer = 0;
+  game.lockResets = 0;
+  game.holdUsed = false;
+
+  const cells = getCells(entry.type, 0, game.current.x, 0);
+  if (!isValidPosition(game.board, cells)) {
+    gameOver();
+  }
+}
+
+function lockCurrentPiece() {
+  const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
+  const color = currentTheme.blockColors[game.current.type];
+  const itemId = game.current.item;
+  // 폭탄 칸의 "현재 회전 상태" 기준 로컬 좌표 (스폰 시 고정된 셀이 회전을 그대로 따라감)
+  const bombTarget = itemId === 'bomb' ? bombLocalCellAtRotation(game.current) : null;
+  let bombRow = null;
+
+  cells.forEach(([cx, cy]) => {
+    if (cy >= 0 && cy < CONFIG.BOARD_ROWS && cx >= 0 && cx < CONFIG.BOARD_COLS) {
+      const localR = cy - game.current.y;
+      const localC = cx - game.current.x;
+      const isBombCell = !!bombTarget && bombTarget.r === localR && bombTarget.c === localC;
+      if (isBombCell) bombRow = cy;
+      const cellItem = isBombCell ? 'bomb' : (itemId === 'slow') ? 'slow' : null;
+      game.board[cy][cx] = { color, item: cellItem };
+    }
+  });
+  sfxLock();
+
+  // 아이템 onLock 처리: 폭탄이면 강제로 지울 행을 돌려받아 표시해둔다
+  const forcedRows = (itemId && ITEMS[itemId]) ? (ITEMS[itemId].onLock(game.current, { bombRow }) || []) : [];
+  forcedRows.forEach(r => {
+    if (r >= 0 && r < CONFIG.BOARD_ROWS) game.board[r].forceClear = true;
+  });
+
+  // 자연 클리어(꽉 찬 줄)와 아이템 강제 클리어를 합쳐서 처리
+  const rows = Array.from(new Set([...findFullRows(game.board), ...forcedRows])).sort((a, b) => a - b);
+
+  if (rows.length > 0) {
+    beginLineClear(rows);
+  } else {
+    game.combo = 0; // 줄을 못 지운 블록이 고정되면 콤보 리셋
+    if (game.state === 'playing') spawnFromQueue();
+  }
+}
+
+function beginLineClear(rows) {
+  // 흰색 플래시를 먼저 보여주기 위해 보드는 그대로 두고 'clearing' 상태로 전환
+  game.state = 'clearing';
+  game.clearingRows = rows;
+  game.clearTimer = 0;
+  game.pendingClearSnapshot = rows.map(r => game.board[r].slice());
+}
+
+function resolveLineClear() {
+  const rows = game.clearingRows;
+  const snapshot = game.pendingClearSnapshot;
+
+  rows.forEach((r, idx) => {
+    const rowCells = snapshot[idx];
+    for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
+      if (rowCells[c]) spawnClearParticles(c, r, rowCells[c].color);
+    }
+  });
+
+  const cleared = clearMarkedLines(game.board);
+
+  game.clearingRows = [];
+  game.pendingClearSnapshot = null;
+  game.clearTimer = 0;
+  game.state = 'playing';
+
+  applyClearScore(cleared);
+
+  spawnFromQueue();
+}
+
+function applyClearScore(cleared) {
+  if (cleared <= 0) return;
+
+  game.score += CONFIG.SCORE_TABLE[cleared] * game.level;
+  game.lines += cleared;
+
+  if (cleared === 4) {
+    sfxQuadClear();
+  } else {
+    sfxLineClear(cleared);
+  }
+
+  game.combo++;
+  if (game.combo >= 2) {
+    game.score += CONFIG.COMBO_BONUS * game.combo * game.level;
+    showComboPopup(game.combo);
+    sfxCombo(game.combo);
+  }
+
+  checkNewRecord();
+
+  const newLevel = Math.floor(game.lines / CONFIG.LINES_PER_LEVEL) + 1;
+  if (newLevel > game.level) {
+    game.level = newLevel;
+    triggerLevelUp(game.level);
+    sfxLevelUp();
+  }
+
+  if (cleared === 4) {
+    triggerQuadClearEffect();
+  }
+}
+
+function checkNewRecord() {
+  if (!game.isNewRecord && game.score > loadBestScore()) {
+    game.isNewRecord = true;
+  }
+}
+
+function holdPiece() {
+  if (game.state !== 'playing') return;
+  if (game.holdUsed) return;
+
+  sfxHold();
+  const curEntry = { type: game.current.type, item: game.current.item, bombCell: game.current.bombCell };
+  if (game.hold === null) {
+    game.hold = curEntry;
+    spawnFromQueue();
+  } else {
+    const temp = game.hold;
+    game.hold = curEntry;
+    const cells = getCells(temp.type, 0, spawnX(temp.type), 0);
+    if (!isValidPosition(game.board, cells)) {
+      gameOver();
+      return;
+    }
+    game.current = {
+      type: temp.type, rotation: 0, x: spawnX(temp.type), y: 0,
+      item: temp.item, bombCell: temp.bombCell
+    };
+    game.dropAcc = 0;
+    game.lockTimer = 0;
+    game.lockResets = 0;
+  }
+  game.holdUsed = true;
+}
+
+function togglePause() {
+  if (game.state === 'playing') {
+    game.state = 'paused';
+    pausedOverlay.classList.remove('hidden');
+    stopBGM();
+  } else if (game.state === 'paused') {
+    game.state = 'playing';
+    pausedOverlay.classList.add('hidden');
+    accumulator = 0;
+    startBGM();
+  }
+}
+
+function gameOver() {
+  game.state = 'gameover';
+  stopBGM();
+  sfxGameOver();
+  const previousBest = loadBestScore();
+  const isRecord = game.score > previousBest;
+  const best = Math.max(previousBest, game.score);
+  saveBestScore(best);
+
+  const newTotal = loadTotalScore() + game.score;
+  saveTotalScore(newTotal);
+  const newlyUnlocked = checkThemeUnlocks(newTotal);
+  refreshThemeUI(); // 방금 해금된 테마가 있다면 게임오버 화면의 카드에도 바로 반영
+
+  finalScoreEl.textContent = `점수: ${game.score}`;
+  finalLinesEl.textContent = `지운 줄: ${game.lines}`;
+  finalBestEl.textContent = `최고 기록: ${best}`;
+  trophyIcon.classList.toggle('hidden', !isRecord);
+  newRecordLabel.classList.toggle('hidden', !isRecord);
+
+  gameOverOverlay.classList.remove('hidden');
+
+  if (newlyUnlocked.length > 0) {
+    showThemeUnlockCelebration(newlyUnlocked);
+  }
+}
+
+function resetGameState() {
+  game.board = createEmptyBoard();
+  game.score = 0;
+  game.level = 1;
+  game.lines = 0;
+  game.combo = 0;
+  game.hold = null;
+  game.holdUsed = false;
+  game.dropAcc = 0;
+  game.lockTimer = 0;
+  game.lockResets = 0;
+  game.clearingRows = [];
+  game.clearTimer = 0;
+  game.pendingClearSnapshot = null;
+  game.isNewRecord = false;
+  game.slow.active = false;
+  game.slow.timer = 0;
+  game.slow.duration = 0;
+  bagQueue = [];
+  game.nextQueue = [];
+  while (game.nextQueue.length < CONFIG.NEXT_COUNT) {
+    game.nextQueue.push(nextQueueEntry());
+  }
+  effects.particles = [];
+  effects.popups = [];
+  effects.shake.timer = 0;
+  effects.shake.duration = 0;
+  effects.edgeFlash.timer = 0;
+  effects.edgeFlash.duration = 0;
+  effects.slowFlash.timer = 0;
+  effects.slowFlash.duration = 0;
+  spawnFromQueue();
+  game.state = 'playing';
+  startBGM();
+}
+
+// ============================================================
+// INPUT
+// ============================================================
+// 키보드 입력 처리 (이동/회전/드롭/홀드/일시정지/음소거)
+document.addEventListener('keydown', (e) => {
+  switch (e.code) {
+    case 'ArrowLeft':
+      e.preventDefault();
+      if (game.state === 'playing' && !e.repeat) {
+        input.left = true;
+        das.left.phase = 'delay';
+        das.left.timer = 0;
+        if (attemptMove(-1, 0)) sfxMove();
+      }
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      if (game.state === 'playing' && !e.repeat) {
+        input.right = true;
+        das.right.phase = 'delay';
+        das.right.timer = 0;
+        if (attemptMove(1, 0)) sfxMove();
+      }
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      if (game.state === 'playing') input.down = true;
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      if (!e.repeat) rotateCurrent();
+      break;
+    case 'Space':
+      e.preventDefault();
+      if (!e.repeat) hardDrop();
+      break;
+    case 'KeyC':
+      if (!e.repeat) holdPiece();
+      break;
+    case 'KeyP':
+      if (!e.repeat) togglePause();
+      break;
+    case 'KeyM':
+      if (!e.repeat) toggleMute();
+      break;
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  switch (e.code) {
+    case 'ArrowLeft':
+      input.left = false;
+      das.left.phase = 'idle';
+      das.left.timer = 0;
+      break;
+    case 'ArrowRight':
+      input.right = false;
+      das.right.phase = 'idle';
+      das.right.timer = 0;
+      break;
+    case 'ArrowDown':
+      input.down = false;
+      break;
+  }
+});
+
+function updateDAS(dt) {
+  ['left', 'right'].forEach(dir => {
+    if (input[dir]) {
+      const d = das[dir];
+      d.timer += dt;
+      const delta = dir === 'left' ? -1 : 1;
+      if (d.phase === 'delay') {
+        if (d.timer >= CONFIG.DAS_DELAY) {
+          d.phase = 'repeat';
+          d.timer = 0;
+          if (attemptMove(delta, 0)) sfxMove();
+        }
+      } else if (d.phase === 'repeat') {
+        while (d.timer >= CONFIG.ARR_RATE) {
+          d.timer -= CONFIG.ARR_RATE;
+          if (attemptMove(delta, 0)) sfxMove();
+        }
+      }
+    }
+  });
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+// 캔버스에 보드/블록/고스트/홀드/다음블록을 그리는 함수 모음
+const boardCanvas = document.getElementById('boardCanvas');
+const boardCtx = boardCanvas.getContext('2d');
+const holdCanvas = document.getElementById('holdCanvas');
+const holdCtx = holdCanvas.getContext('2d');
+const nextCanvas = document.getElementById('nextCanvas');
+const nextCtx = nextCanvas.getContext('2d');
+
+const scoreText = document.getElementById('scoreText');
+const levelText = document.getElementById('levelText');
+const linesText = document.getElementById('linesText');
+const bestText = document.getElementById('bestText');
+const newRecordBadge = document.getElementById('newRecordBadge');
+
+const startOverlay = document.getElementById('startOverlay');
+const pausedOverlay = document.getElementById('pausedOverlay');
+const gameOverOverlay = document.getElementById('gameOverOverlay');
+const finalScoreEl = document.getElementById('finalScore');
+const finalLinesEl = document.getElementById('finalLines');
+const finalBestEl = document.getElementById('finalBest');
+const trophyIcon = document.getElementById('trophyIcon');
+const newRecordLabel = document.getElementById('newRecordLabel');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const totalScoreDisplay = document.getElementById('totalScoreDisplay');
+const themeSelectRow = document.getElementById('themeSelectRow');
+const gameOverThemeSelectRow = document.getElementById('gameOverThemeSelectRow');
+const themeUnlockOverlay = document.getElementById('themeUnlockOverlay');
+const unlockThemeIcon = document.getElementById('unlockThemeIcon');
+const unlockThemeName = document.getElementById('unlockThemeName');
+const unlockThemePalette = document.getElementById('unlockThemePalette');
+const unlockConfirmBtn = document.getElementById('unlockConfirmBtn');
+const unlockPlayNowBtn = document.getElementById('unlockPlayNowBtn');
+
+const BS = CONFIG.BLOCK_SIZE;
+
+function drawBlock(ctx, px, py, size, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha === undefined ? 1 : alpha;
+  ctx.fillStyle = color;
+  ctx.fillRect(px, py, size, size);
+  ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(px + 1, py + 1, size - 2, size - 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillRect(px + 2, py + 2, size - 4, 4);
+  ctx.restore();
+}
+
+// 조각의 로컬 그리드 좌표 (localR, localC)가 어떤 색/아이템인지 계산.
+// piece.rotation이 없으면(미리보기 등) 스폰 상태(0)로 취급한다.
+function cellVisualAt(piece, localR, localC) {
+  if (piece.item === 'bomb') {
+    const target = bombLocalCellAtRotation(piece);
+    if (target && target.r === localR && target.c === localC) {
+      return { color: ITEMS.bomb.cellColor, item: 'bomb' };
+    }
+  }
+  if (piece.item === 'slow') {
+    return { color: ITEMS.slow.cellColor, item: 'slow' };
+  }
+  return { color: currentTheme.blockColors[piece.type], item: null };
+}
+
+function computeGhostY() {
+  let gy = game.current.y;
+  while (isValidPosition(game.board, getCells(game.current.type, game.current.rotation, game.current.x, gy + 1))) {
+    gy++;
+  }
+  return gy;
+}
+
+function renderBoard() {
+  boardCtx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
+  boardCtx.fillStyle = currentTheme.bgColor;
+  boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+
+  // 격자 선
+  boardCtx.strokeStyle = currentTheme.gridColor;
+  boardCtx.lineWidth = 1;
+  for (let c = 0; c <= CONFIG.BOARD_COLS; c++) {
+    boardCtx.beginPath();
+    boardCtx.moveTo(c * BS, 0);
+    boardCtx.lineTo(c * BS, boardCanvas.height);
+    boardCtx.stroke();
+  }
+  for (let r = 0; r <= CONFIG.BOARD_ROWS; r++) {
+    boardCtx.beginPath();
+    boardCtx.moveTo(0, r * BS);
+    boardCtx.lineTo(boardCanvas.width, r * BS);
+    boardCtx.stroke();
+  }
+
+  // 고정된 블록
+  for (let r = 0; r < CONFIG.BOARD_ROWS; r++) {
+    for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
+      const cell = game.board[r][c];
+      if (cell) {
+        drawBlock(boardCtx, c * BS, r * BS, BS, cell.color, 1);
+        if (cell.item && ITEMS[cell.item]) {
+          ITEMS[cell.item].renderIcon(boardCtx, c * BS, r * BS, BS);
+        }
+      }
+    }
+  }
+
+  if (game.current && (game.state === 'playing' || game.state === 'paused')) {
+    // 고스트
+    const gy = computeGhostY();
+    const ghostCells = getCells(game.current.type, game.current.rotation, game.current.x, gy);
+    ghostCells.forEach(([cx, cy]) => {
+      if (cy >= 0) {
+        const visual = cellVisualAt(game.current, cy - gy, cx - game.current.x);
+        drawBlock(boardCtx, cx * BS, cy * BS, BS, visual.color, 0.25);
+      }
+    });
+
+    // 현재 블록
+    const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
+    cells.forEach(([cx, cy]) => {
+      if (cy >= 0) {
+        const visual = cellVisualAt(game.current, cy - game.current.y, cx - game.current.x);
+        drawBlock(boardCtx, cx * BS, cy * BS, BS, visual.color, 1);
+        if (visual.item && ITEMS[visual.item]) {
+          ITEMS[visual.item].renderIcon(boardCtx, cx * BS, cy * BS, BS);
+        }
+      }
+    });
+  }
+}
+
+function drawMiniPiece(ctx, entry, offsetX, offsetY, boxSize) {
+  if (!entry) return;
+  const type = entry.type;
+  const grid = PIECE_DEFS[type].states[0];
+  const gridSize = grid.length;
+  const cellSize = Math.floor((boxSize - 16) / 4);
+  // 실제 사용 폭 계산 (빈 여백 트림)
+  let minC = gridSize, maxC = -1, minR = gridSize, maxR = -1;
+  for (let r = 0; r < gridSize; r++) {
+    for (let c = 0; c < gridSize; c++) {
+      if (grid[r][c] === 'X') {
+        minC = Math.min(minC, c); maxC = Math.max(maxC, c);
+        minR = Math.min(minR, r); maxR = Math.max(maxR, r);
+      }
+    }
+  }
+  const shapeW = (maxC - minC + 1) * cellSize;
+  const shapeH = (maxR - minR + 1) * cellSize;
+  const startX = offsetX + (boxSize - shapeW) / 2;
+  const startY = offsetY + (boxSize - shapeH) / 2;
+
+  for (let r = 0; r < gridSize; r++) {
+    for (let c = 0; c < gridSize; c++) {
+      if (grid[r][c] === 'X') {
+        const px = startX + (c - minC) * cellSize;
+        const py = startY + (r - minR) * cellSize;
+        // 미리보기는 항상 스폰 상태(rotation 0)를 그리므로 로컬 좌표를 그대로 비교
+        const visual = cellVisualAt(entry, r, c);
+        drawBlock(ctx, px, py, cellSize, visual.color, 1);
+        if (visual.item && ITEMS[visual.item]) {
+          ITEMS[visual.item].renderIcon(ctx, px, py, cellSize);
+        }
+      }
+    }
+  }
+}
+
+function renderHold() {
+  holdCtx.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
+  holdCtx.fillStyle = currentTheme.bgColor;
+  holdCtx.fillRect(0, 0, holdCanvas.width, holdCanvas.height);
+  drawMiniPiece(holdCtx, game.hold, 0, 0, holdCanvas.width);
+}
+
+function renderNext() {
+  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  nextCtx.fillStyle = currentTheme.bgColor;
+  nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+  const slotH = nextCanvas.width; // 정사각형 슬롯
+  for (let i = 0; i < CONFIG.NEXT_COUNT; i++) {
+    const entry = game.nextQueue[i];
+    if (i > 0) {
+      nextCtx.strokeStyle = 'rgba(255,255,255,0.08)';
+      nextCtx.beginPath();
+      nextCtx.moveTo(0, i * slotH);
+      nextCtx.lineTo(nextCanvas.width, i * slotH);
+      nextCtx.stroke();
+    }
+    drawMiniPiece(nextCtx, entry, 0, i * slotH, slotH);
+  }
+}
+
+function renderSlowGauge() {
+  if (!game.slow.active) return;
+  const remaining = Math.max(0, game.slow.duration - game.slow.timer);
+  const frac = game.slow.duration > 0 ? remaining / game.slow.duration : 0;
+  const barW = boardCanvas.width - 20;
+  const barH = 16;
+  const barX = 10;
+  const barY = 8;
+
+  boardCtx.save();
+  boardCtx.fillStyle = 'rgba(10,20,30,0.65)';
+  boardCtx.fillRect(barX, barY, barW, barH);
+  boardCtx.fillStyle = '#4fc3f7';
+  boardCtx.fillRect(barX, barY, barW * frac, barH);
+  boardCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+  boardCtx.lineWidth = 1;
+  boardCtx.strokeRect(barX, barY, barW, barH);
+
+  boardCtx.font = 'bold 11px sans-serif';
+  boardCtx.fillStyle = '#ffffff';
+  boardCtx.textAlign = 'center';
+  boardCtx.textBaseline = 'middle';
+  boardCtx.fillText(`🐌 SLOW ${(remaining / 1000).toFixed(1)}s`, barX + barW / 2, barY + barH / 2 + 1);
+  boardCtx.restore();
+}
+
+function updateStatsText() {
+  scoreText.textContent = game.score;
+  levelText.textContent = game.level;
+  linesText.textContent = game.lines;
+  bestText.textContent = loadBestScore();
+  newRecordBadge.classList.toggle('hidden', !game.isNewRecord);
+}
+
+function render() {
+  renderBoard();
+  renderEffects();
+  renderSlowGauge();
+  renderHold();
+  renderNext();
+  updateStatsText();
+}
+
+// ============================================================
+// EFFECTS
+// ============================================================
+// 파티클, 화면 흔들림, 배너 팝업 등 시각 연출. 게임 로직과 분리되어 있음
+const effects = {
+  particles: [],   // { x, y, vx, vy, color, size, life, maxLife, gravity }
+  popups: [],      // { kind, text, x, y, timer, duration, color }
+  shake: { timer: 0, duration: 0, magnitude: 0 },
+  edgeFlash: { timer: 0, duration: 0, color: '#6bffb0' },
+  slowFlash: { timer: 0, duration: 0 }
+};
+
+function addParticle(p) {
+  if (effects.particles.length >= CONFIG.MAX_PARTICLES) {
+    effects.particles.shift(); // 상한 초과 시 가장 오래된 파티클 제거
+  }
+  effects.particles.push(p);
+}
+
+function spawnClearParticles(col, row, color) {
+  const cx = col * BS + BS / 2;
+  const cy = row * BS + BS / 2;
+  for (let i = 0; i < CONFIG.CLEAR_PARTICLES_PER_CELL; i++) {
+    addParticle({
+      x: cx, y: cy,
+      vx: (Math.random() * 2 - 1) * 220,
+      vy: -Math.random() * 260 - 60,
+      color,
+      size: 3 + Math.random() * 3,
+      life: 500 + Math.random() * 300,
+      maxLife: 800,
+      gravity: 900
+    });
+  }
+}
+
+function spawnLandingDust(cells) {
+  const bottomByCol = {};
+  cells.forEach(([cx, cy]) => {
+    if (!(cx in bottomByCol) || cy > bottomByCol[cx]) bottomByCol[cx] = cy;
+  });
+  Object.keys(bottomByCol).forEach(key => {
+    const cx = parseInt(key, 10);
+    const cy = bottomByCol[key];
+    const px = cx * BS + BS / 2;
+    const py = (cy + 1) * BS;
+    for (let i = 0; i < CONFIG.LANDING_DUST_COUNT; i++) {
+      addParticle({
+        x: px + (Math.random() * BS - BS / 2),
+        y: py,
+        vx: (Math.random() * 2 - 1) * 150,
+        vy: -Math.random() * 60,
+        color: 'rgba(255,255,255,0.75)',
+        size: 2 + Math.random() * 2,
+        life: 250 + Math.random() * 150,
+        maxLife: 400,
+        gravity: 500
+      });
+    }
+  });
+}
+
+// 현재 테마의 파티클 팔레트에서 무작위 색을 하나 뽑는다
+function randomThemeColor(theme) {
+  const palette = (theme || currentTheme).particleColors;
+  return palette[Math.floor(Math.random() * palette.length)];
+}
+
+function spawnQuadClearFireworks() {
+  for (let burst = 0; burst < 4; burst++) {
+    const bx = 40 + Math.random() * (boardCanvas.width - 80);
+    const by = 60 + Math.random() * (boardCanvas.height * 0.5);
+    const color = randomThemeColor();
+    const particleCount = 16;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2) * (i / particleCount);
+      const speed = 140 + Math.random() * 120;
+      addParticle({
+        x: bx, y: by,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color,
+        size: 3 + Math.random() * 2,
+        life: 600 + Math.random() * 300,
+        maxLife: 900,
+        gravity: 400
+      });
+    }
+  }
+}
+
+function updateParticles(dt) {
+  const dtS = dt / 1000;
+  for (let i = effects.particles.length - 1; i >= 0; i--) {
+    const p = effects.particles[i];
+    p.life -= dt;
+    if (p.life <= 0) {
+      effects.particles.splice(i, 1);
+      continue;
+    }
+    p.vy += p.gravity * dtS;
+    p.x += p.vx * dtS;
+    p.y += p.vy * dtS;
+  }
+}
+
+function showComboPopup(combo) {
+  effects.popups.push({
+    kind: 'combo',
+    text: `콤보 x${combo}!`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.COMBO_POPUP_DURATION,
+    color: currentTheme.uiAccent
+  });
+}
+
+function triggerLevelUp(level) {
+  effects.popups.push({
+    kind: 'levelup',
+    text: `LEVEL ${level}`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 - 60,
+    timer: 0,
+    duration: CONFIG.LEVELUP_BANNER_DURATION,
+    color: currentTheme.uiAccent
+  });
+  effects.edgeFlash.timer = 0;
+  effects.edgeFlash.duration = CONFIG.EDGE_FLASH_DURATION;
+  effects.edgeFlash.color = currentTheme.uiAccent;
+}
+
+function triggerQuadClearEffect() {
+  effects.popups.push({
+    kind: 'quad',
+    text: '퍼펙트!!',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.QUAD_CLEAR_BANNER_DURATION,
+    color: randomThemeColor()
+  });
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.SHAKE_MAGNITUDE;
+  spawnQuadClearFireworks();
+}
+
+function updatePopups(dt) {
+  for (let i = effects.popups.length - 1; i >= 0; i--) {
+    const p = effects.popups[i];
+    p.timer += dt;
+    if (p.timer >= p.duration) effects.popups.splice(i, 1);
+  }
+}
+
+function updateEffects(dt) {
+  updateParticles(dt);
+  updatePopups(dt);
+  if (effects.shake.timer < effects.shake.duration) effects.shake.timer += dt;
+  if (effects.edgeFlash.timer < effects.edgeFlash.duration) effects.edgeFlash.timer += dt;
+  if (effects.slowFlash.timer < effects.slowFlash.duration) effects.slowFlash.timer += dt;
+}
+
+function getShakeOffset() {
+  if (effects.shake.duration === 0 || effects.shake.timer >= effects.shake.duration) {
+    return { x: 0, y: 0 };
+  }
+  const progress = 1 - effects.shake.timer / effects.shake.duration;
+  const mag = effects.shake.magnitude * progress;
+  return { x: (Math.random() * 2 - 1) * mag, y: (Math.random() * 2 - 1) * mag };
+}
+
+function easeOutBack(x) {
+  const c1 = 1.70158, c3 = c1 + 1;
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+}
+
+function drawBannerText(ctx, text, x, y, scale, alpha, color, fontSize) {
+  if (alpha <= 0 || scale <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.font = `bold ${fontSize}px 'Trebuchet MS', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeText(text, 0, 0);
+  ctx.fillStyle = color;
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+
+const BANNER_FONT_SIZES = { quad: 32, bomb: 28, slow: 26, levelup: 26, themeUnlock: 22 };
+
+function renderPopup(pop) {
+  const t = Math.min(1, pop.timer / pop.duration);
+  let scale, alpha;
+  if (pop.kind === 'combo') {
+    // 빠르게 확대 후 위로 떠오르며 페이드아웃
+    scale = t < 0.2 ? easeOutBack(t / 0.2) : 1;
+    alpha = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
+    const riseY = pop.y - t * 40;
+    drawBannerText(boardCtx, pop.text, pop.x, riseY, scale, alpha, pop.color, 22);
+  } else {
+    // 4줄클리어(퍼펙트) / 레벨업 / 폭탄 / 슬로우 / 테마해금 배너: 확대되며 등장했다 사라짐
+    if (t < 0.25) {
+      scale = easeOutBack(t / 0.25);
+      alpha = t / 0.25;
+    } else if (t < 0.7) {
+      scale = 1;
+      alpha = 1;
+    } else {
+      scale = 1 - ((t - 0.7) / 0.3) * 0.3;
+      alpha = 1 - (t - 0.7) / 0.3;
+    }
+    drawBannerText(boardCtx, pop.text, pop.x, pop.y, scale, alpha, pop.color, BANNER_FONT_SIZES[pop.kind] || 26);
+  }
+}
+
+function renderLineFlash() {
+  if (game.state !== 'clearing') return;
+  const t = Math.min(1, game.clearTimer / CONFIG.LINE_FLASH_DURATION);
+  const alpha = Math.sin(t * Math.PI); // 짧게 번쩍였다 사라지는 곡선
+  if (alpha <= 0) return;
+  boardCtx.save();
+  boardCtx.globalAlpha = alpha;
+  boardCtx.fillStyle = '#ffffff';
+  game.clearingRows.forEach(r => {
+    boardCtx.fillRect(0, r * BS, boardCanvas.width, BS);
+  });
+  boardCtx.restore();
+}
+
+function renderEdgeFlash() {
+  if (effects.edgeFlash.duration === 0 || effects.edgeFlash.timer >= effects.edgeFlash.duration) return;
+  const t = effects.edgeFlash.timer / effects.edgeFlash.duration;
+  const alpha = 1 - t;
+  boardCtx.save();
+  boardCtx.globalAlpha = alpha * 0.85;
+  boardCtx.strokeStyle = effects.edgeFlash.color;
+  boardCtx.lineWidth = 16;
+  boardCtx.strokeRect(8, 8, boardCanvas.width - 16, boardCanvas.height - 16);
+  boardCtx.restore();
+}
+
+function renderSlowFlash() {
+  if (effects.slowFlash.duration === 0 || effects.slowFlash.timer >= effects.slowFlash.duration) return;
+  const t = effects.slowFlash.timer / effects.slowFlash.duration;
+  const alpha = Math.sin(t * Math.PI) * 0.35;
+  if (alpha <= 0) return;
+  boardCtx.save();
+  boardCtx.globalAlpha = alpha;
+  boardCtx.fillStyle = '#3ac8ff';
+  boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  boardCtx.restore();
+}
+
+function renderParticles() {
+  boardCtx.save();
+  effects.particles.forEach(p => {
+    const alpha = Math.max(0, p.life / p.maxLife);
+    boardCtx.globalAlpha = alpha;
+    boardCtx.fillStyle = p.color;
+    boardCtx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+  });
+  boardCtx.restore();
+}
+
+function renderEffects() {
+  renderLineFlash();
+  renderParticles();
+  renderEdgeFlash();
+  renderSlowFlash();
+  effects.popups.forEach(renderPopup);
+}
+
+// ============================================================
+// ITEMS
+// ============================================================
+// 폭탄/슬로우 특수 블록. 새 아이템 추가 시 이 섹션의 ITEMS 레지스트리만 확장하면 됨
+// 새 아이템을 추가하려면 ITEMS에 { id, icon, cellColor, chance, assign, onLock, renderIcon }
+// 형태로 항목을 하나 추가하고 ITEM_ORDER에 순서를 넣으면 된다.
+const ITEM_ORDER = ['bomb', 'slow']; // 폭탄 판정 먼저, 실패 시 슬로우 판정
+
+// 조각의 로컬 그리드(NxN) 좌표를 시계 방향 90도 회전.
+// 이 프로젝트의 PIECE_DEFS 회전 상태들은 전부 이 공식을 따르도록 정의되어 있다.
+function rotateCellCW(cell, n) {
+  return { r: cell.c, c: n - 1 - cell.r };
+}
+
+// 스폰 상태(rotation 0) 기준 좌표(baseCell)를 현재 rotation만큼 회전시킨 좌표를 반환.
+// 4번(360도) 적용하면 원래 좌표로 돌아온다.
+function bombCellAtRotation(type, baseCell, rotation) {
+  // O는 4개 회전 상태가 모두 동일한 그리드(중앙 정렬이 아님)라 실제로 회전하지 않는다.
+  // rotateCurrent()도 O는 건드리지 않으므로 항상 스폰 좌표를 그대로 사용한다.
+  if (type === 'O') return baseCell;
+  const n = PIECE_DEFS[type].states[0].length;
+  let cell = baseCell;
+  const steps = ((rotation % 4) + 4) % 4;
+  for (let i = 0; i < steps; i++) {
+    cell = rotateCellCW(cell, n);
+  }
+  return cell;
+}
+
+// piece.bombCell(스폰 상태 기준)을 piece.rotation(없으면 0)에 맞게 변환해서 반환
+function bombLocalCellAtRotation(piece) {
+  if (piece.item !== 'bomb' || !piece.bombCell) return null;
+  return bombCellAtRotation(piece.type, piece.bombCell, piece.rotation || 0);
+}
+
+const ITEMS = {
+  bomb: {
+    id: 'bomb',
+    icon: '💣',
+    cellColor: '#3a2222', // 어두운 색 (테마 무관 고정)
+    chance: () => CONFIG.BOMB_CHANCE,
+
+    // 조각이 다음 큐에 들어갈 때 호출: 스폰 상태(rotation 0) 기준으로
+    // 4칸 중 무작위 1칸의 로컬 좌표(r, c)를 폭탄 칸으로 고정한다.
+    // 이 좌표는 회전해도 바뀌지 않고, 회전 변환만 그대로 따라간다.
+    assign(entry) {
+      entry.item = 'bomb';
+      const grid = PIECE_DEFS[entry.type].states[0];
+      const candidates = [];
+      for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[r].length; c++) {
+          if (grid[r][c] === 'X') candidates.push({ r, c });
+        }
+      }
+      entry.bombCell = candidates[Math.floor(Math.random() * candidates.length)];
+    },
+
+    // 조각이 보드에 고정된 직후 호출: 강제로 지울 행 목록을 반환
+    // meta.bombRow는 lockCurrentPiece가 이미 계산해서 넘겨준 실제 보드 행이다.
+    onLock(piece, meta) {
+      const row = meta && meta.bombRow;
+      if (row === null || row === undefined) return [];
+      const local = bombLocalCellAtRotation(piece);
+      const col = piece.x + local.c;
+      triggerBombEffect(col, row);
+      return [row];
+    },
+
+    // 보드 / 현재 조각 / 고스트 / 미리보기 공용 셀 렌더링.
+    // 테두리 발광색만 현재 테마의 강조색(uiAccent)을 따른다.
+    renderIcon(ctx, px, py, size) {
+      const blink = 0.5 + 0.5 * Math.sin(performance.now() / 150);
+      ctx.save();
+      ctx.globalAlpha = 0.4 + blink * 0.6;
+      ctx.strokeStyle = currentTheme.uiAccent;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(px + 2, py + 2, size - 4, size - 4);
+      ctx.globalAlpha = 1;
+      ctx.font = `${Math.floor(size * 0.6)}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('💣', px + size / 2, py + size / 2 + 1);
+      ctx.restore();
+    }
+  },
+
+  slow: {
+    id: 'slow',
+    icon: '🐌',
+    cellColor: '#4fc3f7', // 하늘색 계열 (테마 무관 고정)
+    chance: () => CONFIG.SLOW_CHANCE,
+
+    // 조각 전체가 슬로우 블록이 됨
+    assign(entry) {
+      entry.item = 'slow';
+    },
+
+    // 조각이 보드에 고정된 직후 호출: 슬로우 효과 발동(갱신)
+    onLock() {
+      activateSlow();
+      return [];
+    },
+
+    // 반짝임의 발광색만 현재 테마의 강조색(uiAccent)을 따른다.
+    renderIcon(ctx, px, py, size) {
+      const sparkle = 0.5 + 0.5 * Math.sin(performance.now() / 200);
+      ctx.save();
+      ctx.shadowColor = currentTheme.uiAccent;
+      ctx.shadowBlur = 3 + sparkle * 7;
+      ctx.font = `${Math.floor(size * 0.6)}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#eafcff';
+      ctx.fillText('🐌', px + size / 2, py + size / 2 + 1);
+      ctx.restore();
+    }
+  }
+};
+
+// 폭탄 판정 먼저, 실패하면 슬로우 판정 (동시에 두 아이템이 붙지 않음)
+function rollPieceItem() {
+  for (const id of ITEM_ORDER) {
+    if (Math.random() < ITEMS[id].chance()) return id;
+  }
+  return null;
+}
+
+function createQueueEntry(type) {
+  const entry = { type, item: null, bombCell: null };
+  const itemId = rollPieceItem();
+  if (itemId) ITEMS[itemId].assign(entry);
+  return entry;
+}
+
+function nextQueueEntry() {
+  return createQueueEntry(bagNext());
+}
+
+function triggerBombEffect(col, row) {
+  sfxBomb();
+  const cx = col * BS + BS / 2;
+  const cy = row * BS + BS / 2;
+  for (let i = 0; i < CONFIG.BOMB_PARTICLE_COUNT; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 120 + Math.random() * 220;
+    addParticle({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      color: i % 2 === 0 ? '#ff6b3d' : '#ffd166',
+      size: 3 + Math.random() * 4,
+      life: 500 + Math.random() * 300,
+      maxLife: 800,
+      gravity: 700
+    });
+  }
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.BOMB_SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.BOMB_SHAKE_MAGNITUDE;
+  effects.popups.push({
+    kind: 'bomb',
+    text: 'BOOM! 💥',
+    x: cx,
+    y: cy,
+    timer: 0,
+    duration: CONFIG.BOMB_BANNER_DURATION,
+    color: '#ff8a5b'
+  });
+}
+
+function activateSlow() {
+  sfxSlow();
+  game.slow.active = true;
+  game.slow.timer = 0;
+  game.slow.duration = CONFIG.SLOW_DURATION; // 이미 활성 중이어도 새로 고정되면 갱신(리셋)
+  effects.popups.push({
+    kind: 'slow',
+    text: 'SLOW! 🐌',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.SLOW_BANNER_DURATION,
+    color: '#7ad6ff'
+  });
+  effects.slowFlash.timer = 0;
+  effects.slowFlash.duration = CONFIG.SLOW_OVERLAY_FADE_DURATION;
+}
+
+function updateSlowTimer(dt) {
+  if (!game.slow.active) return;
+  game.slow.timer += dt;
+  if (game.slow.timer >= game.slow.duration) {
+    game.slow.active = false;
+    game.slow.timer = 0;
+    game.slow.duration = 0;
+  }
+}
+
+// ============================================================
+// THEMES
+// ============================================================
+// 테마 스킨 적용, 누적점수 기반 해금 판정, 테마 선택 UI
+let currentTheme = CONFIG.THEMES[0];
+
+function getThemeById(id) {
+  return CONFIG.THEMES.find(t => t.id === id) || CONFIG.THEMES[0];
+}
+
+function applyTheme(themeId) {
+  currentTheme = getThemeById(themeId);
+  document.documentElement.style.setProperty('--accent', currentTheme.uiAccent);
+}
+
+// 누적 점수 기준으로 새로 해금된 테마 목록을 반환하고, localStorage에 반영한다
+function checkThemeUnlocks(totalScore) {
+  const unlocked = loadUnlockedThemes();
+  const newly = [];
+  CONFIG.THEMES.forEach(theme => {
+    if (!unlocked.includes(theme.id) && totalScore >= theme.unlockScore) {
+      unlocked.push(theme.id);
+      newly.push(theme);
+    }
+  });
+  if (newly.length > 0) saveUnlockedThemes(unlocked);
+  return newly;
+}
+
+// 테마 해금 시 캔버스 위에 축하 파티클 + 배너를 새 테마의 팔레트로 띄운다
+function triggerThemeUnlockEffect(theme) {
+  sfxThemeUnlock();
+  for (let burst = 0; burst < 5; burst++) {
+    const bx = 40 + Math.random() * (boardCanvas.width - 80);
+    const by = 60 + Math.random() * (boardCanvas.height * 0.6);
+    const color = randomThemeColor(theme);
+    const particleCount = 16;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2) * (i / particleCount);
+      const speed = 130 + Math.random() * 130;
+      addParticle({
+        x: bx, y: by,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color,
+        size: 3 + Math.random() * 2,
+        life: 700 + Math.random() * 400,
+        maxLife: 1100,
+        gravity: 350
+      });
+    }
+  }
+  effects.popups.push({
+    kind: 'themeUnlock',
+    text: `새 테마 해금! ${theme.icon} ${theme.name}`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.THEME_UNLOCK_BANNER_DURATION,
+    color: theme.uiAccent
+  });
+}
+
+let unlockQueue = [];
+let currentUnlockDisplayTheme = null; // 해금 축하 오버레이에 지금 표시 중인 테마
+
+function showThemeUnlockCelebration(themes) {
+  unlockQueue = themes.slice();
+  showNextUnlock();
+}
+
+function showNextUnlock() {
+  if (unlockQueue.length === 0) {
+    currentUnlockDisplayTheme = null;
+    themeUnlockOverlay.classList.add('hidden');
+    return;
+  }
+  const theme = unlockQueue.shift();
+  currentUnlockDisplayTheme = theme;
+  unlockThemeIcon.textContent = theme.icon;
+  unlockThemeName.textContent = theme.name;
+  unlockThemePalette.innerHTML = '';
+  ['I', 'O', 'T', 'S'].forEach(key => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.style.background = theme.blockColors[key];
+    unlockThemePalette.appendChild(chip);
+  });
+  unlockPlayNowBtn.textContent = `${theme.icon} 이 테마로 바로 하기`;
+  themeUnlockOverlay.classList.remove('hidden');
+  triggerThemeUnlockEffect(theme);
+}
+
+// 테마 카드 3장을 주어진 컨테이너에 그린다. 시작 화면(themeSelectRow)과
+// 게임오버 화면(gameOverThemeSelectRow) 양쪽에서 재사용한다.
+function renderThemeCards(container) {
+  const unlocked = loadUnlockedThemes();
+  const selected = loadSelectedTheme();
+
+  container.innerHTML = '';
+  CONFIG.THEMES.forEach(theme => {
+    const isUnlocked = unlocked.includes(theme.id);
+    const card = document.createElement('div');
+    card.className = 'theme-card'
+      + (isUnlocked ? '' : ' locked')
+      + (theme.id === selected ? ' selected' : '');
+    card.dataset.themeId = theme.id;
+
+    const icon = document.createElement('div');
+    icon.className = 'theme-card-icon';
+    icon.textContent = theme.icon;
+
+    const name = document.createElement('div');
+    name.className = 'theme-card-name';
+    name.textContent = theme.name;
+
+    const chips = document.createElement('div');
+    chips.className = 'theme-card-chips';
+    ['I', 'O', 'T', 'S'].forEach(key => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.style.background = theme.blockColors[key];
+      chips.appendChild(chip);
+    });
+
+    const lockBadge = document.createElement('div');
+    lockBadge.className = 'lock-badge';
+    lockBadge.textContent = '🔒';
+
+    const unlockReq = document.createElement('div');
+    unlockReq.className = 'unlock-req';
+    unlockReq.textContent = `누적 ${theme.unlockScore.toLocaleString()}점 필요`;
+
+    card.appendChild(icon);
+    card.appendChild(name);
+    card.appendChild(chips);
+    card.appendChild(lockBadge);
+    card.appendChild(unlockReq);
+
+    if (isUnlocked) {
+      // 즉시 선택 저장 + 적용: 게임오버 화면에서 눌러도 바로 반영되고,
+      // "다시 하기"를 누르면 이 테마로 새 게임이 시작된다.
+      card.addEventListener('click', () => {
+        saveSelectedTheme(theme.id);
+        applyTheme(theme.id);
+        refreshThemeUI();
+      });
+    }
+
+    container.appendChild(card);
+  });
+}
+
+// 누적 점수 표시 + 시작 화면/게임오버 화면의 테마 카드를 모두 최신 상태로 갱신
+function refreshThemeUI() {
+  totalScoreDisplay.textContent = `누적 ${loadTotalScore().toLocaleString()}점`;
+  renderThemeCards(themeSelectRow);
+  renderThemeCards(gameOverThemeSelectRow);
+}
+
+// ============================================================
+// AUDIO
+// ============================================================
+// 모든 사운드를 Web Audio API로 즉석 합성한다 (외부 오디오 파일 0개).
+// SFX는 OscillatorNode/AudioBufferSourceNode + GainNode(ADSR)로 짧게 생성하고,
+// BGM은 audioCtx.currentTime 기반 lookahead 스케줄러로 정확한 타이밍에 노트를 예약한다.
+// BGM 멜로디는 오리지널 창작곡이며 코로베이니키 등 원작 테트리스 음악과 무관하다.
+
+let audioCtx = null;
+let masterGain = null;
+let sfxGain = null;
+let bgmGain = null;
+
+function loadMuted() {
+  try {
+    return localStorage.getItem(CONFIG.MUTED_KEY) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function saveMuted(value) {
+  try {
+    localStorage.setItem(CONFIG.MUTED_KEY, value ? '1' : '0');
+  } catch (e) {
+    // 무시
+  }
+}
+
+let isMuted = loadMuted();
+
+// 반드시 사용자 입력(시작 버튼 클릭 등) 시점에 호출: 브라우저 자동재생 정책상
+// 사용자 제스처 없이는 AudioContext가 소리를 낼 수 없다. suspended 상태면 resume도 시도한다.
+function ensureAudioResumed() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = isMuted ? 0 : 1;
+    masterGain.connect(audioCtx.destination);
+
+    sfxGain = audioCtx.createGain();
+    sfxGain.gain.value = CONFIG.SFX_VOLUME;
+    sfxGain.connect(masterGain);
+
+    bgmGain = audioCtx.createGain();
+    bgmGain.gain.value = CONFIG.BGM_VOLUME;
+    bgmGain.connect(masterGain);
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function setMuted(value) {
+  isMuted = value;
+  saveMuted(value);
+  if (masterGain) masterGain.gain.value = value ? 0 : 1;
+  updateMuteButton();
+}
+
+function toggleMute() {
+  ensureAudioResumed();
+  setMuted(!isMuted);
+}
+
+function updateMuteButton() {
+  muteBtn.textContent = isMuted ? '🔇' : '🔊';
+}
+
+// --- 저수준 합성 도구 ---
+
+// 짧은 단일 톤을 ADSR(어택-디케이-서스테인-릴리즈) 엔벨로프로 재생한다.
+// 재생이 끝나면 오실레이터/게인 노드를 자동으로 disconnect한다.
+function playEnvTone(freq, duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    type = 'square',
+    gain = 0.3,
+    attack = 0.005,
+    decay = 0.05,
+    sustainLevel = 0.5,
+    release = 0.05,
+    when = audioCtx.currentTime,
+    destination = sfxGain
+  } = opts;
+
+  const osc = audioCtx.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, when);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(gain, when + attack);
+  const sustainStart = when + attack + decay;
+  env.gain.linearRampToValueAtTime(gain * sustainLevel, sustainStart);
+  const stopTime = Math.max(sustainStart, when + duration);
+  env.gain.setValueAtTime(gain * sustainLevel, Math.max(sustainStart, stopTime - release));
+  env.gain.linearRampToValueAtTime(0, stopTime);
+
+  osc.connect(env);
+  env.connect(destination);
+  osc.start(when);
+  osc.stop(stopTime + 0.02);
+  osc.onended = () => {
+    osc.disconnect();
+    env.disconnect();
+  };
+}
+
+// 시작 주파수 -> 끝 주파수로 미끄러지는 톤 (상승/하강 효과음용)
+function playSlideTone(freqStart, freqEnd, duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    type = 'sine',
+    gain = 0.3,
+    attack = 0.005,
+    release = 0.05,
+    when = audioCtx.currentTime,
+    destination = sfxGain
+  } = opts;
+
+  const osc = audioCtx.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(Math.max(20, freqStart), when);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), when + duration);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(gain, when + attack);
+  env.gain.setValueAtTime(gain, Math.max(when + attack, when + duration - release));
+  env.gain.linearRampToValueAtTime(0, when + duration);
+
+  osc.connect(env);
+  env.connect(destination);
+  osc.start(when);
+  osc.stop(when + duration + 0.02);
+  osc.onended = () => {
+    osc.disconnect();
+    env.disconnect();
+  };
+}
+
+function createNoiseBuffer(duration) {
+  const bufferSize = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  return buffer;
+}
+
+// 화이트 노이즈를 필터 + 엔벨로프로 감싼 짧은 버스트 (타격/폭발음용)
+function playNoiseBurst(duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    gain = 0.3,
+    filterFreq = 800,
+    filterType = 'lowpass',
+    when = audioCtx.currentTime,
+    destination = sfxGain
+  } = opts;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = createNoiseBuffer(duration);
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = filterType;
+  filter.frequency.setValueAtTime(filterFreq, when);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(gain, when);
+  env.gain.exponentialRampToValueAtTime(0.001, when + duration);
+
+  src.connect(filter);
+  filter.connect(env);
+  env.connect(destination);
+  src.start(when);
+  src.stop(when + duration + 0.02);
+  src.onended = () => {
+    src.disconnect();
+    filter.disconnect();
+    env.disconnect();
+  };
+}
+
+// --- 효과음 (SFX) ---
+
+function sfxMove() {
+  playEnvTone(320, 0.03, { type: 'square', gain: 0.06, attack: 0.001, decay: 0.008, sustainLevel: 0.3, release: 0.012 });
+}
+
+function sfxRotate() {
+  playSlideTone(500, 780, 0.06, { type: 'square', gain: 0.12, attack: 0.001, decay: 0.02, release: 0.02 });
+}
+
+function sfxSoftDrop() {
+  playEnvTone(200, 0.02, { type: 'square', gain: 0.035, attack: 0.001, decay: 0.004, sustainLevel: 0.3, release: 0.01 });
+}
+
+function sfxHardDrop() {
+  playNoiseBurst(0.08, { gain: 0.18, filterFreq: 300 });
+  playSlideTone(140, 55, 0.12, { type: 'triangle', gain: 0.22, attack: 0.001, decay: 0.03, release: 0.05 });
+}
+
+function sfxLock() {
+  playEnvTone(180, 0.08, { type: 'triangle', gain: 0.1, attack: 0.002, decay: 0.03, sustainLevel: 0.4, release: 0.05 });
+}
+
+function sfxHold() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playEnvTone(440, 0.05, { type: 'square', gain: 0.14, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.02, when: now });
+  playEnvTone(660, 0.06, { type: 'square', gain: 0.14, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.03, when: now + 0.045 });
+}
+
+// 1~4줄 클리어 시 상승 아르페지오. 줄 수만큼 음이 늘어난다.
+const CLEAR_ARPEGGIO_NOTES = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+
+function sfxLineClear(count) {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  CLEAR_ARPEGGIO_NOTES.slice(0, count).forEach((freq, i) => {
+    playEnvTone(freq, 0.14, {
+      type: 'square', gain: 0.16, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.08,
+      when: now + i * 0.07
+    });
+  });
+}
+
+// 4줄 클리어(퍼펙트): 4음 상승 아르페지오 + 뒤이어 울리는 밝은 메이저 화음
+function sfxQuadClear() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  CLEAR_ARPEGGIO_NOTES.forEach((freq, i) => {
+    playEnvTone(freq, 0.16, {
+      type: 'square', gain: 0.18, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.1,
+      when: now + i * 0.06
+    });
+  });
+  const chordAt = now + CLEAR_ARPEGGIO_NOTES.length * 0.06 + 0.05;
+  CLEAR_ARPEGGIO_NOTES.forEach(freq => {
+    playEnvTone(freq, 0.5, {
+      type: 'triangle', gain: 0.12, attack: 0.01, decay: 0.08, sustainLevel: 0.6, release: 0.35,
+      when: chordAt
+    });
+  });
+}
+
+// 콤보 수가 오를수록 반음씩(등비수열) 올라가는 음
+function sfxCombo(combo) {
+  const semitone = Math.pow(2, 1 / 12);
+  const freq = 440 * Math.pow(semitone, Math.min(combo - 2, 24));
+  playEnvTone(freq, 0.12, { type: 'sawtooth', gain: 0.14, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.07 });
+}
+
+// 짧은 3~4음 팡파레
+function sfxLevelUp() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+    playEnvTone(freq, 0.15, {
+      type: 'square', gain: 0.16, attack: 0.002, decay: 0.02, sustainLevel: 0.6, release: 0.08,
+      when: now + i * 0.08
+    });
+  });
+}
+
+// 낮은 폭발음: 노이즈 버스트 + 저음 하강
+function sfxBomb() {
+  playNoiseBurst(0.25, { gain: 0.22, filterFreq: 500 });
+  playSlideTone(220, 45, 0.35, { type: 'sawtooth', gain: 0.2, attack: 0.001, decay: 0.05, release: 0.15 });
+}
+
+// 하강하며 늘어지는 슬로우 발동음
+function sfxSlow() {
+  playSlideTone(700, 180, 0.6, { type: 'sine', gain: 0.16, attack: 0.01, release: 0.3 });
+}
+
+// 느린 하강 멜로디 (게임오버)
+function sfxGameOver() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [523.25, 493.88, 440.00, 392.00, 349.23].forEach((freq, i) => {
+    playEnvTone(freq, 0.35, {
+      type: 'triangle', gain: 0.18, attack: 0.01, decay: 0.05, sustainLevel: 0.5, release: 0.2,
+      when: now + i * 0.22
+    });
+  });
+}
+
+// 밝고 신나는 축하 아르페지오 (테마 해금)
+function sfxThemeUnlock() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
+    playEnvTone(freq, 0.18, {
+      type: 'square', gain: 0.17, attack: 0.002, decay: 0.02, sustainLevel: 0.6, release: 0.1,
+      when: now + i * 0.07
+    });
+  });
+}
+
+// --- BGM (오리지널 칩튠 루프, lookahead 스케줄러) ---
+// C장조 4마디 루프(C - G - Am - F 진행, 8분음표 32스텝)의 완전 창작 멜로디.
+// 코로베이니키 등 원작 테트리스 음악과는 무관한 오리지널 곡이다.
+const BGM_MELODY = [
+  // Bar1: C
+  523.25, 659.25, 783.99, 659.25, 523.25, 587.33, 659.25, null,
+  // Bar2: G
+  392.00, 493.88, 587.33, 493.88, 392.00, 440.00, 493.88, null,
+  // Bar3: Am
+  440.00, 523.25, 659.25, 523.25, 440.00, 493.88, 523.25, null,
+  // Bar4: F (다음 루프의 C로 자연스럽게 이어지도록 마무리)
+  349.23, 440.00, 523.25, 440.00, 349.23, 392.00, 440.00, 392.00
+];
+
+const BGM_BASS = [
+  130.81, null, 196.00, null, 130.81, null, 196.00, null,
+  196.00, null, 293.66, null, 196.00, null, 293.66, null,
+  220.00, null, 329.63, null, 220.00, null, 329.63, null,
+  174.61, null, 261.63, null, 174.61, null, 261.63, null
+];
+
+let bgmTimerId = null;
+let bgmStepIndex = 0;
+let bgmNextStepTime = 0;
+const BGM_SCHEDULE_AHEAD = 0.1;   // 초, 이만큼 앞선 구간까지 미리 예약
+const BGM_TICK_INTERVAL_MS = 25;  // ms, setInterval 폴링 간격 (lookahead로 타이밍 밀림 방지)
+
+function bgmStepSeconds() {
+  return 60 / CONFIG.BGM_BPM / 2; // 8분음표 길이
+}
+
+function scheduleBgmStep(stepIndex, time) {
+  const melodyFreq = BGM_MELODY[stepIndex % BGM_MELODY.length];
+  const bassFreq = BGM_BASS[stepIndex % BGM_BASS.length];
+  const stepDur = bgmStepSeconds();
+
+  if (melodyFreq) {
+    playEnvTone(melodyFreq, stepDur * 0.85, {
+      type: 'square', gain: 0.5, attack: 0.004, decay: 0.02, sustainLevel: 0.55, release: stepDur * 0.3,
+      when: time, destination: bgmGain
+    });
+  }
+  if (bassFreq) {
+    playEnvTone(bassFreq, stepDur * 1.7, {
+      type: 'triangle', gain: 0.42, attack: 0.005, decay: 0.04, sustainLevel: 0.6, release: stepDur * 0.5,
+      when: time, destination: bgmGain
+    });
+  }
+}
+
+// currentTime 기반 lookahead 스케줄러: setInterval/setTimeout 콜백 자체의 타이밍은
+// 부정확할 수 있으므로, 실제 음 재생 시각은 항상 audioCtx.currentTime을 기준으로
+// 미리(최대 100ms 앞) 예약해 정확한 박자를 보장한다.
+function bgmScheduler() {
+  while (bgmNextStepTime < audioCtx.currentTime + BGM_SCHEDULE_AHEAD) {
+    scheduleBgmStep(bgmStepIndex, bgmNextStepTime);
+    bgmNextStepTime += bgmStepSeconds();
+    bgmStepIndex = (bgmStepIndex + 1) % BGM_MELODY.length;
+  }
+}
+
+function startBGM() {
+  if (!audioCtx || bgmTimerId !== null) return;
+  bgmStepIndex = 0;
+  bgmNextStepTime = audioCtx.currentTime + 0.05;
+  bgmScheduler();
+  bgmTimerId = setInterval(bgmScheduler, BGM_TICK_INTERVAL_MS);
+}
+
+function stopBGM() {
+  if (bgmTimerId !== null) {
+    clearInterval(bgmTimerId);
+    bgmTimerId = null;
+  }
+}
+
+// --- 음소거 버튼 ---
+const muteBtn = document.getElementById('muteBtn');
+updateMuteButton();
+muteBtn.addEventListener('click', toggleMute);
+
+// ============================================================
+// GAME LOOP
+// ============================================================
+// 고정 타임스텝(1/60초) 업데이트 + requestAnimationFrame 렌더 루프
+function update(dt) {
+  if (game.state === 'paused' || game.state === 'start') return;
+
+  updateEffects(dt);
+  updateSlowTimer(dt);
+
+  if (game.state === 'clearing') {
+    game.clearTimer += dt;
+    if (game.clearTimer >= CONFIG.LINE_FLASH_DURATION) {
+      resolveLineClear();
+    }
+    return;
+  }
+
+  if (game.state !== 'playing') return; // gameover
+
+  updateDAS(dt);
+
+  const baseInterval = input.down ? CONFIG.SOFT_DROP_INTERVAL : currentLevelSpeed();
+  const interval = game.slow.active ? baseInterval / CONFIG.SLOW_FACTOR : baseInterval;
+  game.dropAcc += dt;
+  while (game.dropAcc >= interval) {
+    game.dropAcc -= interval;
+    const moved = attemptMove(0, 1);
+    if (moved && input.down) sfxSoftDrop();
+  }
+
+  if (isGrounded()) {
+    game.lockTimer += dt;
+    if (game.lockTimer >= CONFIG.LOCK_DELAY) {
+      lockCurrentPiece();
+    }
+  } else {
+    game.lockTimer = 0;
+  }
+}
+
+const STEP = 1000 / 60;
+let accumulator = 0;
+let lastTime = null;
+
+function frame(time) {
+  requestAnimationFrame(frame);
+  if (lastTime === null) lastTime = time;
+  let delta = time - lastTime;
+  lastTime = time;
+  if (delta > 250) delta = 250; // 탭 비활성 등으로 인한 급증 방지
+
+  accumulator += delta;
+  while (accumulator >= STEP) {
+    update(STEP);
+    accumulator -= STEP;
+  }
+  render();
+  applyContainerTransform();
+}
+
+// ============================================================
+// MAIN
+// ============================================================
+// 초기화, 리사이즈 대응, 버튼/키 이벤트 연결. 여기서 모든 섹션을 이어붙여 게임을 시작시킨다.
+
+// 게임 이름은 CONFIG.GAME_TITLE 하나로 관리 - 탭 제목과 시작화면 타이틀에 동일하게 반영된다
+document.title = CONFIG.GAME_TITLE;
+const gameTitleH1 = document.getElementById('gameTitleH1');
+gameTitleH1.textContent = `🧱 ${CONFIG.GAME_TITLE}`;
+
+const gameContainer = document.getElementById('gameContainer');
+let currentScale = 1;
+
+function applyContainerTransform() {
+  const off = getShakeOffset();
+  gameContainer.style.transform =
+    `translate(-50%, -50%) scale(${currentScale}) translate(${off.x.toFixed(2)}px, ${off.y.toFixed(2)}px)`;
+}
+
+function resizeContainer() {
+  currentScale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+  applyContainerTransform();
+}
+window.addEventListener('resize', resizeContainer);
+resizeContainer();
+
+applyTheme(loadSelectedTheme());
+refreshThemeUI();
+
+function startGame() {
+  // 브라우저 자동재생 정책: 첫 사용자 입력(이 클릭) 시점에 AudioContext를 생성/resume
+  ensureAudioResumed();
+  // 시작 화면에서 고른 테마가 확실히 반영되도록 시작 시점에 다시 한번 적용한다
+  applyTheme(loadSelectedTheme());
+  startOverlay.classList.add('hidden');
+  resetGameState();
+}
+
+function restartGame() {
+  ensureAudioResumed();
+  // 게임오버 화면에서 바꿨을 수 있는 테마를 시작 시점에 다시 한번 적용한다
+  applyTheme(loadSelectedTheme());
+  gameOverOverlay.classList.add('hidden');
+  resetGameState();
+}
+
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', restartGame);
+
+unlockConfirmBtn.addEventListener('click', () => {
+  showNextUnlock();
+});
+
+unlockPlayNowBtn.addEventListener('click', () => {
+  // 방금 해금한 테마를 바로 선택해서 게임오버 화면을 건너뛰고 새 게임을 시작한다
+  if (currentUnlockDisplayTheme) {
+    saveSelectedTheme(currentUnlockDisplayTheme.id);
+  }
+  unlockQueue = [];
+  currentUnlockDisplayTheme = null;
+  themeUnlockOverlay.classList.add('hidden');
+  restartGame();
+});
+
+bestText.textContent = loadBestScore();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
