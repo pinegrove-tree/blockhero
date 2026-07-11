@@ -26,15 +26,24 @@
     top: 50%;
     left: 50%;
     width: 1280px;
-    height: 720px;
+    height: 1050px;
     transform-origin: center center;
     transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: radial-gradient(circle at 50% 20%, #23233a 0%, #14141f 70%);
+    box-sizing: border-box;
+    border-radius: 14px;
+  }
+
+  .game-row {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 40px;
-    background: radial-gradient(circle at 50% 20%, #23233a 0%, #14141f 70%);
-    box-sizing: border-box;
   }
 
   .left-panel, .right-panel {
@@ -339,6 +348,199 @@
     transform: scale(0.9);
   }
 
+  .coin-display {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1c1c2e;
+    border: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 6px 16px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .coin-popup {
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    transform: translateX(-50%);
+    color: #fff56b;
+    font-weight: bold;
+    font-size: 18px;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(0,0,0,0.7);
+    animation-name: coinFloat;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes coinFloat {
+    0% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -34px); }
+  }
+
+  .shop-btn {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+    padding: 10px 0;
+  }
+
+  .shop-coin-display {
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--accent);
+    background: #1c1c2e;
+    border: 3px solid #4a4a70;
+    border-radius: 12px;
+    padding: 8px 24px;
+  }
+
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    width: 100%;
+    max-width: 1180px;
+  }
+
+  .shop-card {
+    background: #1c1c2e;
+    border: 3px solid #4a4a70;
+    border-radius: 14px;
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+  }
+
+  .shop-card-icon {
+    font-size: 42px;
+    line-height: 1.1;
+  }
+
+  .shop-card-name {
+    font-size: 19px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .shop-card-desc {
+    font-size: 13px;
+    color: #cfcfe6;
+    min-height: 36px;
+    line-height: 1.3;
+  }
+
+  .shop-card-price {
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .shop-card-price.insufficient {
+    color: #ff6b6b;
+  }
+
+  .shop-buy-btn {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: bold;
+    color: #14141f;
+    background: linear-gradient(180deg, #ffe08a, #ffb400);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #a06400;
+    white-space: nowrap;
+  }
+
+  .shop-buy-btn.disabled {
+    opacity: 0.4;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #5a5a70;
+    background: linear-gradient(180deg, #8a8a9a, #6a6a7a);
+  }
+
+  .shop-card.sparkle {
+    animation: shopSparkle 0.5s ease;
+  }
+
+  @keyframes shopSparkle {
+    0% { box-shadow: 0 0 0 rgba(255,209,102,0); }
+    50% { box-shadow: 0 0 24px 6px var(--accent); }
+    100% { box-shadow: 0 0 0 rgba(255,209,102,0); }
+  }
+
+  .inventory-bar {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .inv-slot {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    background: #1c1c2e;
+    border: 3px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.08s ease;
+  }
+
+  .inv-slot:not(.disabled):active {
+    transform: scale(0.92);
+  }
+
+  .inv-slot.disabled {
+    filter: grayscale(1) brightness(0.5);
+    cursor: default;
+  }
+
+  .inv-icon {
+    font-size: 30px;
+  }
+
+  .inv-count {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0,0,0,0.55);
+    border-radius: 6px;
+    padding: 0 4px;
+    min-width: 14px;
+    text-align: center;
+  }
+
+  .inv-key {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #cfcfe6;
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    padding: 0 3px;
+  }
+
   .keycaps {
     display: flex;
     flex-wrap: wrap;
@@ -382,6 +584,8 @@
 
   <button id="muteBtn" class="mute-btn" title="음소거 토글 (M)" aria-label="음소거 토글">🔊</button>
 
+  <div id="coinDisplay" class="coin-display">🪙 <span id="coinText">0</span></div>
+
   <div id="startOverlay" class="overlay">
     <h1 id="gameTitleH1">🧱 블록 히어로</h1>
     <p id="totalScoreDisplay" class="total-score-display">누적 0점</p>
@@ -393,8 +597,10 @@
       <div class="keycap-item"><span class="keycap">Space</span><span class="keycap-label">쿵!</span></div>
       <div class="keycap-item"><span class="keycap">C</span><span class="keycap-label">보관</span></div>
       <div class="keycap-item"><span class="keycap">P</span><span class="keycap-label">멈춤</span></div>
+      <div class="keycap-item"><span class="keycap">S</span><span class="keycap-label">상점</span></div>
+      <div class="keycap-item"><span class="keycap">1~5</span><span class="keycap-label">아이템</span></div>
     </div>
-    <div class="controls">💣 폭탄 블록 · 🐌 슬로우 블록이 가끔 나타나요!</div>
+    <div class="controls">🪙 줄을 지우면 코인을 받아요!<br>🛒 상점(S)에서 아이템을 사서 숫자키 1~5로 써보세요!</div>
     <button id="startBtn" class="bigBtn">시작하기</button>
   </div>
 
@@ -408,7 +614,16 @@
       <div class="keycap-item"><span class="keycap">Space</span><span class="keycap-label">쿵!</span></div>
       <div class="keycap-item"><span class="keycap">C</span><span class="keycap-label">보관</span></div>
       <div class="keycap-item"><span class="keycap">P</span><span class="keycap-label">멈춤</span></div>
+      <div class="keycap-item"><span class="keycap">S</span><span class="keycap-label">상점</span></div>
+      <div class="keycap-item"><span class="keycap">1~5</span><span class="keycap-label">아이템</span></div>
     </div>
+  </div>
+
+  <div id="shopOverlay" class="overlay hidden">
+    <h2>🛒 상점</h2>
+    <div id="shopCoinDisplay" class="shop-coin-display">🪙 <span id="shopCoinText">0</span></div>
+    <div id="shopGrid" class="shop-grid"></div>
+    <button id="shopCloseBtn" class="bigBtn small">닫기 (S)</button>
   </div>
 
   <div id="gameOverOverlay" class="overlay hidden">
@@ -418,6 +633,7 @@
     <p id="finalScore">점수: 0</p>
     <p id="finalLines">지운 줄: 0</p>
     <p id="finalBest">최고 기록: 0</p>
+    <p id="finalCoins">🪙 이번 판에서 모은 코인: 0</p>
     <div id="gameOverThemeSelectRow" class="theme-select-row"></div>
     <button id="restartBtn" class="bigBtn">다시 하기</button>
   </div>
@@ -433,25 +649,30 @@
     </div>
   </div>
 
-  <div class="left-panel">
-    <div class="panel-label">HOLD</div>
-    <canvas id="holdCanvas" width="160" height="160"></canvas>
-  </div>
+  <div class="game-row">
+    <div class="left-panel">
+      <div class="panel-label">HOLD</div>
+      <canvas id="holdCanvas" width="160" height="160"></canvas>
+    </div>
 
-  <div class="board-wrap">
-    <canvas id="boardCanvas" width="320" height="640"></canvas>
-  </div>
+    <div class="board-wrap">
+      <canvas id="boardCanvas" width="320" height="640"></canvas>
+    </div>
 
-  <div class="right-panel">
-    <div class="panel-label">NEXT</div>
-    <canvas id="nextCanvas" width="160" height="480"></canvas>
-    <div class="stats">
-      <div>점수<br><span id="scoreText">0</span><span id="newRecordBadge" class="new-record hidden">🏆 신기록!</span></div>
-      <div>레벨<br><span id="levelText">1</span></div>
-      <div>지운 줄<br><span id="linesText">0</span></div>
-      <div>최고 점수<br><span id="bestText">0</span></div>
+    <div class="right-panel">
+      <div class="panel-label">NEXT</div>
+      <canvas id="nextCanvas" width="160" height="480"></canvas>
+      <div class="stats">
+        <div>점수<br><span id="scoreText">0</span><span id="newRecordBadge" class="new-record hidden">🏆 신기록!</span></div>
+        <div>레벨<br><span id="levelText">1</span></div>
+        <div>지운 줄<br><span id="linesText">0</span></div>
+        <div>최고 점수<br><span id="bestText">0</span></div>
+      </div>
+      <button id="shopBtn" class="bigBtn small shop-btn">🛒 상점 (S)</button>
     </div>
   </div>
+
+  <div id="inventoryBar" class="inventory-bar"></div>
 
 </div>
 
@@ -485,7 +706,7 @@ const CONFIG = {
   ARR_RATE: 40,     // ms, 이후 반복 이동 간격
 
   STORAGE_KEY: 'bh_highScore',
-  TOTAL_SCORE_KEY: 'bh_totalScore',
+  TOTAL_SCORE_KEY: 'bh_totalScore', // 테마 해금용 누적 점수. 판을 넘어 계속 쌓인다 (코인/인벤토리와 다름)
   UNLOCKED_THEMES_KEY: 'bh_unlockedThemes',
   SELECTED_THEME_KEY: 'bh_selectedTheme',
 
@@ -501,9 +722,28 @@ const CONFIG = {
   SHAKE_DURATION: 400,          // ms, 4줄 클리어(퍼펙트) 화면 흔들림 지속 시간
   SHAKE_MAGNITUDE: 14,          // px, 화면 흔들림 최대 진폭
 
-  // --- 아이템 블록 밸런싱 ---
-  BOMB_CHANCE: 0.05,             // 블록 생성 시 폭탄 블록이 될 확률
-  SLOW_CHANCE: 0.03,             // 폭탄이 아닐 때, 슬로우 블록이 될 확률
+  // --- 아이템 상점 밸런싱 ---
+  // 아이템 가격은 전부 여기(ITEM_SHOP)에서 관리한다. 새 아이템 추가 시
+  // 여기에 가격을 넣고 ITEMS 레지스트리(아이템 섹션)에 icon/name/desc/use()를 추가하면 된다.
+  ITEM_SHOP: {
+    bomb: { price: 30 },
+    slow: { price: 20 },
+    swap: { price: 40 },
+    lineclear: { price: 60 },
+    freeze: { price: 50 }
+  },
+  MAX_ITEM_STACK: 3,             // 아이템 1종당 최대 보유 개수 (판마다 초기화되므로 넉넉할 필요 없음)
+
+  // --- 코인 밸런싱 ---
+  // 코인/인벤토리는 판(게임) 단위로만 존재한다: 게임을 새로 시작하면 0/빈 인벤토리로
+  // 리셋되고(resetGameState의 resetRunEconomy 참고), localStorage에 저장하지 않는다.
+  // "그 판에서 번 코인을 그 판에서 쓴다"는 구조를 강제해 아이템의 희소성을 유지하기 위함.
+  COIN_TABLE: { 1: 1, 2: 3, 3: 6, 4: 12 }, // 지운 줄 수 기준 기본 획득 코인 (레벨 1 기준)
+  COIN_LEVEL_DECAY: 0.95,        // 레벨이 오를수록 기본 코인이 이 비율만큼씩 완만하게 감소 (기본코인 x DECAY^(레벨-1))
+  COMBO_COIN: 1,                 // 콤보 2 이상부터 (콤보수 - 1) x 이 값만큼 코인 추가 획득 (레벨 감쇠 미적용)
+  COIN_POPUP_DURATION: 900,      // ms, "+n" 코인 팝업 지속 시간
+
+  // --- 아이템 효과 밸런싱 ---
   SLOW_DURATION: 10000,          // ms, 슬로우 효과 지속 시간
   SLOW_FACTOR: 0.5,              // 낙하 속도 배율 (0.5배 = 2배 느리게)
   BOMB_PARTICLE_COUNT: 24,       // 폭탄 발동 시 폭발 파티클 수
@@ -513,18 +753,33 @@ const CONFIG = {
   SLOW_BANNER_DURATION: 800,     // ms, "SLOW!" 배너 지속 시간
   SLOW_OVERLAY_FADE_DURATION: 600, // ms, 슬로우 발동 시 화면 오버레이 페이드 시간
 
+  SWAP_TARGET_TYPE: 'I',         // 블록 교체 아이템이 바꿔주는 블록 종류
+  SWAP_BANNER_DURATION: 600,     // ms, "교체!" 배너 지속 시간
+
+  LINECLEAR_ROWS: 2,             // 줄 청소 아이템이 맨 아래부터 지우는 줄 수
+  LINECLEAR_SHAKE_DURATION: 300, // ms
+  LINECLEAR_SHAKE_MAGNITUDE: 8,  // px
+  LINECLEAR_BANNER_DURATION: 700, // ms, "CLEAN!" 배너 지속 시간
+
+  FREEZE_DURATION: 5000,         // ms, 정지 아이템 지속 시간
+  FREEZE_BANNER_DURATION: 800,   // ms, "FREEZE!" 배너 지속 시간
+  FREEZE_OVERLAY_FADE_DURATION: 600, // ms, 정지 발동 시 화면 오버레이 페이드 시간
+
   // --- 테마 스킨 밸런싱 ---
   THEME_UNLOCK_BANNER_DURATION: 1200, // ms, 테마 해금 배너 지속 시간
 
   // --- 오디오 밸런싱 ---
+  // 볼륨은 3단으로 나뉜다: MASTER(전체) -> SFX/BGM(각 버스). 뮤트는 MASTER를 0으로 내린다.
   MUTED_KEY: 'bh_muted',
-  SFX_VOLUME: 0.6,   // 효과음 마스터 볼륨 (개별 사운드 게인에 곱해짐)
-  BGM_VOLUME: 0.15,  // 배경음악 볼륨, 효과음보다 작게
-  BGM_BPM: 140,      // 배경음악 템포
+  MASTER_VOLUME: 1,   // 전체 마스터 볼륨 (음소거 시 이 값 대신 0)
+  SFX_VOLUME: 0.6,    // 효과음 버스 볼륨 (개별 사운드 게인에 곱해짐)
+  BGM_VOLUME: 0.13,   // 배경음악 버스 볼륨. 트랙이 4개(멜로디/베이스/아르페지오/드럼)로 늘어난 만큼
+                       // 효과음보다 확실히 작게 유지 - "배경에 깔리는" 느낌이 핵심
+  // 템포는 CONFIG.BGM_TRACKS[songId].bpm으로 곡마다 따로 관리한다 (AUDIO 섹션 하단 참고)
 
   // 테마 정의: 각 테마가 바꾸는 것은 블록 7색, 보드 배경, 그리드 선 색, 파티클 색, UI 강조색뿐이다.
-  // 폭탄/슬로우 아이템의 칸 색상·이펙트 색은 식별성을 위해 테마와 무관하게 항상 고정되어 있다
-  // (ITEMS.bomb/slow의 renderIcon만 테마 강조색을 발광 테두리 색으로 참조한다).
+  // 아이템은 상점에서 구매해 즉시 사용하는 방식이라 블록에 색이 붙지 않으며,
+  // 발동 이펙트 색상은 식별성을 위해 테마와 무관하게 항상 고정되어 있다.
   THEMES: [
     {
       id: 'neon',
@@ -648,6 +903,9 @@ function saveSelectedTheme(id) {
     // 무시
   }
 }
+
+// 코인/인벤토리는 판 단위로만 존재하고 localStorage에 저장하지 않는다 (SHOP & INVENTORY 섹션의
+// resetRunEconomy 참고). bh_totalScore(테마 해금용)만 위에서 계속 영구 저장된다.
 
 // ============================================================
 // PIECES
@@ -785,11 +1043,11 @@ function clearMarkedLines(board) {
 // ============================================================
 // 게임 진행 상태(game 객체)와 이동/회전/락딜레이/점수/게임오버 로직
 const game = {
-  state: 'start', // 'start' | 'playing' | 'clearing' | 'paused' | 'gameover'
+  state: 'start', // 'start' | 'playing' | 'clearing' | 'paused' | 'shop' | 'gameover'
   board: createEmptyBoard(),
-  current: null,  // { type, rotation, x, y, item, bombCell }
-  nextQueue: [],  // [{ type, item, bombCell }, ...]
-  hold: null,     // { type, item, bombCell } | null
+  current: null,  // { type, rotation, x, y }
+  nextQueue: [],  // [{ type }, ...]
+  hold: null,     // { type } | null
   holdUsed: false,
   score: 0,
   level: 1,
@@ -802,7 +1060,8 @@ const game = {
   clearTimer: 0,             // 'clearing' 상태 경과 시간(ms)
   pendingClearSnapshot: null, // 파티클 색상 계산용 스냅샷
   isNewRecord: false,         // 이번 판에서 최고기록을 넘었는지
-  slow: { active: false, timer: 0, duration: 0 } // 슬로우 아이템 효과 상태
+  slow: { active: false, timer: 0, duration: 0 },  // 슬로우 아이템 효과 상태
+  freeze: { active: false, timer: 0, duration: 0 } // 정지 아이템 효과 상태
 };
 
 const input = { left: false, right: false, down: false };
@@ -870,7 +1129,7 @@ function rotateCurrent() {
 }
 
 function hardDrop() {
-  if (game.state !== 'playing') return;
+  if (game.state !== 'playing' || game.freeze.active) return;
   while (attemptMove(0, 1)) { /* keep dropping */ }
   sfxHardDrop();
   const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
@@ -883,10 +1142,7 @@ function spawnFromQueue() {
   while (game.nextQueue.length < CONFIG.NEXT_COUNT) {
     game.nextQueue.push(nextQueueEntry());
   }
-  game.current = {
-    type: entry.type, rotation: 0, x: spawnX(entry.type), y: 0,
-    item: entry.item, bombCell: entry.bombCell
-  };
+  game.current = { type: entry.type, rotation: 0, x: spawnX(entry.type), y: 0 };
   game.dropAcc = 0;
   game.lockTimer = 0;
   game.lockResets = 0;
@@ -901,31 +1157,15 @@ function spawnFromQueue() {
 function lockCurrentPiece() {
   const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
   const color = currentTheme.blockColors[game.current.type];
-  const itemId = game.current.item;
-  // 폭탄 칸의 "현재 회전 상태" 기준 로컬 좌표 (스폰 시 고정된 셀이 회전을 그대로 따라감)
-  const bombTarget = itemId === 'bomb' ? bombLocalCellAtRotation(game.current) : null;
-  let bombRow = null;
 
   cells.forEach(([cx, cy]) => {
     if (cy >= 0 && cy < CONFIG.BOARD_ROWS && cx >= 0 && cx < CONFIG.BOARD_COLS) {
-      const localR = cy - game.current.y;
-      const localC = cx - game.current.x;
-      const isBombCell = !!bombTarget && bombTarget.r === localR && bombTarget.c === localC;
-      if (isBombCell) bombRow = cy;
-      const cellItem = isBombCell ? 'bomb' : (itemId === 'slow') ? 'slow' : null;
-      game.board[cy][cx] = { color, item: cellItem };
+      game.board[cy][cx] = { color };
     }
   });
   sfxLock();
 
-  // 아이템 onLock 처리: 폭탄이면 강제로 지울 행을 돌려받아 표시해둔다
-  const forcedRows = (itemId && ITEMS[itemId]) ? (ITEMS[itemId].onLock(game.current, { bombRow }) || []) : [];
-  forcedRows.forEach(r => {
-    if (r >= 0 && r < CONFIG.BOARD_ROWS) game.board[r].forceClear = true;
-  });
-
-  // 자연 클리어(꽉 찬 줄)와 아이템 강제 클리어를 합쳐서 처리
-  const rows = Array.from(new Set([...findFullRows(game.board), ...forcedRows])).sort((a, b) => a - b);
+  const rows = findFullRows(game.board);
 
   if (rows.length > 0) {
     beginLineClear(rows);
@@ -979,11 +1219,17 @@ function applyClearScore(cleared) {
   }
 
   game.combo++;
+  const baseCoin = CONFIG.COIN_TABLE[cleared] || 0;
+  let coinsEarned = baseCoin > 0
+    ? Math.max(1, Math.round(baseCoin * Math.pow(CONFIG.COIN_LEVEL_DECAY, game.level - 1)))
+    : 0;
   if (game.combo >= 2) {
     game.score += CONFIG.COMBO_BONUS * game.combo * game.level;
+    coinsEarned += CONFIG.COMBO_COIN * (game.combo - 1);
     showComboPopup(game.combo);
     sfxCombo(game.combo);
   }
+  addCoins(coinsEarned);
 
   checkNewRecord();
 
@@ -1010,7 +1256,7 @@ function holdPiece() {
   if (game.holdUsed) return;
 
   sfxHold();
-  const curEntry = { type: game.current.type, item: game.current.item, bombCell: game.current.bombCell };
+  const curEntry = { type: game.current.type };
   if (game.hold === null) {
     game.hold = curEntry;
     spawnFromQueue();
@@ -1022,10 +1268,7 @@ function holdPiece() {
       gameOver();
       return;
     }
-    game.current = {
-      type: temp.type, rotation: 0, x: spawnX(temp.type), y: 0,
-      item: temp.item, bombCell: temp.bombCell
-    };
+    game.current = { type: temp.type, rotation: 0, x: spawnX(temp.type), y: 0 };
     game.dropAcc = 0;
     game.lockTimer = 0;
     game.lockResets = 0;
@@ -1063,6 +1306,7 @@ function gameOver() {
   finalScoreEl.textContent = `점수: ${game.score}`;
   finalLinesEl.textContent = `지운 줄: ${game.lines}`;
   finalBestEl.textContent = `최고 기록: ${best}`;
+  finalCoinsEl.textContent = `🪙 이번 판에서 모은 코인: ${coinsEarnedThisRun}`;
   trophyIcon.classList.toggle('hidden', !isRecord);
   newRecordLabel.classList.toggle('hidden', !isRecord);
 
@@ -1091,6 +1335,9 @@ function resetGameState() {
   game.slow.active = false;
   game.slow.timer = 0;
   game.slow.duration = 0;
+  game.freeze.active = false;
+  game.freeze.timer = 0;
+  game.freeze.duration = 0;
   bagQueue = [];
   game.nextQueue = [];
   while (game.nextQueue.length < CONFIG.NEXT_COUNT) {
@@ -1104,6 +1351,9 @@ function resetGameState() {
   effects.edgeFlash.duration = 0;
   effects.slowFlash.timer = 0;
   effects.slowFlash.duration = 0;
+  effects.freezeFlash.timer = 0;
+  effects.freezeFlash.duration = 0;
+  resetRunEconomy(); // 코인/인벤토리는 판 단위 자원이므로 새 게임을 시작할 때마다 완전히 초기화
   spawnFromQueue();
   game.state = 'playing';
   startBGM();
@@ -1153,6 +1403,27 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'KeyM':
       if (!e.repeat) toggleMute();
+      break;
+    case 'KeyS':
+      if (!e.repeat) toggleShop();
+      break;
+    case 'Escape':
+      if (!e.repeat) closeShop();
+      break;
+    case 'Digit1':
+      if (!e.repeat) useItem(ITEM_ORDER[0]);
+      break;
+    case 'Digit2':
+      if (!e.repeat) useItem(ITEM_ORDER[1]);
+      break;
+    case 'Digit3':
+      if (!e.repeat) useItem(ITEM_ORDER[2]);
+      break;
+    case 'Digit4':
+      if (!e.repeat) useItem(ITEM_ORDER[3]);
+      break;
+    case 'Digit5':
+      if (!e.repeat) useItem(ITEM_ORDER[4]);
       break;
   }
 });
@@ -1220,6 +1491,7 @@ const gameOverOverlay = document.getElementById('gameOverOverlay');
 const finalScoreEl = document.getElementById('finalScore');
 const finalLinesEl = document.getElementById('finalLines');
 const finalBestEl = document.getElementById('finalBest');
+const finalCoinsEl = document.getElementById('finalCoins');
 const trophyIcon = document.getElementById('trophyIcon');
 const newRecordLabel = document.getElementById('newRecordLabel');
 const startBtn = document.getElementById('startBtn');
@@ -1234,6 +1506,15 @@ const unlockThemePalette = document.getElementById('unlockThemePalette');
 const unlockConfirmBtn = document.getElementById('unlockConfirmBtn');
 const unlockPlayNowBtn = document.getElementById('unlockPlayNowBtn');
 
+const coinDisplay = document.getElementById('coinDisplay');
+const coinText = document.getElementById('coinText');
+const shopBtn = document.getElementById('shopBtn');
+const shopOverlay = document.getElementById('shopOverlay');
+const shopCoinText = document.getElementById('shopCoinText');
+const shopGrid = document.getElementById('shopGrid');
+const shopCloseBtn = document.getElementById('shopCloseBtn');
+const inventoryBar = document.getElementById('inventoryBar');
+
 const BS = CONFIG.BLOCK_SIZE;
 
 function drawBlock(ctx, px, py, size, color, alpha) {
@@ -1247,21 +1528,6 @@ function drawBlock(ctx, px, py, size, color, alpha) {
   ctx.fillStyle = 'rgba(255,255,255,0.25)';
   ctx.fillRect(px + 2, py + 2, size - 4, 4);
   ctx.restore();
-}
-
-// 조각의 로컬 그리드 좌표 (localR, localC)가 어떤 색/아이템인지 계산.
-// piece.rotation이 없으면(미리보기 등) 스폰 상태(0)로 취급한다.
-function cellVisualAt(piece, localR, localC) {
-  if (piece.item === 'bomb') {
-    const target = bombLocalCellAtRotation(piece);
-    if (target && target.r === localR && target.c === localC) {
-      return { color: ITEMS.bomb.cellColor, item: 'bomb' };
-    }
-  }
-  if (piece.item === 'slow') {
-    return { color: ITEMS.slow.cellColor, item: 'slow' };
-  }
-  return { color: currentTheme.blockColors[piece.type], item: null };
 }
 
 function computeGhostY() {
@@ -1299,34 +1565,24 @@ function renderBoard() {
       const cell = game.board[r][c];
       if (cell) {
         drawBlock(boardCtx, c * BS, r * BS, BS, cell.color, 1);
-        if (cell.item && ITEMS[cell.item]) {
-          ITEMS[cell.item].renderIcon(boardCtx, c * BS, r * BS, BS);
-        }
       }
     }
   }
 
-  if (game.current && (game.state === 'playing' || game.state === 'paused')) {
+  if (game.current && (game.state === 'playing' || game.state === 'paused' || game.state === 'shop')) {
+    const color = currentTheme.blockColors[game.current.type];
+
     // 고스트
     const gy = computeGhostY();
     const ghostCells = getCells(game.current.type, game.current.rotation, game.current.x, gy);
     ghostCells.forEach(([cx, cy]) => {
-      if (cy >= 0) {
-        const visual = cellVisualAt(game.current, cy - gy, cx - game.current.x);
-        drawBlock(boardCtx, cx * BS, cy * BS, BS, visual.color, 0.25);
-      }
+      if (cy >= 0) drawBlock(boardCtx, cx * BS, cy * BS, BS, color, 0.25);
     });
 
     // 현재 블록
     const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
     cells.forEach(([cx, cy]) => {
-      if (cy >= 0) {
-        const visual = cellVisualAt(game.current, cy - game.current.y, cx - game.current.x);
-        drawBlock(boardCtx, cx * BS, cy * BS, BS, visual.color, 1);
-        if (visual.item && ITEMS[visual.item]) {
-          ITEMS[visual.item].renderIcon(boardCtx, cx * BS, cy * BS, BS);
-        }
-      }
+      if (cy >= 0) drawBlock(boardCtx, cx * BS, cy * BS, BS, color, 1);
     });
   }
 }
@@ -1351,18 +1607,14 @@ function drawMiniPiece(ctx, entry, offsetX, offsetY, boxSize) {
   const shapeH = (maxR - minR + 1) * cellSize;
   const startX = offsetX + (boxSize - shapeW) / 2;
   const startY = offsetY + (boxSize - shapeH) / 2;
+  const color = currentTheme.blockColors[type];
 
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
       if (grid[r][c] === 'X') {
         const px = startX + (c - minC) * cellSize;
         const py = startY + (r - minR) * cellSize;
-        // 미리보기는 항상 스폰 상태(rotation 0)를 그리므로 로컬 좌표를 그대로 비교
-        const visual = cellVisualAt(entry, r, c);
-        drawBlock(ctx, px, py, cellSize, visual.color, 1);
-        if (visual.item && ITEMS[visual.item]) {
-          ITEMS[visual.item].renderIcon(ctx, px, py, cellSize);
-        }
+        drawBlock(ctx, px, py, cellSize, color, 1);
       }
     }
   }
@@ -1419,6 +1671,32 @@ function renderSlowGauge() {
   boardCtx.restore();
 }
 
+function renderFreezeGauge() {
+  if (!game.freeze.active) return;
+  const remaining = Math.max(0, game.freeze.duration - game.freeze.timer);
+  const frac = game.freeze.duration > 0 ? remaining / game.freeze.duration : 0;
+  const barW = boardCanvas.width - 20;
+  const barH = 16;
+  const barX = 10;
+  const barY = game.slow.active ? 28 : 8; // 슬로우 게이지와 겹치지 않도록 위치 조정
+
+  boardCtx.save();
+  boardCtx.fillStyle = 'rgba(10,20,30,0.65)';
+  boardCtx.fillRect(barX, barY, barW, barH);
+  boardCtx.fillStyle = '#bfefff';
+  boardCtx.fillRect(barX, barY, barW * frac, barH);
+  boardCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+  boardCtx.lineWidth = 1;
+  boardCtx.strokeRect(barX, barY, barW, barH);
+
+  boardCtx.font = 'bold 11px sans-serif';
+  boardCtx.fillStyle = '#14141f';
+  boardCtx.textAlign = 'center';
+  boardCtx.textBaseline = 'middle';
+  boardCtx.fillText(`❄️ FREEZE ${(remaining / 1000).toFixed(1)}s`, barX + barW / 2, barY + barH / 2 + 1);
+  boardCtx.restore();
+}
+
 function updateStatsText() {
   scoreText.textContent = game.score;
   levelText.textContent = game.level;
@@ -1431,6 +1709,7 @@ function render() {
   renderBoard();
   renderEffects();
   renderSlowGauge();
+  renderFreezeGauge();
   renderHold();
   renderNext();
   updateStatsText();
@@ -1445,7 +1724,8 @@ const effects = {
   popups: [],      // { kind, text, x, y, timer, duration, color }
   shake: { timer: 0, duration: 0, magnitude: 0 },
   edgeFlash: { timer: 0, duration: 0, color: '#6bffb0' },
-  slowFlash: { timer: 0, duration: 0 }
+  slowFlash: { timer: 0, duration: 0 },
+  freezeFlash: { timer: 0, duration: 0 }
 };
 
 function addParticle(p) {
@@ -1599,6 +1879,7 @@ function updateEffects(dt) {
   if (effects.shake.timer < effects.shake.duration) effects.shake.timer += dt;
   if (effects.edgeFlash.timer < effects.edgeFlash.duration) effects.edgeFlash.timer += dt;
   if (effects.slowFlash.timer < effects.slowFlash.duration) effects.slowFlash.timer += dt;
+  if (effects.freezeFlash.timer < effects.freezeFlash.duration) effects.freezeFlash.timer += dt;
 }
 
 function getShakeOffset() {
@@ -1632,7 +1913,7 @@ function drawBannerText(ctx, text, x, y, scale, alpha, color, fontSize) {
   ctx.restore();
 }
 
-const BANNER_FONT_SIZES = { quad: 32, bomb: 28, slow: 26, levelup: 26, themeUnlock: 22 };
+const BANNER_FONT_SIZES = { quad: 32, bomb: 28, slow: 26, swap: 24, lineclear: 26, freeze: 26, levelup: 26, themeUnlock: 22 };
 
 function renderPopup(pop) {
   const t = Math.min(1, pop.timer / pop.duration);
@@ -1697,6 +1978,18 @@ function renderSlowFlash() {
   boardCtx.restore();
 }
 
+function renderFreezeFlash() {
+  if (effects.freezeFlash.duration === 0 || effects.freezeFlash.timer >= effects.freezeFlash.duration) return;
+  const t = effects.freezeFlash.timer / effects.freezeFlash.duration;
+  const alpha = Math.sin(t * Math.PI) * 0.4;
+  if (alpha <= 0) return;
+  boardCtx.save();
+  boardCtx.globalAlpha = alpha;
+  boardCtx.fillStyle = '#bfefff';
+  boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  boardCtx.restore();
+}
+
 function renderParticles() {
   boardCtx.save();
   effects.particles.forEach(p => {
@@ -1713,152 +2006,107 @@ function renderEffects() {
   renderParticles();
   renderEdgeFlash();
   renderSlowFlash();
+  renderFreezeFlash();
   effects.popups.forEach(renderPopup);
 }
 
 // ============================================================
 // ITEMS
 // ============================================================
-// 폭탄/슬로우 특수 블록. 새 아이템 추가 시 이 섹션의 ITEMS 레지스트리만 확장하면 됨
-// 새 아이템을 추가하려면 ITEMS에 { id, icon, cellColor, chance, assign, onLock, renderIcon }
-// 형태로 항목을 하나 추가하고 ITEM_ORDER에 순서를 넣으면 된다.
-const ITEM_ORDER = ['bomb', 'slow']; // 폭탄 판정 먼저, 실패 시 슬로우 판정
-
-// 조각의 로컬 그리드(NxN) 좌표를 시계 방향 90도 회전.
-// 이 프로젝트의 PIECE_DEFS 회전 상태들은 전부 이 공식을 따르도록 정의되어 있다.
-function rotateCellCW(cell, n) {
-  return { r: cell.c, c: n - 1 - cell.r };
-}
-
-// 스폰 상태(rotation 0) 기준 좌표(baseCell)를 현재 rotation만큼 회전시킨 좌표를 반환.
-// 4번(360도) 적용하면 원래 좌표로 돌아온다.
-function bombCellAtRotation(type, baseCell, rotation) {
-  // O는 4개 회전 상태가 모두 동일한 그리드(중앙 정렬이 아님)라 실제로 회전하지 않는다.
-  // rotateCurrent()도 O는 건드리지 않으므로 항상 스폰 좌표를 그대로 사용한다.
-  if (type === 'O') return baseCell;
-  const n = PIECE_DEFS[type].states[0].length;
-  let cell = baseCell;
-  const steps = ((rotation % 4) + 4) % 4;
-  for (let i = 0; i < steps; i++) {
-    cell = rotateCellCW(cell, n);
-  }
-  return cell;
-}
-
-// piece.bombCell(스폰 상태 기준)을 piece.rotation(없으면 0)에 맞게 변환해서 반환
-function bombLocalCellAtRotation(piece) {
-  if (piece.item !== 'bomb' || !piece.bombCell) return null;
-  return bombCellAtRotation(piece.type, piece.bombCell, piece.rotation || 0);
-}
+// 상점에서 코인으로 사서 즉시 쓰는 아이템 5종. 새 아이템 추가 시
+// ITEMS에 { id, icon, name, desc, use } 형태로 항목을 추가하고
+// ITEM_ORDER에 순서(= 인벤토리 바의 1~5번 슬롯 순서)를 넣은 뒤,
+// CONFIG.ITEM_SHOP에 가격을 추가하면 된다.
+const ITEM_ORDER = ['bomb', 'slow', 'swap', 'lineclear', 'freeze'];
 
 const ITEMS = {
   bomb: {
     id: 'bomb',
     icon: '💣',
-    cellColor: '#3a2222', // 어두운 색 (테마 무관 고정)
-    chance: () => CONFIG.BOMB_CHANCE,
-
-    // 조각이 다음 큐에 들어갈 때 호출: 스폰 상태(rotation 0) 기준으로
-    // 4칸 중 무작위 1칸의 로컬 좌표(r, c)를 폭탄 칸으로 고정한다.
-    // 이 좌표는 회전해도 바뀌지 않고, 회전 변환만 그대로 따라간다.
-    assign(entry) {
-      entry.item = 'bomb';
-      const grid = PIECE_DEFS[entry.type].states[0];
-      const candidates = [];
-      for (let r = 0; r < grid.length; r++) {
-        for (let c = 0; c < grid[r].length; c++) {
-          if (grid[r][c] === 'X') candidates.push({ r, c });
-        }
-      }
-      entry.bombCell = candidates[Math.floor(Math.random() * candidates.length)];
-    },
-
-    // 조각이 보드에 고정된 직후 호출: 강제로 지울 행 목록을 반환
-    // meta.bombRow는 lockCurrentPiece가 이미 계산해서 넘겨준 실제 보드 행이다.
-    onLock(piece, meta) {
-      const row = meta && meta.bombRow;
-      if (row === null || row === undefined) return [];
-      const local = bombLocalCellAtRotation(piece);
-      const col = piece.x + local.c;
-      triggerBombEffect(col, row);
-      return [row];
-    },
-
-    // 보드 / 현재 조각 / 고스트 / 미리보기 공용 셀 렌더링.
-    // 테두리 발광색만 현재 테마의 강조색(uiAccent)을 따른다.
-    renderIcon(ctx, px, py, size) {
-      const blink = 0.5 + 0.5 * Math.sin(performance.now() / 150);
-      ctx.save();
-      ctx.globalAlpha = 0.4 + blink * 0.6;
-      ctx.strokeStyle = currentTheme.uiAccent;
-      ctx.lineWidth = 3;
-      ctx.strokeRect(px + 2, py + 2, size - 4, size - 4);
-      ctx.globalAlpha = 1;
-      ctx.font = `${Math.floor(size * 0.6)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('💣', px + size / 2, py + size / 2 + 1);
-      ctx.restore();
+    name: '폭탄',
+    desc: '맨 아래 줄을 뿅! 없애요',
+    use() {
+      const row = CONFIG.BOARD_ROWS - 1;
+      game.board[row].forceClear = true;
+      clearMarkedLines(game.board);
+      triggerBombEffect(row);
     }
   },
 
   slow: {
     id: 'slow',
     icon: '🐌',
-    cellColor: '#4fc3f7', // 하늘색 계열 (테마 무관 고정)
-    chance: () => CONFIG.SLOW_CHANCE,
-
-    // 조각 전체가 슬로우 블록이 됨
-    assign(entry) {
-      entry.item = 'slow';
-    },
-
-    // 조각이 보드에 고정된 직후 호출: 슬로우 효과 발동(갱신)
-    onLock() {
+    name: '슬로우',
+    desc: '10초 동안 천천히 내려와요',
+    use() {
       activateSlow();
-      return [];
-    },
+    }
+  },
 
-    // 반짝임의 발광색만 현재 테마의 강조색(uiAccent)을 따른다.
-    renderIcon(ctx, px, py, size) {
-      const sparkle = 0.5 + 0.5 * Math.sin(performance.now() / 200);
-      ctx.save();
-      ctx.shadowColor = currentTheme.uiAccent;
-      ctx.shadowBlur = 3 + sparkle * 7;
-      ctx.font = `${Math.floor(size * 0.6)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#eafcff';
-      ctx.fillText('🐌', px + size / 2, py + size / 2 + 1);
-      ctx.restore();
+  swap: {
+    id: 'swap',
+    icon: '🔄',
+    name: '블록 교체',
+    desc: '지금 블록을 막대 블록으로!',
+    use() {
+      if (!game.current) return;
+      const newType = CONFIG.SWAP_TARGET_TYPE;
+      const size = PIECE_DEFS[newType].states[0].length;
+      const nx = Math.max(0, Math.min(CONFIG.BOARD_COLS - size, game.current.x));
+      let ny = game.current.y;
+      let cells = getCells(newType, 0, nx, ny);
+      while (!isValidPosition(game.board, cells) && ny > -4) {
+        ny--;
+        cells = getCells(newType, 0, nx, ny);
+      }
+      if (!isValidPosition(game.board, cells)) return;
+      game.current.type = newType;
+      game.current.rotation = 0;
+      game.current.x = nx;
+      game.current.y = ny;
+      game.lockTimer = 0;
+      game.lockResets = 0;
+      triggerSwapEffect();
+    }
+  },
+
+  lineclear: {
+    id: 'lineclear',
+    icon: '🧹',
+    name: '줄 청소',
+    desc: '아래 두 줄을 싹 치워요',
+    use() {
+      const rows = [];
+      for (let i = 0; i < CONFIG.LINECLEAR_ROWS; i++) {
+        const r = CONFIG.BOARD_ROWS - 1 - i;
+        if (r >= 0) rows.push(r);
+      }
+      rows.forEach(r => { game.board[r].forceClear = true; });
+      clearMarkedLines(game.board);
+      triggerLineClearEffect(rows);
+    }
+  },
+
+  freeze: {
+    id: 'freeze',
+    icon: '❄️',
+    name: '정지',
+    desc: '5초 동안 뚝! 멈춰요',
+    use() {
+      activateFreeze();
     }
   }
 };
 
-// 폭탄 판정 먼저, 실패하면 슬로우 판정 (동시에 두 아이템이 붙지 않음)
-function rollPieceItem() {
-  for (const id of ITEM_ORDER) {
-    if (Math.random() < ITEMS[id].chance()) return id;
-  }
-  return null;
-}
-
-function createQueueEntry(type) {
-  const entry = { type, item: null, bombCell: null };
-  const itemId = rollPieceItem();
-  if (itemId) ITEMS[itemId].assign(entry);
-  return entry;
-}
-
 function nextQueueEntry() {
-  return createQueueEntry(bagNext());
+  return { type: bagNext() };
 }
 
-function triggerBombEffect(col, row) {
+function triggerBombEffect(row) {
   sfxBomb();
-  const cx = col * BS + BS / 2;
   const cy = row * BS + BS / 2;
   for (let i = 0; i < CONFIG.BOMB_PARTICLE_COUNT; i++) {
+    const cx = Math.random() * boardCanvas.width;
     const angle = Math.random() * Math.PI * 2;
     const speed = 120 + Math.random() * 220;
     addParticle({
@@ -1878,7 +2126,7 @@ function triggerBombEffect(col, row) {
   effects.popups.push({
     kind: 'bomb',
     text: 'BOOM! 💥',
-    x: cx,
+    x: boardCanvas.width / 2,
     y: cy,
     timer: 0,
     duration: CONFIG.BOMB_BANNER_DURATION,
@@ -1890,7 +2138,7 @@ function activateSlow() {
   sfxSlow();
   game.slow.active = true;
   game.slow.timer = 0;
-  game.slow.duration = CONFIG.SLOW_DURATION; // 이미 활성 중이어도 새로 고정되면 갱신(리셋)
+  game.slow.duration = CONFIG.SLOW_DURATION; // 이미 활성 중이어도 새로 쓰면 갱신(리셋)
   effects.popups.push({
     kind: 'slow',
     text: 'SLOW! 🐌',
@@ -1914,6 +2162,274 @@ function updateSlowTimer(dt) {
   }
 }
 
+function triggerSwapEffect() {
+  sfxSwap();
+  const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
+  cells.forEach(([cx, cy]) => {
+    if (cy < 0) return;
+    const px = cx * BS + BS / 2;
+    const py = cy * BS + BS / 2;
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 80 + Math.random() * 140;
+      addParticle({
+        x: px, y: py,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color: '#7ad6ff',
+        size: 3 + Math.random() * 3,
+        life: 400 + Math.random() * 200,
+        maxLife: 600,
+        gravity: 300
+      });
+    }
+  });
+  effects.popups.push({
+    kind: 'swap',
+    text: '교체! 🔄',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 - 100,
+    timer: 0,
+    duration: CONFIG.SWAP_BANNER_DURATION,
+    color: '#7ad6ff'
+  });
+}
+
+function triggerLineClearEffect(rows) {
+  sfxLineClearItem();
+  rows.forEach(r => {
+    const cy = r * BS + BS / 2;
+    for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
+      const cx = c * BS + BS / 2;
+      addParticle({
+        x: cx, y: cy,
+        vx: (Math.random() * 2 - 1) * 180,
+        vy: -Math.random() * 180 - 40,
+        color: c % 2 === 0 ? '#ffe08a' : '#ffffff',
+        size: 3 + Math.random() * 3,
+        life: 450 + Math.random() * 250,
+        maxLife: 700,
+        gravity: 600
+      });
+    }
+  });
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.LINECLEAR_SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.LINECLEAR_SHAKE_MAGNITUDE;
+  effects.popups.push({
+    kind: 'lineclear',
+    text: 'CLEAN! 🧹',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.LINECLEAR_BANNER_DURATION,
+    color: '#ffe08a'
+  });
+}
+
+function activateFreeze() {
+  sfxFreeze();
+  game.freeze.active = true;
+  game.freeze.timer = 0;
+  game.freeze.duration = CONFIG.FREEZE_DURATION; // 이미 활성 중이어도 새로 쓰면 갱신(리셋)
+  effects.popups.push({
+    kind: 'freeze',
+    text: 'FREEZE! ❄️',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.FREEZE_BANNER_DURATION,
+    color: '#bfefff'
+  });
+  effects.freezeFlash.timer = 0;
+  effects.freezeFlash.duration = CONFIG.FREEZE_OVERLAY_FADE_DURATION;
+}
+
+function updateFreezeTimer(dt) {
+  if (!game.freeze.active) return;
+  game.freeze.timer += dt;
+  if (game.freeze.timer >= game.freeze.duration) {
+    game.freeze.active = false;
+    game.freeze.timer = 0;
+    game.freeze.duration = 0;
+  }
+}
+
+// ============================================================
+// SHOP & INVENTORY
+// ============================================================
+// 코인으로 아이템을 사는 상점(게임을 즉시 일시정지하고 여는 오버레이)과,
+// 산 아이템을 즉시 쓰는 화면 하단 인벤토리 바.
+// 코인/인벤토리는 "그 판에서 벌어서 그 판에서 쓰는" 판 단위 자원이다 - localStorage에
+// 저장하지 않고, 새 게임을 시작할 때마다 resetRunEconomy()로 완전히 초기화된다.
+// (테마 해금용 누적 점수 bh_totalScore는 이와 별개로 계속 영구 저장된다.)
+let playerCoins = 0;
+let inventory = {};
+let coinsEarnedThisRun = 0; // 게임오버 화면에 "이번 판에서 모은 코인"으로 표시할 총 획득량(사용해도 줄지 않음)
+
+// 새 게임 시작 시(resetGameState에서 호출) 코인/인벤토리/이번 판 획득량을 전부 리셋한다.
+function resetRunEconomy() {
+  playerCoins = 0;
+  inventory = {};
+  coinsEarnedThisRun = 0;
+  updateCoinText();
+  refreshInventoryBar();
+}
+
+function updateCoinText() {
+  coinText.textContent = playerCoins;
+  shopCoinText.textContent = playerCoins;
+}
+
+function showCoinPopup(amount) {
+  const el = document.createElement('div');
+  el.className = 'coin-popup';
+  el.textContent = `+${amount}`;
+  el.style.animationDuration = CONFIG.COIN_POPUP_DURATION + 'ms';
+  coinDisplay.appendChild(el);
+  setTimeout(() => el.remove(), CONFIG.COIN_POPUP_DURATION);
+}
+
+function addCoins(amount) {
+  if (amount <= 0) return;
+  playerCoins += amount;
+  coinsEarnedThisRun += amount;
+  updateCoinText();
+  showCoinPopup(amount);
+  sfxCoin();
+}
+
+function buildShopGrid() {
+  shopGrid.innerHTML = '';
+  ITEM_ORDER.forEach(id => {
+    const item = ITEMS[id];
+    const price = CONFIG.ITEM_SHOP[id].price;
+    const card = document.createElement('div');
+    card.className = 'shop-card';
+    card.dataset.item = id;
+    card.innerHTML = `
+      <div class="shop-card-icon">${item.icon}</div>
+      <div class="shop-card-name">${item.name}</div>
+      <div class="shop-card-desc">${item.desc}</div>
+      <div class="shop-card-price">${price} 🪙</div>
+      <button class="shop-buy-btn" type="button">구매</button>
+    `;
+    card.querySelector('.shop-buy-btn').addEventListener('click', () => buyItem(id));
+    shopGrid.appendChild(card);
+  });
+}
+
+function sparkleShopCard(id) {
+  const card = shopGrid.querySelector(`.shop-card[data-item="${id}"]`);
+  if (!card) return;
+  card.classList.remove('sparkle');
+  void card.offsetWidth; // 애니메이션 재시작을 위한 리플로우 강제
+  card.classList.add('sparkle');
+}
+
+function refreshShopUI() {
+  shopCoinText.textContent = playerCoins;
+  ITEM_ORDER.forEach(id => {
+    const card = shopGrid.querySelector(`.shop-card[data-item="${id}"]`);
+    if (!card) return;
+    const price = CONFIG.ITEM_SHOP[id].price;
+    const owned = inventory[id] || 0;
+    const maxed = owned >= CONFIG.MAX_ITEM_STACK;
+    const shortBy = price - playerCoins;
+    const afford = shortBy <= 0 && !maxed;
+    card.querySelector('.shop-card-price').classList.toggle('insufficient', shortBy > 0);
+    const btn = card.querySelector('.shop-buy-btn');
+    // 일부러 네이티브 disabled 속성 대신 CSS 클래스로만 "비활성처럼 보이게" 한다.
+    // 버튼이 실제로는 계속 클릭 가능해야 buyItem()의 "코인 부족" 부저음이 울릴 수 있다.
+    btn.classList.toggle('disabled', !afford);
+    if (maxed) {
+      btn.textContent = '최대!';
+    } else if (shortBy > 0) {
+      btn.textContent = `${shortBy}코인 더 필요`;
+    } else {
+      btn.textContent = '구매';
+    }
+  });
+}
+
+function buyItem(id) {
+  if (game.state !== 'shop') return;
+  const price = CONFIG.ITEM_SHOP[id].price;
+  const owned = inventory[id] || 0;
+  if (playerCoins < price || owned >= CONFIG.MAX_ITEM_STACK) {
+    // 카드/버튼은 시각적으로만 "비활성"처럼 보이게 스타일링돼 있을 뿐 실제로는 계속
+    // 클릭 가능하다 - 그래야 "코인 부족" 부저음으로 왜 안 되는지 알려줄 수 있다.
+    sfxPurchaseFail();
+    return;
+  }
+  playerCoins -= price;
+  inventory[id] = owned + 1;
+  sfxPurchase();
+  updateCoinText();
+  refreshShopUI();
+  refreshInventoryBar();
+  sparkleShopCard(id);
+}
+
+function buildInventoryBar() {
+  inventoryBar.innerHTML = '';
+  ITEM_ORDER.forEach((id, idx) => {
+    const item = ITEMS[id];
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot';
+    slot.dataset.item = id;
+    slot.innerHTML = `
+      <div class="inv-key">${idx + 1}</div>
+      <div class="inv-icon">${item.icon}</div>
+      <div class="inv-count">${inventory[id] || 0}</div>
+    `;
+    slot.addEventListener('click', () => useItem(id));
+    inventoryBar.appendChild(slot);
+  });
+  refreshInventoryBar();
+}
+
+function refreshInventoryBar() {
+  ITEM_ORDER.forEach(id => {
+    const slot = inventoryBar.querySelector(`.inv-slot[data-item="${id}"]`);
+    if (!slot) return;
+    const count = inventory[id] || 0;
+    slot.querySelector('.inv-count').textContent = count;
+    slot.classList.toggle('disabled', count <= 0);
+  });
+}
+
+function useItem(id) {
+  if (game.state !== 'playing') return;
+  if ((inventory[id] || 0) <= 0) return;
+  inventory[id]--;
+  refreshInventoryBar();
+  ITEMS[id].use();
+}
+
+function openShop() {
+  if (game.state !== 'playing') return;
+  game.state = 'shop';
+  refreshShopUI();
+  shopOverlay.classList.remove('hidden');
+  sfxShopOpen();
+  stopBGM();
+}
+
+function closeShop() {
+  if (game.state !== 'shop') return;
+  game.state = 'playing';
+  shopOverlay.classList.add('hidden');
+  accumulator = 0;
+  sfxShopClose();
+  startBGM();
+}
+
+function toggleShop() {
+  if (game.state === 'playing') openShop();
+  else if (game.state === 'shop') closeShop();
+}
+
 // ============================================================
 // THEMES
 // ============================================================
@@ -1927,6 +2443,7 @@ function getThemeById(id) {
 function applyTheme(themeId) {
   currentTheme = getThemeById(themeId);
   document.documentElement.style.setProperty('--accent', currentTheme.uiAccent);
+  setBgmTrackForTheme(currentTheme.id); // 테마별 BGM 자동 재생 (재생 중이면 자연스럽게 곡 교체)
 }
 
 // 누적 점수 기준으로 새로 해금된 테마 목록을 반환하고, localStorage에 반영한다
@@ -2078,14 +2595,16 @@ function refreshThemeUI() {
 // AUDIO
 // ============================================================
 // 모든 사운드를 Web Audio API로 즉석 합성한다 (외부 오디오 파일 0개).
-// SFX는 OscillatorNode/AudioBufferSourceNode + GainNode(ADSR)로 짧게 생성하고,
+// 저수준 합성 도구(필터 엔벨로프/디튠 스택/FM/딜레이 버스) 위에 SFX와 BGM을 전부 조립한다.
 // BGM은 audioCtx.currentTime 기반 lookahead 스케줄러로 정확한 타이밍에 노트를 예약한다.
-// BGM 멜로디는 오리지널 창작곡이며 코로베이니키 등 원작 테트리스 음악과 무관하다.
+// BGM 4곡(CONFIG.BGM_TRACKS)은 전부 오리지널 창작곡이며 코로베이니키 등
+// 원작 테트리스 음악이나 기존 상용곡과 무관하다.
 
 let audioCtx = null;
 let masterGain = null;
 let sfxGain = null;
 let bgmGain = null;
+let delayBus = null; // 공유 딜레이(에코/리버브 대용) 버스 - sendToDelay()로 살짝 보내 쓴다
 
 function loadMuted() {
   try {
@@ -2112,7 +2631,7 @@ function ensureAudioResumed() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = isMuted ? 0 : 1;
+    masterGain.gain.value = isMuted ? 0 : CONFIG.MASTER_VOLUME;
     masterGain.connect(audioCtx.destination);
 
     sfxGain = audioCtx.createGain();
@@ -2122,6 +2641,8 @@ function ensureAudioResumed() {
     bgmGain = audioCtx.createGain();
     bgmGain.gain.value = CONFIG.BGM_VOLUME;
     bgmGain.connect(masterGain);
+
+    ensureDelayBus();
   }
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
@@ -2131,7 +2652,7 @@ function ensureAudioResumed() {
 function setMuted(value) {
   isMuted = value;
   saveMuted(value);
-  if (masterGain) masterGain.gain.value = value ? 0 : 1;
+  if (masterGain) masterGain.gain.value = value ? 0 : CONFIG.MASTER_VOLUME;
   updateMuteButton();
 }
 
@@ -2144,7 +2665,62 @@ function updateMuteButton() {
   muteBtn.textContent = isMuted ? '🔇' : '🔊';
 }
 
-// --- 저수준 합성 도구 ---
+// ------------------------------------------------------------
+// 저수준 합성 도구 (신스 엔진)
+// ------------------------------------------------------------
+// 이 아래 6개 함수가 게임의 모든 SFX/BGM을 만드는 "악기"다:
+//   playEnvTone     - 단일 오실레이터 + ADSR (가장 기본적인 톤)
+//   playSlideTone   - 시작~끝 주파수로 미끄러지는 톤 (상승/하강 효과음)
+//   playNoiseBurst  - 화이트노이즈 + 필터 + 엔벨로프 (타격/바람/스윕음), 필터 스윕 지원
+//   playFilteredTone- 오실레이터 + BiquadFilterNode(lowpass) 엔벨로프. 필터가 밝게 열렸다가
+//                     어두워지며 닫히는 "움직임"을 준다 (신스 리드/베이스의 기본형)
+//   playDetunedStack- 오실레이터 2~3개를 살짝 디튠해서 겹친 슈퍼소우. 두껍고 넓은 소리
+//   playFMTone      - 오실레이터(모듈레이터)가 다른 오실레이터(캐리어)의 주파수를 변조하는
+//                     FM 신스. 벨/메탈/그로울 계열의 배음이 풍부한 소리
+// 전부 delaySend 옵션을 지원해서(0이면 미사용) 공유 딜레이 버스로 살짝 보낼 수 있다.
+// 단, sfxMove/sfxSoftDrop처럼 아주 자주(연타) 울리는 소리는 절대 delaySend를 쓰지 않는다 -
+// 반복 입력마다 에코가 겹겹이 쌓이면 소리가 지저분해지고 거슬리기 때문.
+
+// 공유 딜레이(에코) 버스를 한 번만 만들어서 재사용한다.
+// 노트마다 새 DelayNode를 만들지 않아 CPU 비용이 저렴하고, 페루프(피드백)로 자연스러운
+// 잔향 꼬리를 만든다. wet 신호는 masterGain으로 직접 합류한다(SFX/BGM 볼륨과 별개로 고정 톤).
+function ensureDelayBus() {
+  if (delayBus || !audioCtx) return delayBus;
+  const input = audioCtx.createGain();
+  const delay = audioCtx.createDelay(1.0);
+  const feedback = audioCtx.createGain();
+  const toneFilter = audioCtx.createBiquadFilter();
+  const wet = audioCtx.createGain();
+
+  delay.delayTime.value = 0.26;
+  feedback.gain.value = 0.32;       // 반복될 때마다 이 비율만큼만 남아 자연스럽게 사그라든다
+  toneFilter.type = 'lowpass';
+  toneFilter.frequency.value = 2600; // 반복될수록 어두워지는 아날로그 테이프 에코 느낌
+  wet.gain.value = 0.9;
+
+  input.connect(delay);
+  delay.connect(toneFilter);
+  toneFilter.connect(feedback);
+  feedback.connect(delay); // 피드백 루프
+  toneFilter.connect(wet);
+  wet.connect(masterGain);
+
+  delayBus = { input, delay, feedback, toneFilter, wet };
+  return delayBus;
+}
+
+// 이미 만들어진 게인 노드(env)를 공유 딜레이 버스로 amount(0~1)만큼 살짝 보낸다.
+// 반환된 send 노드는 호출한 쪽에서 소리가 끝날 때 함께 disconnect해야 한다(메모리 누수 방지).
+function sendToDelay(envNode, amount) {
+  if (!audioCtx || !amount) return null;
+  const bus = ensureDelayBus();
+  if (!bus) return null;
+  const send = audioCtx.createGain();
+  send.gain.value = amount;
+  envNode.connect(send);
+  send.connect(bus.input);
+  return send;
+}
 
 // 짧은 단일 톤을 ADSR(어택-디케이-서스테인-릴리즈) 엔벨로프로 재생한다.
 // 재생이 끝나면 오실레이터/게인 노드를 자동으로 disconnect한다.
@@ -2158,7 +2734,8 @@ function playEnvTone(freq, duration, opts = {}) {
     sustainLevel = 0.5,
     release = 0.05,
     when = audioCtx.currentTime,
-    destination = sfxGain
+    destination = sfxGain,
+    delaySend = 0
   } = opts;
 
   const osc = audioCtx.createOscillator();
@@ -2176,12 +2753,15 @@ function playEnvTone(freq, duration, opts = {}) {
 
   osc.connect(env);
   env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
   osc.start(when);
   osc.stop(stopTime + 0.02);
   osc.onended = () => {
     osc.disconnect();
     env.disconnect();
+    if (sendNode) sendNode.disconnect();
   };
+  return { osc, env };
 }
 
 // 시작 주파수 -> 끝 주파수로 미끄러지는 톤 (상승/하강 효과음용)
@@ -2193,7 +2773,8 @@ function playSlideTone(freqStart, freqEnd, duration, opts = {}) {
     attack = 0.005,
     release = 0.05,
     when = audioCtx.currentTime,
-    destination = sfxGain
+    destination = sfxGain,
+    delaySend = 0
   } = opts;
 
   const osc = audioCtx.createOscillator();
@@ -2209,12 +2790,15 @@ function playSlideTone(freqStart, freqEnd, duration, opts = {}) {
 
   osc.connect(env);
   env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
   osc.start(when);
   osc.stop(when + duration + 0.02);
   osc.onended = () => {
     osc.disconnect();
     env.disconnect();
+    if (sendNode) sendNode.disconnect();
   };
+  return { osc, env };
 }
 
 function createNoiseBuffer(duration) {
@@ -2227,15 +2811,20 @@ function createNoiseBuffer(duration) {
   return buffer;
 }
 
-// 화이트 노이즈를 필터 + 엔벨로프로 감싼 짧은 버스트 (타격/폭발음용)
+// 화이트 노이즈를 필터 + 엔벨로프로 감싼 짧은 버스트 (타격/폭발/스윕음용).
+// filterFreqEnd를 주면 필터 컷오프가 filterFreq -> filterFreqEnd로 스윕되어
+// "휙" 지나가는 듯한 움직임이 생긴다 (미지정 시 고정 컷오프).
 function playNoiseBurst(duration, opts = {}) {
   if (!audioCtx) return;
   const {
     gain = 0.3,
     filterFreq = 800,
+    filterFreqEnd = null,
     filterType = 'lowpass',
+    q = 1,
     when = audioCtx.currentTime,
-    destination = sfxGain
+    destination = sfxGain,
+    delaySend = 0
   } = opts;
 
   const src = audioCtx.createBufferSource();
@@ -2243,7 +2832,11 @@ function playNoiseBurst(duration, opts = {}) {
 
   const filter = audioCtx.createBiquadFilter();
   filter.type = filterType;
-  filter.frequency.setValueAtTime(filterFreq, when);
+  filter.Q.value = q;
+  filter.frequency.setValueAtTime(Math.max(40, filterFreq), when);
+  if (filterFreqEnd !== null) {
+    filter.frequency.exponentialRampToValueAtTime(Math.max(40, filterFreqEnd), when + duration);
+  }
 
   const env = audioCtx.createGain();
   env.gain.setValueAtTime(gain, when);
@@ -2252,43 +2845,344 @@ function playNoiseBurst(duration, opts = {}) {
   src.connect(filter);
   filter.connect(env);
   env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
   src.start(when);
   src.stop(when + duration + 0.02);
   src.onended = () => {
     src.disconnect();
     filter.disconnect();
     env.disconnect();
+    if (sendNode) sendNode.disconnect();
+  };
+  return { src, filter, env };
+}
+
+// 오실레이터 + BiquadFilterNode(lowpass) 엔벨로프. filterStart에서 filterEnd로 필터가
+// 닫히면서(주로 밝게 열렸다가 어두워지며) 소리에 "움직임"을 준다. 신스 리드/베이스의 기본형.
+function playFilteredTone(freq, duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    type = 'sawtooth',
+    gain = 0.25,
+    attack = 0.005,
+    decay = 0.05,
+    sustainLevel = 0.5,
+    release = 0.05,
+    filterStart = 3000,
+    filterEnd = 800,
+    filterDecay = 0.15,
+    q = 1,
+    detune = 0,
+    when = audioCtx.currentTime,
+    destination = sfxGain,
+    delaySend = 0
+  } = opts;
+
+  const osc = audioCtx.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, when);
+  if (detune) osc.detune.setValueAtTime(detune, when);
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.Q.value = q;
+  filter.frequency.setValueAtTime(Math.max(40, filterStart), when);
+  filter.frequency.exponentialRampToValueAtTime(Math.max(40, filterEnd), when + filterDecay);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(gain, when + attack);
+  const sustainStart = when + attack + decay;
+  env.gain.linearRampToValueAtTime(gain * sustainLevel, sustainStart);
+  const stopTime = Math.max(sustainStart, when + duration);
+  env.gain.setValueAtTime(gain * sustainLevel, Math.max(sustainStart, stopTime - release));
+  env.gain.linearRampToValueAtTime(0, stopTime);
+
+  osc.connect(filter);
+  filter.connect(env);
+  env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
+  osc.start(when);
+  osc.stop(stopTime + 0.02);
+  osc.onended = () => {
+    osc.disconnect();
+    filter.disconnect();
+    env.disconnect();
+    if (sendNode) sendNode.disconnect();
+  };
+  return { osc, filter, env };
+}
+
+// 오실레이터 2~3개를 서로 살짝 디튠해서 겹치는 "슈퍼소우". 두껍고 넓은 소리를 낸다.
+// 아르페지오 스탭/패드/팡파레처럼 존재감이 필요한 소리에 쓴다.
+function playDetunedStack(freq, duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    type = 'sawtooth',
+    voices = 3,
+    spread = 14, // 목소리 사이 최대 디튠 폭(센트)
+    gain = 0.18,
+    attack = 0.01,
+    decay = 0.08,
+    sustainLevel = 0.55,
+    release = 0.12,
+    filterStart = 4000,
+    filterEnd = 1200,
+    filterDecay = 0.2,
+    q = 0.8,
+    when = audioCtx.currentTime,
+    destination = sfxGain,
+    delaySend = 0
+  } = opts;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.Q.value = q;
+  filter.frequency.setValueAtTime(Math.max(40, filterStart), when);
+  filter.frequency.exponentialRampToValueAtTime(Math.max(40, filterEnd), when + filterDecay);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(gain, when + attack);
+  const sustainStart = when + attack + decay;
+  env.gain.linearRampToValueAtTime(gain * sustainLevel, sustainStart);
+  const stopTime = Math.max(sustainStart, when + duration);
+  env.gain.setValueAtTime(gain * sustainLevel, Math.max(sustainStart, stopTime - release));
+  env.gain.linearRampToValueAtTime(0, stopTime);
+
+  filter.connect(env);
+  env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
+
+  const oscs = [];
+  for (let i = 0; i < voices; i++) {
+    const osc = audioCtx.createOscillator();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, when);
+    const centerOffset = voices === 1 ? 0 : (i / (voices - 1) - 0.5) * 2 * spread;
+    osc.detune.setValueAtTime(centerOffset, when);
+    osc.connect(filter);
+    osc.start(when);
+    osc.stop(stopTime + 0.02);
+    oscs.push(osc);
+  }
+  oscs[oscs.length - 1].onended = () => {
+    oscs.forEach(o => o.disconnect());
+    filter.disconnect();
+    env.disconnect();
+    if (sendNode) sendNode.disconnect();
   };
 }
 
+// FM(주파수 변조) 신스: modulator 오실레이터가 carrier 오실레이터의 주파수를 실시간으로
+// 흔든다. modIndex(변조 깊이)가 시간에 따라 줄어들어 종소리/금속성 배음이 자연스럽게
+// 가라앉는다. 벨/메탈/그로울 계열 음색에 쓴다.
+function playFMTone(freq, duration, opts = {}) {
+  if (!audioCtx) return;
+  const {
+    modRatio = 2,       // 모듈레이터 주파수 = freq * modRatio
+    modIndex = 60,       // 모듈레이션 깊이(Hz)
+    carrierType = 'sine',
+    gain = 0.22,
+    attack = 0.005,
+    decay = 0.1,
+    sustainLevel = 0.4,
+    release = 0.2,
+    when = audioCtx.currentTime,
+    destination = sfxGain,
+    delaySend = 0
+  } = opts;
+
+  const carrier = audioCtx.createOscillator();
+  carrier.type = carrierType;
+  carrier.frequency.setValueAtTime(freq, when);
+
+  const modulator = audioCtx.createOscillator();
+  modulator.type = 'sine';
+  modulator.frequency.setValueAtTime(Math.max(1, freq * modRatio), when);
+
+  const modGain = audioCtx.createGain();
+  modGain.gain.setValueAtTime(Math.max(1, modIndex), when);
+  modGain.gain.exponentialRampToValueAtTime(Math.max(1, modIndex * 0.05), when + Math.max(0.05, duration * 0.6));
+
+  modulator.connect(modGain);
+  modGain.connect(carrier.frequency);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(gain, when + attack);
+  const sustainStart = when + attack + decay;
+  env.gain.linearRampToValueAtTime(gain * sustainLevel, sustainStart);
+  const stopTime = Math.max(sustainStart, when + duration);
+  env.gain.setValueAtTime(gain * sustainLevel, Math.max(sustainStart, stopTime - release));
+  env.gain.linearRampToValueAtTime(0, stopTime);
+
+  carrier.connect(env);
+  env.connect(destination);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
+
+  modulator.start(when);
+  carrier.start(when);
+  modulator.stop(stopTime + 0.02);
+  carrier.stop(stopTime + 0.02);
+  carrier.onended = () => {
+    carrier.disconnect();
+    modulator.disconnect();
+    modGain.disconnect();
+    env.disconnect();
+    if (sendNode) sendNode.disconnect();
+  };
+}
+
+// ------------------------------------------------------------
+// 드럼 신스 (킥/스네어/하이햇)
+// ------------------------------------------------------------
+// 8비트 스타일 드럼 트랙용 타격음 3종. 전부 bgmGain 버스로 나가므로
+// CONFIG.BGM_VOLUME 하나로 SFX와 별개로 음량이 관리된다.
+
+// 킥: 저주파 사인의 급격한 피치 다운 + 짧은 엔벨로프
+function synthKick(when) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(160, when);
+  osc.frequency.exponentialRampToValueAtTime(42, when + 0.11);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0.9, when);
+  env.gain.exponentialRampToValueAtTime(0.001, when + 0.22);
+
+  osc.connect(env);
+  env.connect(bgmGain);
+  osc.start(when);
+  osc.stop(when + 0.24);
+  osc.onended = () => {
+    osc.disconnect();
+    env.disconnect();
+  };
+}
+
+// 스네어: 화이트노이즈 버스트(밴드패스) + 짧은 톤 보강
+function synthSnare(when) {
+  if (!audioCtx) return;
+  const dur = 0.15;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = createNoiseBuffer(dur);
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.setValueAtTime(1800, when);
+  bp.Q.value = 1.1;
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0.5, when);
+  env.gain.exponentialRampToValueAtTime(0.001, when + dur);
+  src.connect(bp);
+  bp.connect(env);
+  env.connect(bgmGain);
+  src.start(when);
+  src.stop(when + dur + 0.01);
+  src.onended = () => {
+    src.disconnect();
+    bp.disconnect();
+    env.disconnect();
+  };
+
+  // 노이즈 아래에 짧은 삼각파를 얹어 스네어의 "몸통"을 보강
+  const osc = audioCtx.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(190, when);
+  const env2 = audioCtx.createGain();
+  env2.gain.setValueAtTime(0.22, when);
+  env2.gain.exponentialRampToValueAtTime(0.001, when + 0.07);
+  osc.connect(env2);
+  env2.connect(bgmGain);
+  osc.start(when);
+  osc.stop(when + 0.08);
+  osc.onended = () => {
+    osc.disconnect();
+    env2.disconnect();
+  };
+}
+
+// 하이햇: 고주파 노이즈를 아주 짧게(open이면 조금 더 길게)
+function synthHat(when, opts = {}) {
+  if (!audioCtx) return;
+  const { open = false, delaySend = 0 } = opts;
+  const dur = open ? 0.14 : 0.045;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = createNoiseBuffer(dur);
+  const hp = audioCtx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.setValueAtTime(7500, when);
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0.2, when);
+  env.gain.exponentialRampToValueAtTime(0.001, when + dur);
+  src.connect(hp);
+  hp.connect(env);
+  env.connect(bgmGain);
+  const sendNode = delaySend > 0 ? sendToDelay(env, delaySend) : null;
+  src.start(when);
+  src.stop(when + dur + 0.01);
+  src.onended = () => {
+    src.disconnect();
+    hp.disconnect();
+    env.disconnect();
+    if (sendNode) sendNode.disconnect();
+  };
+}
+
+// 드럼 스텝(hit 문자열 배열, 예: ['kick','hat'])을 한 번에 트리거한다.
+function triggerDrumStep(hits, when, hatDelaySend = 0) {
+  if (!hits || hits.length === 0) return;
+  hits.forEach(hit => {
+    if (hit === 'kick') synthKick(when);
+    else if (hit === 'snare') synthSnare(when);
+    else if (hit === 'hat') synthHat(when, { delaySend: hatDelaySend });
+    else if (hit === 'hat_open') synthHat(when, { open: true, delaySend: hatDelaySend });
+  });
+}
+
 // --- 효과음 (SFX) ---
+// sfxMove/sfxSoftDrop은 방향키를 연타(DAS)해도 거슬리지 않도록 의도적으로 아주 작고
+// 짧게 유지하고 delaySend를 쓰지 않는다 - 반복 트리거되는 소리에 에코를 걸면 겹겹이
+// 쌓여 지저분해지는 게 사운드 디자인에서 가장 흔한 실패 지점이기 때문.
 
 function sfxMove() {
-  playEnvTone(320, 0.03, { type: 'square', gain: 0.06, attack: 0.001, decay: 0.008, sustainLevel: 0.3, release: 0.012 });
+  playEnvTone(320, 0.025, { type: 'square', gain: 0.045, attack: 0.001, decay: 0.006, sustainLevel: 0.3, release: 0.01 });
 }
 
 function sfxRotate() {
-  playSlideTone(500, 780, 0.06, { type: 'square', gain: 0.12, attack: 0.001, decay: 0.02, release: 0.02 });
+  playSlideTone(500, 780, 0.06, { type: 'square', gain: 0.12, attack: 0.001, decay: 0.02, release: 0.02, delaySend: 0.06 });
 }
 
 function sfxSoftDrop() {
-  playEnvTone(200, 0.02, { type: 'square', gain: 0.035, attack: 0.001, decay: 0.004, sustainLevel: 0.3, release: 0.01 });
+  playEnvTone(200, 0.02, { type: 'square', gain: 0.03, attack: 0.001, decay: 0.004, sustainLevel: 0.3, release: 0.01 });
 }
 
 function sfxHardDrop() {
   playNoiseBurst(0.08, { gain: 0.18, filterFreq: 300 });
-  playSlideTone(140, 55, 0.12, { type: 'triangle', gain: 0.22, attack: 0.001, decay: 0.03, release: 0.05 });
+  playSlideTone(140, 55, 0.12, { type: 'triangle', gain: 0.22, attack: 0.001, decay: 0.03, release: 0.05, delaySend: 0.12 });
 }
 
 function sfxLock() {
-  playEnvTone(180, 0.08, { type: 'triangle', gain: 0.1, attack: 0.002, decay: 0.03, sustainLevel: 0.4, release: 0.05 });
+  playFilteredTone(180, 0.08, {
+    type: 'triangle', gain: 0.14, attack: 0.002, decay: 0.03, sustainLevel: 0.4, release: 0.05,
+    filterStart: 2000, filterEnd: 500, filterDecay: 0.06, q: 0.7
+  });
 }
 
 function sfxHold() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
-  playEnvTone(440, 0.05, { type: 'square', gain: 0.14, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.02, when: now });
-  playEnvTone(660, 0.06, { type: 'square', gain: 0.14, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.03, when: now + 0.045 });
+  playFilteredTone(440, 0.05, {
+    type: 'square', gain: 0.15, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.02,
+    filterStart: 3500, filterEnd: 1200, filterDecay: 0.05, when: now
+  });
+  playFilteredTone(660, 0.06, {
+    type: 'square', gain: 0.15, attack: 0.001, decay: 0.015, sustainLevel: 0.5, release: 0.03,
+    filterStart: 4000, filterEnd: 1400, filterDecay: 0.06, when: now + 0.045, delaySend: 0.1
+  });
 }
 
 // 1~4줄 클리어 시 상승 아르페지오. 줄 수만큼 음이 늘어난다.
@@ -2297,29 +3191,34 @@ const CLEAR_ARPEGGIO_NOTES = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
 function sfxLineClear(count) {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
-  CLEAR_ARPEGGIO_NOTES.slice(0, count).forEach((freq, i) => {
-    playEnvTone(freq, 0.14, {
-      type: 'square', gain: 0.16, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.08,
-      when: now + i * 0.07
+  const notes = CLEAR_ARPEGGIO_NOTES.slice(0, count);
+  notes.forEach((freq, i) => {
+    const isLast = i === notes.length - 1;
+    playFilteredTone(freq, 0.14, {
+      type: 'square', gain: 0.18, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.08,
+      filterStart: 5500, filterEnd: 2000, filterDecay: 0.1,
+      when: now + i * 0.07, delaySend: isLast ? 0.18 : 0
     });
   });
 }
 
-// 4줄 클리어(퍼펙트): 4음 상승 아르페지오 + 뒤이어 울리는 밝은 메이저 화음
+// 4줄 클리어(퍼펙트): 4음 상승 아르페지오 + 뒤이어 울리는 두꺼운 메이저 화음(슈퍼소우)
 function sfxQuadClear() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
   CLEAR_ARPEGGIO_NOTES.forEach((freq, i) => {
-    playEnvTone(freq, 0.16, {
-      type: 'square', gain: 0.18, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.1,
+    playFilteredTone(freq, 0.16, {
+      type: 'square', gain: 0.2, attack: 0.002, decay: 0.03, sustainLevel: 0.5, release: 0.1,
+      filterStart: 6000, filterEnd: 2200, filterDecay: 0.1,
       when: now + i * 0.06
     });
   });
   const chordAt = now + CLEAR_ARPEGGIO_NOTES.length * 0.06 + 0.05;
   CLEAR_ARPEGGIO_NOTES.forEach(freq => {
-    playEnvTone(freq, 0.5, {
-      type: 'triangle', gain: 0.12, attack: 0.01, decay: 0.08, sustainLevel: 0.6, release: 0.35,
-      when: chordAt
+    playDetunedStack(freq, 0.55, {
+      type: 'sawtooth', voices: 3, spread: 10, gain: 0.14, attack: 0.01, decay: 0.08,
+      sustainLevel: 0.6, release: 0.4, filterStart: 4000, filterEnd: 1800, filterDecay: 0.3,
+      when: chordAt, delaySend: 0.22
     });
   });
 }
@@ -2328,77 +3227,344 @@ function sfxQuadClear() {
 function sfxCombo(combo) {
   const semitone = Math.pow(2, 1 / 12);
   const freq = 440 * Math.pow(semitone, Math.min(combo - 2, 24));
-  playEnvTone(freq, 0.12, { type: 'sawtooth', gain: 0.14, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.07 });
+  playFilteredTone(freq, 0.12, {
+    type: 'sawtooth', gain: 0.16, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.07,
+    filterStart: 5000, filterEnd: 1500, filterDecay: 0.08
+  });
 }
 
-// 짧은 3~4음 팡파레
+// 짧은 4음 팡파레(슈퍼소우로 두껍게)
 function sfxLevelUp() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
   [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-    playEnvTone(freq, 0.15, {
-      type: 'square', gain: 0.16, attack: 0.002, decay: 0.02, sustainLevel: 0.6, release: 0.08,
-      when: now + i * 0.08
+    const isLast = i === 3;
+    playDetunedStack(freq, 0.18, {
+      type: 'sawtooth', voices: 3, spread: 10, gain: 0.16, attack: 0.002, decay: 0.02,
+      sustainLevel: 0.6, release: isLast ? 0.25 : 0.08,
+      filterStart: 5500, filterEnd: 2000, filterDecay: 0.08,
+      when: now + i * 0.08, delaySend: isLast ? 0.16 : 0
     });
   });
 }
 
-// 낮은 폭발음: 노이즈 버스트 + 저음 하강
+// 낮은 폭발음: 노이즈 버스트(필터 하강 스윕) + FM 서브 그로울로 무게감 보강
 function sfxBomb() {
-  playNoiseBurst(0.25, { gain: 0.22, filterFreq: 500 });
+  playNoiseBurst(0.28, { gain: 0.24, filterFreq: 2200, filterFreqEnd: 200, filterType: 'lowpass' });
   playSlideTone(220, 45, 0.35, { type: 'sawtooth', gain: 0.2, attack: 0.001, decay: 0.05, release: 0.15 });
+  playFMTone(70, 0.3, { modRatio: 1.5, modIndex: 140, carrierType: 'sine', gain: 0.22, attack: 0.001, decay: 0.05, sustainLevel: 0.3, release: 0.2 });
 }
 
-// 하강하며 늘어지는 슬로우 발동음
+// 하강하며 늘어지는 슬로우 발동음 (필터가 함께 닫히며 "녹아내리는" 느낌 + 옅은 에코 꼬리)
 function sfxSlow() {
-  playSlideTone(700, 180, 0.6, { type: 'sine', gain: 0.16, attack: 0.01, release: 0.3 });
+  playSlideTone(700, 180, 0.6, { type: 'sine', gain: 0.16, attack: 0.01, release: 0.3, delaySend: 0.2 });
+  playFilteredTone(350, 0.6, {
+    type: 'triangle', gain: 0.1, attack: 0.02, decay: 0.1, sustainLevel: 0.4, release: 0.35,
+    filterStart: 2000, filterEnd: 300, filterDecay: 0.5
+  });
 }
 
-// 느린 하강 멜로디 (게임오버)
+// 변신음: FM 신스로 만든 짧은 SF 워프/스크램블 사운드 (블록 교체)
+function sfxSwap() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playFMTone(420, 0.1, { modRatio: 4, modIndex: 200, carrierType: 'square', gain: 0.16, attack: 0.001, decay: 0.02, sustainLevel: 0.4, release: 0.05, when: now });
+  playFMTone(720, 0.11, { modRatio: 3, modIndex: 160, carrierType: 'square', gain: 0.16, attack: 0.001, decay: 0.02, sustainLevel: 0.4, release: 0.06, when: now + 0.1, delaySend: 0.1 });
+}
+
+// 쓸어내는 스윕음 (줄 청소): 필터가 위/아래로 스윕하는 노이즈 두 번 - 빗자루로 스윽스윽
+function sfxLineClearItem() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playNoiseBurst(0.14, { gain: 0.17, filterFreq: 900, filterFreqEnd: 4500, filterType: 'bandpass', q: 0.8, when: now });
+  playNoiseBurst(0.14, { gain: 0.16, filterFreq: 4500, filterFreqEnd: 900, filterType: 'bandpass', q: 0.8, when: now + 0.15 });
+}
+
+// 얼어붙는 소리 (정지): FM 벨 3음 상승 + 딜레이로 얼음 결정이 맺히는 듯한 잔향
+function sfxFreeze() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [880, 1108.73, 1318.51].forEach((freq, i) => {
+    const isLast = i === 2;
+    playFMTone(freq, 0.4, {
+      modRatio: 3.5, modIndex: 40, carrierType: 'sine', gain: 0.16, attack: 0.005, decay: 0.08,
+      sustainLevel: 0.5, release: 0.3, when: now + i * 0.1, delaySend: isLast ? 0.3 : 0.12
+    });
+  });
+}
+
+// 밝은 3음 상승 + 스파클 - 상점 구매 성공음 "차링!"
+function sfxPurchase() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playFilteredTone(880, 0.08, {
+    type: 'square', gain: 0.16, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.04,
+    filterStart: 5000, filterEnd: 2000, filterDecay: 0.04, when: now
+  });
+  playFilteredTone(1318.51, 0.1, {
+    type: 'square', gain: 0.16, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.05,
+    filterStart: 6000, filterEnd: 2500, filterDecay: 0.05, when: now + 0.06
+  });
+  playDetunedStack(1760, 0.2, {
+    type: 'sawtooth', voices: 2, spread: 8, gain: 0.1, attack: 0.001, decay: 0.03, sustainLevel: 0.4,
+    release: 0.15, filterStart: 7000, filterEnd: 3000, filterDecay: 0.08, when: now + 0.12, delaySend: 0.18
+  });
+}
+
+// 짧은 부저음 - 구매 실패(코인 부족/보유 상한)
+function sfxPurchaseFail() {
+  playFilteredTone(150, 0.14, {
+    type: 'square', gain: 0.16, attack: 0.001, decay: 0.02, sustainLevel: 0.5, release: 0.06,
+    filterStart: 900, filterEnd: 250, filterDecay: 0.05, q: 1.2
+  });
+}
+
+// 밝은 벨 "딩!" - 코인 획득 (짧고 튀지 않게, 줄 클리어음 위에 살짝 얹히는 정도)
+function sfxCoin() {
+  playFMTone(1568, 0.14, {
+    modRatio: 2, modIndex: 15, carrierType: 'sine', gain: 0.14, attack: 0.002, decay: 0.03,
+    sustainLevel: 0.4, release: 0.1, delaySend: 0.12
+  });
+}
+
+// 부드러운 스와이프음 - 상점 열기(위로 스윽)/닫기(아래로 스윽)
+function sfxShopOpen() {
+  playNoiseBurst(0.16, { gain: 0.14, filterFreq: 500, filterFreqEnd: 3500, filterType: 'bandpass', q: 0.9 });
+  playSlideTone(300, 700, 0.16, { type: 'sine', gain: 0.08, attack: 0.01, release: 0.08 });
+}
+
+function sfxShopClose() {
+  playNoiseBurst(0.14, { gain: 0.13, filterFreq: 3000, filterFreqEnd: 400, filterType: 'bandpass', q: 0.9 });
+  playSlideTone(600, 260, 0.14, { type: 'sine', gain: 0.08, attack: 0.01, release: 0.07 });
+}
+
+// 느린 하강 멜로디 (게임오버) - 필터가 함께 닫히며 "기운이 빠지는" 느낌
 function sfxGameOver() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
-  [523.25, 493.88, 440.00, 392.00, 349.23].forEach((freq, i) => {
-    playEnvTone(freq, 0.35, {
-      type: 'triangle', gain: 0.18, attack: 0.01, decay: 0.05, sustainLevel: 0.5, release: 0.2,
-      when: now + i * 0.22
+  const notes = [523.25, 493.88, 440.00, 392.00, 349.23];
+  notes.forEach((freq, i) => {
+    const isLast = i === notes.length - 1;
+    playFilteredTone(freq, 0.35, {
+      type: 'triangle', gain: 0.2, attack: 0.01, decay: 0.05, sustainLevel: 0.5, release: 0.2,
+      filterStart: 2600 - i * 300, filterEnd: 500, filterDecay: 0.3,
+      when: now + i * 0.22, delaySend: isLast ? 0.25 : 0
     });
   });
 }
 
-// 밝고 신나는 축하 아르페지오 (테마 해금)
+// 밝고 신나는 축하 팡파레 (테마 해금, 슈퍼소우 + 에코)
 function sfxThemeUnlock() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
-  [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
-    playEnvTone(freq, 0.18, {
-      type: 'square', gain: 0.17, attack: 0.002, decay: 0.02, sustainLevel: 0.6, release: 0.1,
-      when: now + i * 0.07
+  const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+  notes.forEach((freq, i) => {
+    const isLast = i === notes.length - 1;
+    playDetunedStack(freq, 0.2, {
+      type: 'sawtooth', voices: 3, spread: 10, gain: 0.16, attack: 0.002, decay: 0.02,
+      sustainLevel: 0.6, release: isLast ? 0.35 : 0.1,
+      filterStart: 6000, filterEnd: 2200, filterDecay: 0.08,
+      when: now + i * 0.07, delaySend: isLast ? 0.22 : 0
     });
   });
 }
 
-// --- BGM (오리지널 칩튠 루프, lookahead 스케줄러) ---
-// C장조 4마디 루프(C - G - Am - F 진행, 8분음표 32스텝)의 완전 창작 멜로디.
-// 코로베이니키 등 원작 테트리스 음악과는 무관한 오리지널 곡이다.
-const BGM_MELODY = [
-  // Bar1: C
-  523.25, 659.25, 783.99, 659.25, 523.25, 587.33, 659.25, null,
-  // Bar2: G
-  392.00, 493.88, 587.33, 493.88, 392.00, 440.00, 493.88, null,
-  // Bar3: Am
-  440.00, 523.25, 659.25, 523.25, 440.00, 493.88, 523.25, null,
-  // Bar4: F (다음 루프의 C로 자연스럽게 이어지도록 마무리)
-  349.23, 440.00, 523.25, 440.00, 349.23, 392.00, 440.00, 392.00
-];
+// ------------------------------------------------------------
+// BGM: 노트 이름 헬퍼
+// ------------------------------------------------------------
+// 아래 배열들은 전부 'C5' 같은 음이름 문자열(또는 화음이면 ['C4','E4','G4'] 배열, 쉼표면 null)로
+// 적는다. N()/D()가 곡 정의 시점에 한 번만 주파수로 변환하므로 재생 중 매 스텝마다
+// 문자열을 파싱하지 않아 가볍다.
+const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-const BGM_BASS = [
-  130.81, null, 196.00, null, 130.81, null, 196.00, null,
-  196.00, null, 293.66, null, 196.00, null, 293.66, null,
-  220.00, null, 329.63, null, 220.00, null, 329.63, null,
-  174.61, null, 261.63, null, 174.61, null, 261.63, null
-];
+function noteFreq(name) {
+  if (name === null || name === undefined) return null;
+  const m = /^([A-G]#?)(\d)$/.exec(name);
+  if (!m) return null;
+  const [, pitch, octaveStr] = m;
+  const octave = parseInt(octaveStr, 10);
+  const semitoneIndex = NOTE_NAMES.indexOf(pitch);
+  const midi = (octave + 1) * 12 + semitoneIndex; // C4 = 60, A4 = 69(440Hz) 표준 매핑
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
 
+// 음이름/화음(배열)/쉼표(null)가 섞인 목록을 주파수 목록으로 변환한다.
+// 곡 데이터를 사람이 읽고 고치기 쉽게 음이름으로 적기 위한 헬퍼.
+function N(...items) {
+  return items.map(item => {
+    if (item === null || item === undefined) return null;
+    if (Array.isArray(item)) return item.map(noteFreq);
+    return noteFreq(item);
+  });
+}
+
+// 드럼 한 마디(8스텝)를 'kick' / 'snare' / 'hat' / 'hat_open' / 'kick+hat' 같은
+// 문자열(+로 동시 타격 표현)로 적기 위한 헬퍼. null/빈 문자열은 쉼표.
+function D(...hits) {
+  return hits.map(h => (h ? h.split('+') : []));
+}
+
+// bar(스텝 배열)를 times번 이어붙인다. 드럼처럼 짧은 그루브를 여러 마디 반복할 때 쓴다.
+function repeatBar(bar, times) {
+  const out = [];
+  for (let i = 0; i < times; i++) out.push(...bar);
+  return out;
+}
+
+// ------------------------------------------------------------
+// BGM 4곡 데이터
+// ------------------------------------------------------------
+// 각 곡은 melody/bass/arp/drums 4트랙, 8분음표 기준 마디당 8스텝 x 16마디 = 128스텝.
+// 16마디는 A파트(1~8마디) + B파트(9~16마디)로 나뉘고, 각 파트는 다시 4마디짜리
+// 프레이즈 2개(P1+P2, P3+P4)로 구성해 반복 속에도 변화감이 있다.
+// CONFIG에 직접 정의하기엔 헬퍼 함수(N/D)가 이 아래에서야 준비되므로,
+// CONFIG.BGM_TRACKS는 여기서 "덧붙이는" 형태로 정의한다(요구사항: 곡 데이터는 CONFIG.BGM_TRACKS에).
+
+// === 🎮 네온 클래식: 밝고 빠른 8비트 팝 (C 메이저, 경쾌) ===
+const neonMelP1 = N('C5', 'E5', 'G5', 'E5', 'C5', 'D5', 'E5', null, 'F5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5', null, 'G5', 'G5', 'A5', 'G5', 'F5', 'E5', 'D5', null, 'E5', 'C5', 'D5', 'B4', 'C5', null, null, null);
+const neonMelP2 = N('E5', 'G5', 'C6', 'G5', 'E5', 'D5', 'C5', null, 'A5', 'C6', 'B5', 'A5', 'G5', 'F5', 'E5', null, 'D5', 'F5', 'A5', 'F5', 'D5', 'C5', 'B4', null, 'C5', null, 'G4', null, 'C5', null, null, null);
+const neonMelP3 = N('A4', 'C5', 'E5', 'C5', 'A4', 'G4', 'A4', null, 'F4', 'A4', 'C5', 'A4', 'F4', 'E4', 'F4', null, 'G4', 'B4', 'D5', 'B4', 'G4', 'F4', 'G4', null, 'E4', null, 'A4', null, 'C5', null, null, null);
+const neonMelP4 = N('C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', null, 'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', null, 'C5', 'E5', 'G5', 'C6', 'G5', 'E5', 'C5', null, 'D5', null, 'C5', null, null, null, null, null);
+const neonMelody = [...neonMelP1, ...neonMelP2, ...neonMelP3, ...neonMelP4];
+
+const neonBassP1 = N('C3', null, 'C3', null, 'G2', null, 'C3', null, 'F2', null, 'F2', null, 'C3', null, 'F2', null, 'G2', null, 'G2', null, 'D3', null, 'G2', null, 'C3', null, 'G2', null, 'C3', null, null, null);
+const neonBassP2 = N('A2', null, 'A2', null, 'E3', null, 'A2', null, 'F2', null, 'F2', null, 'C3', null, 'F2', null, 'C3', null, 'C3', null, 'G2', null, 'C3', null, 'G2', null, 'D3', null, 'G2', null, null, null);
+const neonBassP3 = N('A2', null, 'A2', null, 'E3', null, 'A2', null, 'F2', null, 'F2', null, 'C3', null, 'F2', null, 'G2', null, 'G2', null, 'D3', null, 'G2', null, 'E2', null, 'B2', null, 'E3', null, null, null);
+const neonBassP4 = N('C3', null, 'E3', null, 'G3', null, 'C4', null, 'C3', null, 'G2', null, 'E2', null, 'C2', null, 'C3', null, 'G2', null, 'C3', null, 'G2', null, 'G2', null, 'C3', null, null, null, null, null);
+const neonBass = [...neonBassP1, ...neonBassP2, ...neonBassP3, ...neonBassP4];
+
+const neonArpP1 = N(null, null, ['C4', 'E4', 'G4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['G3', 'B3', 'D4'], null, null, null, ['G3', 'B3', 'D4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, null, null);
+const neonArpP2 = N(null, null, ['A3', 'C4', 'E4'], null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, ['G3', 'B3', 'D4'], null, null, null, null, null);
+const neonArpP3 = N(null, null, ['A3', 'C4', 'E4'], null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['G3', 'B3', 'D4'], null, null, null, ['G3', 'B3', 'D4'], null, null, null, ['E3', 'G3', 'B3'], null, null, null, null, null);
+const neonArpP4 = N(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, ['C4', 'E4', 'G4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, null, null, null, null, null, null);
+const neonArp = [...neonArpP1, ...neonArpP2, ...neonArpP3, ...neonArpP4];
+
+const neonDrumMain = D('kick', 'hat', 'snare', 'hat', 'kick', 'hat', 'snare', 'hat');
+const neonDrumFill = D('kick', 'hat', 'snare', 'hat', 'kick', 'snare', 'snare', 'hat');
+const neonDrumHalf = [...repeatBar(neonDrumMain, 7), ...neonDrumFill];
+const neonDrums = [...neonDrumHalf, ...neonDrumHalf];
+
+// === 🦖 공룡 정글: 퍼커시브하고 리드미컬, 이국적인 E 프리지안 스케일 ===
+const dinoMelP1 = N('E4', null, 'F4', 'E4', null, 'G4', null, 'E4', 'E4', null, 'F4', null, 'E4', null, 'D4', null, 'G4', null, 'F4', 'E4', null, 'F4', null, 'E4', 'E4', 'F4', 'E4', null, null, null, null, null);
+const dinoMelP2 = N('B4', null, 'C5', 'B4', null, 'A4', null, 'G4', 'G4', null, 'F4', null, 'E4', null, null, null, 'A4', null, 'G4', 'F4', null, 'G4', null, 'F4', 'E4', null, null, null, 'E4', null, null, null);
+const dinoMelP3 = N('B4', null, 'C5', 'B4', null, 'D5', null, 'B4', 'B4', null, 'C5', null, 'B4', null, 'A4', null, 'D5', null, 'C5', 'B4', null, 'C5', null, 'B4', 'A4', 'G4', 'F4', null, null, null, null, null);
+const dinoMelP4 = N('E5', null, 'D5', 'C5', null, 'B4', null, 'A4', 'G4', null, 'F4', null, 'E4', null, null, null, 'E4', 'F4', 'G4', 'F4', 'E4', null, 'D4', null, 'E4', null, null, null, null, null, null, null);
+const dinoMelody = [...dinoMelP1, ...dinoMelP2, ...dinoMelP3, ...dinoMelP4];
+
+const dinoBassP1 = N('E2', null, null, 'E2', null, null, 'E2', null, 'E2', null, null, 'E2', null, 'F2', null, null, 'E2', null, null, 'E2', null, null, 'E2', null, 'E2', null, 'G2', null, null, null, null, null);
+const dinoBassP2 = N('E2', null, null, 'E2', null, null, 'E2', null, 'E2', null, null, 'E2', null, 'F2', null, null, 'G2', null, null, 'G2', null, null, 'G2', null, 'E2', null, null, null, 'E2', null, null, null);
+const dinoBassP3 = N('B2', null, null, 'B2', null, null, 'B2', null, 'B2', null, null, 'B2', null, 'C3', null, null, 'B2', null, null, 'B2', null, null, 'B2', null, 'A2', 'G2', 'F2', null, null, null, null, null);
+const dinoBassP4 = N('E2', null, null, 'E2', null, null, 'E2', null, 'E2', null, null, 'E2', null, 'F2', null, null, 'E2', null, 'G2', null, 'E2', null, 'D2', null, 'E2', null, null, null, null, null, null, null);
+const dinoBass = [...dinoBassP1, ...dinoBassP2, ...dinoBassP3, ...dinoBassP4];
+
+const dinoArpP1 = N(null, null, null, null, null, 'B4', null, null, null, null, null, null, null, 'A4', null, null, null, null, null, null, null, 'C5', null, null, null, null, null, null, null, 'B4', null, null);
+const dinoArpP2 = N(null, null, null, null, null, 'G4', null, null, null, null, null, null, null, 'F4', null, null, null, null, null, null, null, 'A4', null, null, null, null, null, null, null, 'G4', null, null);
+const dinoArpP3 = N(null, null, null, null, null, 'D5', null, null, null, null, null, null, null, 'C5', null, null, null, null, null, null, null, 'E5', null, null, null, null, null, null, null, 'D5', null, null);
+const dinoArpP4 = N(null, null, null, null, null, 'A4', null, null, null, null, null, null, null, 'G4', null, null, null, null, null, null, null, 'B4', null, null, null, null, null, null, null, 'A4', null, null);
+const dinoArp = [...dinoArpP1, ...dinoArpP2, ...dinoArpP3, ...dinoArpP4];
+
+const dinoDrumMain = D('kick', 'hat', 'hat', 'snare', 'kick', 'hat', 'hat', 'snare');
+const dinoDrumFill = D('kick', 'snare', 'hat', 'snare', 'kick', 'snare', 'hat', 'snare');
+const dinoDrumHalf = [...repeatBar(dinoDrumMain, 7), ...dinoDrumFill];
+const dinoDrums = [...dinoDrumHalf, ...dinoDrumHalf];
+
+// === 🚀 우주 탐험: 몽환적이고 웅장한 신스 (C 리디안, 아르페지오 + 넓은 패드) ===
+const spaceMelP1 = N('C5', null, null, null, 'E5', null, null, null, 'G5', null, null, 'F#5', 'E5', null, null, null, 'D5', null, null, null, 'G5', null, null, null, 'E5', null, 'D5', null, 'C5', null, null, null);
+const spaceMelP2 = N('A5', null, null, null, 'G5', null, null, null, 'F#5', null, null, 'E5', 'D5', null, null, null, 'E5', null, null, null, 'C6', null, null, null, 'B5', null, 'A5', null, 'G5', null, null, null);
+const spaceMelP3 = N('A4', null, null, null, 'C5', null, null, null, 'E5', null, null, 'D5', 'C5', null, null, null, 'B4', null, null, null, 'D5', null, null, null, 'F#5', null, 'E5', null, 'D5', null, null, null);
+const spaceMelP4 = N('G5', null, 'A5', null, 'B5', null, 'C6', null, 'D6', null, null, 'C6', 'B5', null, 'A5', null, 'G5', null, 'E5', null, 'C5', null, null, null, 'C5', null, null, null, null, null, null, null);
+const spaceMelody = [...spaceMelP1, ...spaceMelP2, ...spaceMelP3, ...spaceMelP4];
+
+const spaceBassP1 = N('C2', null, null, null, null, null, null, null, 'G2', null, null, null, null, null, null, null, 'D2', null, null, null, null, null, null, null, 'C2', null, null, null, null, null, null, null);
+const spaceBassP2 = N('A2', null, null, null, null, null, null, null, 'E2', null, null, null, null, null, null, null, 'C2', null, null, null, null, null, null, null, 'G2', null, null, null, null, null, null, null);
+const spaceBassP3 = N('A2', null, null, null, null, null, null, null, 'E2', null, null, null, null, null, null, null, 'B2', null, null, null, null, null, null, null, 'D2', null, null, null, null, null, null, null);
+const spaceBassP4 = N('G2', null, null, null, null, null, null, null, 'D2', null, null, null, null, null, null, null, 'E2', null, null, null, null, 'G2', null, null, 'C2', null, null, null, null, null, null, null);
+const spaceBass = [...spaceBassP1, ...spaceBassP2, ...spaceBassP3, ...spaceBassP4];
+
+const spaceArpP1 = N('C4', 'E4', 'G4', 'C5', 'E4', 'G4', 'C5', 'E5', 'G3', 'B3', 'D4', 'G4', 'B3', 'D4', 'G4', 'B4', 'D4', 'F#4', 'A4', 'D5', 'F#4', 'A4', 'D5', 'F#5', 'C4', 'E4', 'G4', 'C5', null, null, null, null);
+const spaceArpP2 = N('A3', 'C4', 'E4', 'A4', 'C4', 'E4', 'A4', 'C5', 'E4', 'G4', 'B4', 'E5', 'G4', 'B4', 'E5', 'G5', 'C4', 'E4', 'G4', 'C5', 'E4', 'G4', 'C5', 'E5', 'G3', 'B3', 'D4', 'G4', null, null, null, null);
+const spaceArpP3 = N('A3', 'C4', 'E4', 'A4', 'C4', 'E4', 'A4', 'C5', 'E4', 'G4', 'B4', 'E5', 'G4', 'B4', 'E5', 'G5', 'B3', 'D4', 'F#4', 'B4', 'D4', 'F#4', 'B4', 'D5', 'D4', 'F#4', 'A4', 'D5', null, null, null, null);
+const spaceArpP4 = N('G3', 'B3', 'D4', 'G4', 'B3', 'D4', 'G4', 'B4', 'A3', 'C4', 'E4', 'A4', 'C4', 'E4', 'A4', 'C5', 'E4', 'G4', 'C5', 'E5', 'G4', 'C5', 'E5', 'G5', 'C4', 'E4', 'G4', 'C5', null, null, null, null);
+const spaceArp = [...spaceArpP1, ...spaceArpP2, ...spaceArpP3, ...spaceArpP4];
+
+const spaceDrumMain = D('kick', null, null, null, 'hat', null, null, null);
+const spaceDrumFill = D('kick', null, 'hat', null, 'kick', null, 'hat', null);
+const spaceDrumHalf = [...repeatBar(spaceDrumMain, 7), ...spaceDrumFill];
+const spaceDrums = [...spaceDrumHalf, ...spaceDrumHalf];
+
+// === ⚔️ 보스전(다음 단계용 미리 준비): 긴장감 있는 A 하모닉 마이너 ===
+const bossMelP1 = N('A4', 'A4', 'C5', 'A4', 'E5', 'A4', 'A4', null, 'G#4', 'A4', 'B4', 'C5', null, null, null, null, 'A4', 'A4', 'C5', 'A4', 'F5', 'A4', 'A4', null, 'E5', 'D5', 'C5', 'B4', 'A4', null, null, null);
+const bossMelP2 = N('E5', 'E5', 'G#5', 'E5', 'B5', 'E5', 'E5', null, 'F5', 'E5', 'D5', 'C5', null, null, null, null, 'E5', 'E5', 'G#5', 'E5', 'C6', 'E5', 'E5', null, 'B5', 'A5', 'G#5', 'F5', 'E5', null, null, null);
+const bossMelP3 = N('D5', 'D5', 'F5', 'D5', 'A5', 'D5', 'D5', null, 'C5', 'D5', 'E5', 'F5', null, null, null, null, 'D5', 'D5', 'F5', 'D5', 'G#5', 'D5', 'D5', null, 'A5', 'G#5', 'F5', 'E5', 'D5', null, null, null);
+const bossMelP4 = N('A4', 'C5', 'E5', 'G#5', 'A5', 'G#5', 'E5', 'C5', 'A5', 'G#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'A4', 'A4', 'C5', 'A4', 'E5', 'A4', 'A4', null, 'A4', null, null, null, null, null, null, null);
+const bossMelody = [...bossMelP1, ...bossMelP2, ...bossMelP3, ...bossMelP4];
+
+const bossBassP1 = N('A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'G#2', 'G#2', 'G#2', 'G#2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'F2', 'F2', 'F2', 'F2', 'E2', 'E2', 'E2', 'E2', 'A2', 'A2', 'A2', 'A2');
+const bossBassP2 = N('A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'G#2', 'G#2', 'G#2', 'G#2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'C3', 'C3', 'C3', 'C3', 'B2', 'B2', 'B2', 'B2', 'E2', 'E2', 'E2', 'E2');
+const bossBassP3 = N('D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'C2', 'C2', 'C2', 'C2', 'D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'D2', 'G#2', 'G#2', 'G#2', 'G#2', 'A2', 'A2', 'A2', 'A2', 'D2', 'D2', 'D2', 'D2');
+const bossBassP4 = N('A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'A2', 'F2', 'F2', 'F2', 'F2', 'E2', 'E2', 'E2', 'E2', 'A2', 'A2', 'A2', 'A2');
+const bossBass = [...bossBassP1, ...bossBassP2, ...bossBassP3, ...bossBassP4];
+
+const bossArpP1 = N(null, ['A3', 'C4', 'E4'], null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['G#3', 'B3', 'D4'], null, null, null, null, null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['F3', 'A3', 'C4'], null, null, null, ['E3', 'G#3', 'B3'], null, null, null, null, null, null);
+const bossArpP2 = N(null, ['A3', 'C4', 'E4'], null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['G#3', 'B3', 'D4'], null, null, null, null, null, null, null, ['A3', 'C4', 'E4'], null, null, null, ['C4', 'E4', 'G#4'], null, null, null, ['E3', 'G#3', 'B3'], null, null, null, null, null, null);
+const bossArpP3 = N(null, ['D4', 'F4', 'A4'], null, null, null, ['D4', 'F4', 'A4'], null, null, null, ['C4', 'E4', 'G4'], null, null, null, null, null, null, null, ['D4', 'F4', 'A4'], null, null, null, ['G#3', 'B3', 'D4'], null, null, null, ['E3', 'G#3', 'B3'], null, null, null, null, null, null);
+const bossArpP4 = N(['A3', 'C4', 'E4'], null, ['A3', 'C4', 'E4'], null, ['A3', 'C4', 'E4'], null, ['A3', 'C4', 'E4'], null, ['E3', 'G#3', 'B3'], null, ['E3', 'G#3', 'B3'], null, ['E3', 'G#3', 'B3'], null, ['E3', 'G#3', 'B3'], null, null, ['A3', 'C4', 'E4'], null, null, null, ['A3', 'C4', 'E4'], null, null, null, null, null, null, null, null, null, null);
+const bossArp = [...bossArpP1, ...bossArpP2, ...bossArpP3, ...bossArpP4];
+
+const bossDrumMain = D('kick', 'hat', 'snare', 'kick', 'kick', 'hat', 'snare', 'hat');
+const bossDrumFill = D('kick', 'snare', 'kick', 'snare', 'kick', 'snare', 'kick', 'snare');
+const bossDrumHalf = [...repeatBar(bossDrumMain, 7), ...bossDrumFill];
+const bossDrums = [...bossDrumHalf, ...bossDrumHalf];
+
+CONFIG.BGM_TRACKS = {
+  neon: {
+    bpm: 152,
+    totalSteps: 128,
+    tracks: {
+      melody: { timbre: 'filtered', steps: neonMelody, opts: { type: 'square', gain: 0.42, attack: 0.004, decay: 0.03, sustainLevel: 0.5, release: 0.05, filterStart: 4500, filterEnd: 1500, filterDecay: 0.12, q: 1 } },
+      bass:   { timbre: 'filtered', steps: neonBass,   opts: { type: 'triangle', gain: 0.4, attack: 0.005, decay: 0.04, sustainLevel: 0.7, release: 0.08, filterStart: 1200, filterEnd: 400, filterDecay: 0.1, q: 0.7 } },
+      arp:    { timbre: 'detuned', steps: neonArp,     opts: { type: 'sawtooth', voices: 3, spread: 14, gain: 0.16, attack: 0.005, decay: 0.05, sustainLevel: 0.4, release: 0.08, filterStart: 5000, filterEnd: 2000, filterDecay: 0.1, q: 0.8 } },
+      drums:  { steps: neonDrums, hatDelaySend: 0 }
+    }
+  },
+  dino: {
+    bpm: 132,
+    totalSteps: 128,
+    tracks: {
+      melody: { timbre: 'filtered', steps: dinoMelody, opts: { type: 'square', gain: 0.4, attack: 0.002, decay: 0.02, sustainLevel: 0.4, release: 0.03, filterStart: 3500, filterEnd: 900, filterDecay: 0.08, q: 1.2 } },
+      bass:   { timbre: 'filtered', steps: dinoBass,   opts: { type: 'triangle', gain: 0.42, attack: 0.004, decay: 0.03, sustainLevel: 0.65, release: 0.06, filterStart: 900, filterEnd: 300, filterDecay: 0.08, q: 0.6 } },
+      arp:    { timbre: 'fm', steps: dinoArp,          opts: { modRatio: 3.5, modIndex: 80, carrierType: 'sine', gain: 0.18, attack: 0.002, decay: 0.06, sustainLevel: 0.3, release: 0.1 } },
+      drums:  { steps: dinoDrums, hatDelaySend: 0 }
+    }
+  },
+  space: {
+    bpm: 96,
+    totalSteps: 128,
+    tracks: {
+      melody: { timbre: 'fm', steps: spaceMelody,      opts: { modRatio: 1.5, modIndex: 25, carrierType: 'sine', gain: 0.3, attack: 0.02, decay: 0.15, sustainLevel: 0.5, release: 0.4, delaySend: 0.25 } },
+      bass:   { timbre: 'filtered', steps: spaceBass,  opts: { type: 'sine', gain: 0.38, attack: 0.03, decay: 0.1, sustainLevel: 0.8, release: 0.3, filterStart: 600, filterEnd: 250, filterDecay: 0.3, q: 0.5 } },
+      arp:    { timbre: 'detuned', steps: spaceArp,    opts: { type: 'sawtooth', voices: 3, spread: 18, gain: 0.14, attack: 0.01, decay: 0.08, sustainLevel: 0.5, release: 0.15, filterStart: 3500, filterEnd: 1800, filterDecay: 0.25, q: 0.6, delaySend: 0.3 } },
+      drums:  { steps: spaceDrums, hatDelaySend: 0.25 }
+    }
+  },
+  boss: {
+    bpm: 168,
+    totalSteps: 128,
+    tracks: {
+      melody: { timbre: 'filtered', steps: bossMelody, opts: { type: 'sawtooth', gain: 0.44, attack: 0.002, decay: 0.02, sustainLevel: 0.5, release: 0.04, filterStart: 5500, filterEnd: 2200, filterDecay: 0.06, q: 1.5 } },
+      bass:   { timbre: 'fm', steps: bossBass,         opts: { modRatio: 2, modIndex: 120, carrierType: 'sawtooth', gain: 0.4, attack: 0.002, decay: 0.03, sustainLevel: 0.6, release: 0.05 } },
+      arp:    { timbre: 'detuned', steps: bossArp,     opts: { type: 'sawtooth', voices: 3, spread: 20, gain: 0.17, attack: 0.003, decay: 0.04, sustainLevel: 0.5, release: 0.08, filterStart: 4500, filterEnd: 1500, filterDecay: 0.08, q: 1 } },
+      drums:  { steps: bossDrums, hatDelaySend: 0 }
+    }
+  }
+};
+
+// ------------------------------------------------------------
+// BGM 스케줄러 (currentTime 기반 lookahead)
+// ------------------------------------------------------------
+// setInterval/setTimeout 콜백 자체의 타이밍은 부정확할 수 있으므로, 실제 음 재생 시각은
+// 항상 audioCtx.currentTime을 기준으로 미리(최대 100ms 앞) 예약해 정확한 박자를 보장한다.
+let currentSongId = 'neon'; // applyTheme()이 즉시 테마에 맞는 곡으로 갱신한다
 let bgmTimerId = null;
 let bgmStepIndex = 0;
 let bgmNextStepTime = 0;
@@ -2406,36 +3572,49 @@ const BGM_SCHEDULE_AHEAD = 0.1;   // 초, 이만큼 앞선 구간까지 미리 �
 const BGM_TICK_INTERVAL_MS = 25;  // ms, setInterval 폴링 간격 (lookahead로 타이밍 밀림 방지)
 
 function bgmStepSeconds() {
-  return 60 / CONFIG.BGM_BPM / 2; // 8분음표 길이
+  const song = CONFIG.BGM_TRACKS[currentSongId];
+  return 60 / (song ? song.bpm : 140) / 2; // 8분음표 길이
+}
+
+// timbre에 맞는 악기 함수로 note(단일 주파수 또는 화음 배열)를 재생한다. null(쉼표)이면 무시.
+function playLayerNote(timbre, note, duration, when, opts) {
+  if (note === null || note === undefined) return;
+  const freqs = Array.isArray(note) ? note : [note];
+  freqs.forEach(freq => {
+    if (freq === null || freq === undefined) return;
+    const finalOpts = { ...opts, when, destination: bgmGain };
+    if (timbre === 'detuned') playDetunedStack(freq, duration, finalOpts);
+    else if (timbre === 'fm') playFMTone(freq, duration, finalOpts);
+    else playFilteredTone(freq, duration, finalOpts);
+  });
 }
 
 function scheduleBgmStep(stepIndex, time) {
-  const melodyFreq = BGM_MELODY[stepIndex % BGM_MELODY.length];
-  const bassFreq = BGM_BASS[stepIndex % BGM_BASS.length];
-  const stepDur = bgmStepSeconds();
+  const song = CONFIG.BGM_TRACKS[currentSongId];
+  if (!song) return;
+  const noteDur = bgmStepSeconds() * 0.92;
+  const t = song.tracks;
 
-  if (melodyFreq) {
-    playEnvTone(melodyFreq, stepDur * 0.85, {
-      type: 'square', gain: 0.5, attack: 0.004, decay: 0.02, sustainLevel: 0.55, release: stepDur * 0.3,
-      when: time, destination: bgmGain
-    });
-  }
-  if (bassFreq) {
-    playEnvTone(bassFreq, stepDur * 1.7, {
-      type: 'triangle', gain: 0.42, attack: 0.005, decay: 0.04, sustainLevel: 0.6, release: stepDur * 0.5,
-      when: time, destination: bgmGain
-    });
-  }
+  const melodyNote = t.melody.steps[stepIndex % t.melody.steps.length];
+  playLayerNote(t.melody.timbre, melodyNote, noteDur, time, t.melody.opts);
+
+  const bassNote = t.bass.steps[stepIndex % t.bass.steps.length];
+  playLayerNote(t.bass.timbre, bassNote, noteDur, time, t.bass.opts);
+
+  const arpNote = t.arp.steps[stepIndex % t.arp.steps.length];
+  playLayerNote(t.arp.timbre, arpNote, noteDur, time, t.arp.opts);
+
+  const drumHits = t.drums.steps[stepIndex % t.drums.steps.length];
+  triggerDrumStep(drumHits, time, t.drums.hatDelaySend || 0);
 }
 
-// currentTime 기반 lookahead 스케줄러: setInterval/setTimeout 콜백 자체의 타이밍은
-// 부정확할 수 있으므로, 실제 음 재생 시각은 항상 audioCtx.currentTime을 기준으로
-// 미리(최대 100ms 앞) 예약해 정확한 박자를 보장한다.
 function bgmScheduler() {
+  const song = CONFIG.BGM_TRACKS[currentSongId];
+  if (!song) return;
   while (bgmNextStepTime < audioCtx.currentTime + BGM_SCHEDULE_AHEAD) {
     scheduleBgmStep(bgmStepIndex, bgmNextStepTime);
     bgmNextStepTime += bgmStepSeconds();
-    bgmStepIndex = (bgmStepIndex + 1) % BGM_MELODY.length;
+    bgmStepIndex = (bgmStepIndex + 1) % song.totalSteps;
   }
 }
 
@@ -2454,20 +3633,40 @@ function stopBGM() {
   }
 }
 
+// 다른 곡으로 전환한다. BGM이 재생 중이면 정지 후 새 곡으로 바로 다시 시작해서
+// "자연스럽게 교체"되고, 재생 중이 아니면 다음 startBGM() 호출부터 새 곡이 나온다.
+// switchBgmTrack('boss')처럼 테마와 무관하게 직접 호출할 수도 있다(보스전 등 향후 확장용).
+function switchBgmTrack(songId) {
+  if (!CONFIG.BGM_TRACKS[songId] || songId === currentSongId) return;
+  currentSongId = songId;
+  if (bgmTimerId !== null) {
+    stopBGM();
+    startBGM();
+  }
+}
+
+// 테마 id와 곡 id가 1:1로 매칭된다(neon/dino/space). 매칭되는 곡이 없으면 neon으로 대체.
+function setBgmTrackForTheme(themeId) {
+  const songId = CONFIG.BGM_TRACKS[themeId] ? themeId : 'neon';
+  switchBgmTrack(songId);
+}
+
 // --- 음소거 버튼 ---
 const muteBtn = document.getElementById('muteBtn');
 updateMuteButton();
 muteBtn.addEventListener('click', toggleMute);
+
 
 // ============================================================
 // GAME LOOP
 // ============================================================
 // 고정 타임스텝(1/60초) 업데이트 + requestAnimationFrame 렌더 루프
 function update(dt) {
-  if (game.state === 'paused' || game.state === 'start') return;
+  if (game.state === 'paused' || game.state === 'start' || game.state === 'shop') return;
 
   updateEffects(dt);
   updateSlowTimer(dt);
+  updateFreezeTimer(dt);
 
   if (game.state === 'clearing') {
     game.clearTimer += dt;
@@ -2480,6 +3679,8 @@ function update(dt) {
   if (game.state !== 'playing') return; // gameover
 
   updateDAS(dt);
+
+  if (game.freeze.active) return; // 정지 아이템 효과: 낙하/락딜레이 완전 정지 (이동/회전은 위 updateDAS로 계속 동작)
 
   const baseInterval = input.down ? CONFIG.SOFT_DROP_INTERVAL : currentLevelSpeed();
   const interval = game.slow.active ? baseInterval / CONFIG.SLOW_FACTOR : baseInterval;
@@ -2540,7 +3741,7 @@ function applyContainerTransform() {
 }
 
 function resizeContainer() {
-  currentScale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+  currentScale = Math.min(window.innerWidth / 1280, window.innerHeight / 1050);
   applyContainerTransform();
 }
 window.addEventListener('resize', resizeContainer);
@@ -2548,6 +3749,14 @@ resizeContainer();
 
 applyTheme(loadSelectedTheme());
 refreshThemeUI();
+
+buildShopGrid();
+buildInventoryBar();
+updateCoinText();
+refreshShopUI();
+
+shopBtn.addEventListener('click', toggleShop);
+shopCloseBtn.addEventListener('click', closeShop);
 
 function startGame() {
   // 브라우저 자동재생 정책: 첫 사용자 입력(이 클릭) 시점에 AudioContext를 생성/resume
