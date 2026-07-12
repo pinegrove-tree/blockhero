@@ -26,7 +26,7 @@
     top: 50%;
     left: 50%;
     width: 1280px;
-    height: 1050px;
+    height: 1140px;
     transform-origin: center center;
     transform: translate(-50%, -50%);
     display: flex;
@@ -74,6 +74,88 @@
     position: relative;
   }
 
+  .boss-panel {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    z-index: 5;
+    background: rgba(10,10,20,0.8);
+    border: 2px solid #ff4d4d;
+    border-radius: 10px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  .boss-panel.hidden {
+    display: none;
+  }
+
+  .boss-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .boss-icon {
+    font-size: 22px;
+    display: inline-block;
+  }
+
+  .boss-icon.hit {
+    animation: bossHit 0.35s ease;
+  }
+
+  @keyframes bossHit {
+    0%, 100% { transform: translateX(0); filter: brightness(1); }
+    20% { transform: translateX(-4px); filter: brightness(2) saturate(2); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+
+  .boss-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    flex: 1;
+    text-align: left;
+  }
+
+  .boss-timer {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .boss-timer.urgent {
+    color: #ff4d4d;
+    animation: bossTimerBlink 0.5s ease-in-out infinite;
+  }
+
+  @keyframes bossTimerBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .boss-hp-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background: #14141f;
+    overflow: hidden;
+  }
+
+  .boss-hp-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ff4d4d, #ff8a5b);
+    transition: width 0.4s ease;
+  }
+
   .stats {
     display: flex;
     flex-direction: column;
@@ -96,6 +178,44 @@
     font-size: 24px;
     font-weight: bold;
     color: var(--accent);
+  }
+
+  .stage-box {
+    width: 160px;
+    box-sizing: border-box;
+    background: #23233a;
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  .stage-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .stage-progress-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 6px;
+    background: #14141f;
+    overflow: hidden;
+  }
+
+  .stage-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  .stage-progress-label {
+    font-size: 11px;
+    color: #cfcfe6;
+    margin-top: 4px;
   }
 
   .new-record {
@@ -137,10 +257,6 @@
     display: none;
   }
 
-  #themeUnlockOverlay {
-    z-index: 20;
-  }
-
   .overlay h1 {
     font-size: 52px;
     margin: 0;
@@ -170,91 +286,6 @@
     padding: 10px 18px;
   }
 
-  .total-score-display {
-    font-size: 15px;
-    color: #cfcfe6;
-    margin: 0;
-  }
-
-  .theme-select-row {
-    display: flex;
-    gap: 14px;
-  }
-
-  .theme-card {
-    width: 140px;
-    padding: 10px;
-    border-radius: 12px;
-    background: #1c1c2e;
-    border: 3px solid #4a4a70;
-    cursor: pointer;
-    text-align: center;
-    transition: transform 0.1s ease, border-color 0.1s ease;
-    position: relative;
-    box-sizing: border-box;
-  }
-
-  .theme-card:not(.locked):hover {
-    transform: translateY(-3px);
-  }
-
-  .theme-card.selected {
-    border-color: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
-  }
-
-  .theme-card.locked {
-    cursor: default;
-    filter: grayscale(0.85) brightness(0.55);
-  }
-
-  .theme-card-icon {
-    font-size: 30px;
-    line-height: 1.1;
-  }
-
-  .theme-card-name {
-    font-size: 13px;
-    font-weight: bold;
-    color: #fff;
-    margin: 4px 0;
-  }
-
-  .theme-card-chips {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 4px;
-  }
-
-  .theme-card-chips .chip {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.35);
-  }
-
-  .lock-badge {
-    display: none;
-    font-size: 20px;
-    margin-top: 2px;
-  }
-
-  .theme-card.locked .lock-badge {
-    display: block;
-  }
-
-  .unlock-req {
-    display: none;
-    font-size: 10px;
-    color: #ffd9d9;
-    margin-top: 2px;
-  }
-
-  .theme-card.locked .unlock-req {
-    display: block;
-  }
-
   .bigBtn {
     font-size: 26px;
     font-weight: bold;
@@ -271,11 +302,6 @@
   .bigBtn:active {
     transform: translateY(6px);
     box-shadow: 0 0 0 #a06400;
-  }
-
-  .unlock-btn-row {
-    display: flex;
-    gap: 12px;
   }
 
   .bigBtn.small {
@@ -309,19 +335,6 @@
 
   .new-record-label.hidden {
     display: none;
-  }
-
-  .theme-palette {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .theme-palette .chip {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: 2px solid rgba(255,255,255,0.4);
   }
 
   .mute-btn {
@@ -588,8 +601,6 @@
 
   <div id="startOverlay" class="overlay">
     <h1 id="gameTitleH1">🧱 블록 히어로</h1>
-    <p id="totalScoreDisplay" class="total-score-display">누적 0점</p>
-    <div id="themeSelectRow" class="theme-select-row"></div>
     <div class="keycaps">
       <div class="keycap-item"><span class="keycap">←→</span><span class="keycap-label">이동</span></div>
       <div class="keycap-item"><span class="keycap">Q</span><span class="keycap-label">회전</span></div>
@@ -634,19 +645,8 @@
     <p id="finalLines">지운 줄: 0</p>
     <p id="finalBest">최고 기록: 0</p>
     <p id="finalCoins">🪙 이번 판에서 모은 코인: 0</p>
-    <div id="gameOverThemeSelectRow" class="theme-select-row"></div>
+    <p id="finalStage">도달 스테이지: 1 🎮</p>
     <button id="restartBtn" class="bigBtn">다시 하기</button>
-  </div>
-
-  <div id="themeUnlockOverlay" class="overlay hidden">
-    <h2>🎉 새 테마 해금!</h2>
-    <div id="unlockThemeIcon" style="font-size:60px; line-height:1;"></div>
-    <p id="unlockThemeName" style="font-size:22px; font-weight:bold; margin:0;"></p>
-    <div id="unlockThemePalette" class="theme-palette"></div>
-    <div class="unlock-btn-row">
-      <button id="unlockConfirmBtn" class="bigBtn small">신난다!</button>
-      <button id="unlockPlayNowBtn" class="bigBtn small">이 테마로 바로 하기</button>
-    </div>
   </div>
 
   <div class="game-row">
@@ -657,6 +657,14 @@
 
     <div class="board-wrap">
       <canvas id="boardCanvas" width="320" height="640"></canvas>
+      <div id="bossPanel" class="boss-panel hidden">
+        <div class="boss-header">
+          <span id="bossIcon" class="boss-icon">🤖</span>
+          <span id="bossName" class="boss-name">보스</span>
+          <span id="bossTimer" class="boss-timer">3:00</span>
+        </div>
+        <div class="boss-hp-track"><div id="bossHpFill" class="boss-hp-fill"></div></div>
+      </div>
     </div>
 
     <div class="right-panel">
@@ -667,6 +675,11 @@
         <div>레벨<br><span id="levelText">1</span></div>
         <div>지운 줄<br><span id="linesText">0</span></div>
         <div>최고 점수<br><span id="bestText">0</span></div>
+      </div>
+      <div class="stage-box">
+        <div id="stageNameEl" class="stage-name">🎮 네온 시티</div>
+        <div class="stage-progress-track"><div id="stageProgressFill" class="stage-progress-fill"></div></div>
+        <div id="stageProgressLabel" class="stage-progress-label">다음 스테이지까지 10,000점</div>
       </div>
       <button id="shopBtn" class="bigBtn small shop-btn">🛒 상점 (S)</button>
     </div>
@@ -705,10 +718,7 @@ const CONFIG = {
   DAS_DELAY: 170,  // ms, 키를 누르고 처음 반복이 시작되기까지
   ARR_RATE: 40,     // ms, 이후 반복 이동 간격
 
-  STORAGE_KEY: 'bh_highScore',
-  TOTAL_SCORE_KEY: 'bh_totalScore', // 테마 해금용 누적 점수. 판을 넘어 계속 쌓인다 (코인/인벤토리와 다름)
-  UNLOCKED_THEMES_KEY: 'bh_unlockedThemes',
-  SELECTED_THEME_KEY: 'bh_selectedTheme',
+  STORAGE_KEY: 'bh_highScore', // 판을 넘어 계속 유지되는 유일한 진행 기록 (스테이지는 매 판 1번부터 다시 시작)
 
   // --- 연출(EFFECTS) 밸런싱 ---
   LINE_FLASH_DURATION: 150,     // ms, 줄 클리어 전 흰색 플래시 지속 시간
@@ -726,11 +736,11 @@ const CONFIG = {
   // 아이템 가격은 전부 여기(ITEM_SHOP)에서 관리한다. 새 아이템 추가 시
   // 여기에 가격을 넣고 ITEMS 레지스트리(아이템 섹션)에 icon/name/desc/use()를 추가하면 된다.
   ITEM_SHOP: {
-    bomb: { price: 30 },
-    slow: { price: 20 },
-    swap: { price: 40 },
-    lineclear: { price: 60 },
-    freeze: { price: 50 }
+    bomb: { price: 12 },
+    slow: { price: 8 },
+    swap: { price: 15 },
+    fill: { price: 25 },
+    freeze: { price: 20 }
   },
   MAX_ITEM_STACK: 3,             // 아이템 1종당 최대 보유 개수 (판마다 초기화되므로 넉넉할 필요 없음)
 
@@ -757,17 +767,21 @@ const CONFIG = {
   SWAP_TARGET_TYPE: 'I',         // 블록 교체 아이템이 바꿔주는 블록 종류
   SWAP_BANNER_DURATION: 600,     // ms, "교체!" 배너 지속 시간
 
-  LINECLEAR_ROWS: 2,             // 줄 청소 아이템이 맨 아래부터 지우는 줄 수
-  LINECLEAR_SHAKE_DURATION: 300, // ms
-  LINECLEAR_SHAKE_MAGNITUDE: 8,  // px
-  LINECLEAR_BANNER_DURATION: 700, // ms, "CLEAN!" 배너 지속 시간
+  FILL_CELL_COUNT: 5,            // 채우기 아이템이 한 번에 채우는 빈칸 최대 개수
+  FILL_ITEM_COLOR: '#f4d58d',    // 아이템으로 채운 칸의 고정 색 (테마/스테이지 무관, 식별용)
+  FILL_STEP_STAGGER: 90,         // ms, 칸이 하나씩 "톡톡" 채워지는 연출 간격
+  FILL_BANNER_DURATION: 700,     // ms, "채우기!" 배너 지속 시간
 
   FREEZE_DURATION: 5000,         // ms, 정지 아이템 지속 시간
   FREEZE_BANNER_DURATION: 800,   // ms, "FREEZE!" 배너 지속 시간
   FREEZE_OVERLAY_FADE_DURATION: 600, // ms, 정지 발동 시 화면 오버레이 페이드 시간
 
-  // --- 테마 스킨 밸런싱 ---
-  THEME_UNLOCK_BANNER_DURATION: 1200, // ms, 테마 해금 배너 지속 시간
+  // --- 스테이지 전환 밸런싱 ---
+  STAGE_BONUS_COIN: 20,          // 스테이지 전환 시 지급되는 보너스 코인
+  STAGE_WIPE_DURATION: 700,      // ms, 전환 순간 화면을 쓸고 지나가는 와이프 지속 시간
+  STAGE_BANNER_DURATION: 1400,   // ms, "STAGE n" 대형 배너 지속 시간
+  STAGE_RECOLOR_DURATION: 700,   // ms, 보드 위 기존 블록이 새 스테이지 색으로 부드럽게 바뀌는 시간
+  STAGE_FIREWORK_BURSTS: 4,      // 스테이지 전환 시 폭죽 파티클 burst 수
 
   // --- 오디오 밸런싱 ---
   // 볼륨은 3단으로 나뉜다: MASTER(전체) -> SFX/BGM(각 버스). 뮤트는 MASTER를 0으로 내린다.
@@ -778,15 +792,17 @@ const CONFIG = {
                        // 효과음보다 확실히 작게 유지 - "배경에 깔리는" 느낌이 핵심
   // 템포는 CONFIG.BGM_TRACKS[songId].bpm으로 곡마다 따로 관리한다 (AUDIO 섹션 하단 참고)
 
-  // 테마 정의: 각 테마가 바꾸는 것은 블록 7색, 보드 배경, 그리드 선 색, 파티클 색, UI 강조색뿐이다.
-  // 아이템은 상점에서 구매해 즉시 사용하는 방식이라 블록에 색이 붙지 않으며,
-  // 발동 이펙트 색상은 식별성을 위해 테마와 무관하게 항상 고정되어 있다.
-  THEMES: [
+  // 스테이지 정의: 판을 진행하는 동안 "현재 점수"가 scoreThreshold를 넘으면
+  // checkStageTransition()이 자동으로 다음 스테이지로 전환한다 (선택/해금 개념 없음 -
+  // 모든 스테이지는 항상 순서대로 열려 있고, 매 판은 항상 0번 스테이지에서 새로 시작한다).
+  // bgmTrack은 CONFIG.BGM_TRACKS의 키와 대응하고, bgEffect는 renderStageBackground()가
+  // 참조하는 배경 연출 종류다. 아이템 발동 색상은 식별성을 위해 스테이지와 무관하게 고정.
+  STAGES: [
     {
       id: 'neon',
-      name: '네온 클래식',
+      name: '네온 시티',
       icon: '🎮',
-      unlockScore: 0,
+      scoreThreshold: 0,
       blockColors: {
         I: '#00d2d2', O: '#e0c300', T: '#a335e0', S: '#3ac13a',
         Z: '#e03a3a', J: '#2f6fe0', L: '#e08b1f'
@@ -794,13 +810,15 @@ const CONFIG = {
       bgColor: '#0d0d16',
       gridColor: 'rgba(255,255,255,0.05)',
       particleColors: ['#ff6b6b', '#ffd166', '#6bffb0', '#6bc8ff', '#c77dff', '#ff8fab'],
-      uiAccent: '#ffd166'
+      uiAccent: '#ffd166',
+      bgmTrack: 'neon',
+      bgEffect: 'neonGlow'
     },
     {
       id: 'dino',
       name: '공룡 정글',
       icon: '🦖',
-      unlockScore: 5000,
+      scoreThreshold: 10000,
       blockColors: {
         I: '#2f9e44', O: '#d9a441', T: '#8b5a2b', S: '#57cc99',
         Z: '#c1440e', J: '#4a7c59', L: '#e0b34c'
@@ -808,13 +826,15 @@ const CONFIG = {
       bgColor: '#0f1f10',
       gridColor: 'rgba(140,255,140,0.06)',
       particleColors: ['#7ee787', '#d9a441', '#c1440e', '#57cc99', '#e0b34c', '#4a7c59'],
-      uiAccent: '#7cd85a'
+      uiAccent: '#7cd85a',
+      bgmTrack: 'dino',
+      bgEffect: 'leaves'
     },
     {
       id: 'space',
-      name: '우주 탐험',
+      name: '우주 정거장',
       icon: '🚀',
-      unlockScore: 20000,
+      scoreThreshold: 20000,
       blockColors: {
         I: '#00e5ff', O: '#7c4dff', T: '#536dfe', S: '#18ffff',
         Z: '#3d5afe', J: '#651fff', L: '#00b8d4'
@@ -822,8 +842,73 @@ const CONFIG = {
       bgColor: '#04041a',
       gridColor: 'rgba(150,150,255,0.07)',
       particleColors: ['#00e5ff', '#7c4dff', '#536dfe', '#18ffff', '#651fff', '#ff6bcb'],
-      uiAccent: '#00e5ff'
+      uiAccent: '#00e5ff',
+      bgmTrack: 'space',
+      bgEffect: 'stars'
+    },
+    {
+      id: 'volcano',
+      name: '화산 지대',
+      icon: '🌋',
+      scoreThreshold: 30000,
+      blockColors: {
+        I: '#ff5e2c', O: '#ffb02e', T: '#c92a2a', S: '#ff8c42',
+        Z: '#8b1e1e', J: '#ffdd57', L: '#e8590c'
+      },
+      bgColor: '#1a0805',
+      gridColor: 'rgba(255,110,50,0.08)',
+      particleColors: ['#ff6b35', '#ffb02e', '#ff4d1a', '#ffdd57', '#c92a2a', '#8b1e1e'],
+      uiAccent: '#ff6b35',
+      bgmTrack: 'volcano',
+      bgEffect: 'volcano'
+    },
+    {
+      id: 'ice',
+      name: '얼음 왕국',
+      icon: '❄️',
+      scoreThreshold: 40000,
+      blockColors: {
+        I: '#7dd3fc', O: '#e0f2fe', T: '#a5b4fc', S: '#67e8f9',
+        Z: '#38bdf8', J: '#c4e9ff', L: '#bae6fd'
+      },
+      bgColor: '#0a1a2e',
+      gridColor: 'rgba(200,240,255,0.08)',
+      particleColors: ['#e0f2fe', '#7dd3fc', '#a5b4fc', '#67e8f9', '#ffffff', '#38bdf8'],
+      uiAccent: '#7dd3fc',
+      bgmTrack: 'ice',
+      bgEffect: 'snow'
     }
+  ],
+
+  // --- 보스전 밸런싱 ---
+  // 스테이지 시스템 위에 얹는 선택적 미니게임. 실패해도 페널티가 없다(게임오버 아님) -
+  // 9살 아이가 좌절하지 않게 하는 게 핵심 설계 원칙이다.
+  BOSS_TRIGGER_OFFSET: 2500,     // 다음 스테이지 임계점보다 이만큼 낮은 점수에서 보스 등장
+  BOSS_TIME_LIMIT: 180000,       // ms, 보스전 제한 시간(3분)
+  BOSS_ATTACK_INTERVAL: 20000,   // ms, 보스 공격 주기
+  BOSS_ATTACK_WARNING_DURATION: 1500, // ms, 공격 직전 "⚠️ 경고!" 예고 시간
+  BOSS_DAMAGE: { 1: 1, 2: 2, 3: 4, 4: 8 }, // 지운 줄 수 기준 보스 데미지 (테트리스일수록 압도적으로 유리)
+  BOSS_REWARD_COIN: 50,          // 승리 보상 코인
+  BOSS_REWARD_SCORE: 2000,       // 승리 보상 점수 (다음 스테이지로 자연스럽게 넘어가게 밀어줌)
+  BOSS_REVERSE_DURATION: 3000,   // ms, 🌀 블록 흔들기(좌우 반전) 지속 시간
+  BOSS_FOG_DURATION: 4000,       // ms, 🌫️ 시야 가리기 지속 시간
+  BOSS_SPEEDUP_DURATION: 5000,   // ms, ⚡ 속도 증가 지속 시간
+  BOSS_SPEEDUP_FACTOR: 1.5,      // 낙하 속도 배율
+  BOSS_GARBAGE_COLOR: '#4a4a58', // 🧱 쓰레기 줄 칸 고정 색 (스테이지 무관, 식별용)
+  BOSS_APPEAR_FLASH_DURATION: 500,   // ms, 등장 시 화면 붉은 플래시
+  BOSS_APPEAR_BANNER_DURATION: 1400, // ms, "보스 등장!" 배너
+  BOSS_DAMAGE_POPUP_DURATION: 600,   // ms, "-n!" 데미지 팝업
+  BOSS_ATTACK_LABEL_DURATION: 700,   // ms, 공격 이름 팝업(예: "🧱 쓰레기 줄!")
+  BOSS_RESULT_BANNER_DURATION: 1600, // ms, 승리/도주 배너
+
+  // 보스 5종: 스테이지 1~5에 순서대로 대응한다. attacks는 이 보스가 쓸 수 있는 공격
+  // 풀(무작위로 하나씩 골라 씀) - 뒤로 갈수록 공격 종류가 늘어나 난이도가 자연스럽게 오른다.
+  BOSSES: [
+    { id: 'neonbot', name: '네온 로봇', icon: '🤖', hp: 8, attacks: ['garbage', 'reverse'] },
+    { id: 'trex', name: '티라노', icon: '🦕', hp: 10, attacks: ['garbage', 'speedup'] },
+    { id: 'invader', name: '우주 침략자', icon: '👾', hp: 12, attacks: ['fog', 'reverse'] },
+    { id: 'golem', name: '마그마 골렘', icon: '🔥', hp: 14, attacks: ['garbage', 'speedup', 'fog'] },
+    { id: 'icelord', name: '얼음 마왕', icon: '🧊', hp: 16, attacks: ['reverse', 'fog', 'speedup', 'garbage'] }
   ]
 };
 
@@ -845,63 +930,6 @@ function saveBestScore(value) {
     localStorage.setItem(CONFIG.STORAGE_KEY, String(value));
   } catch (e) {
     // localStorage 사용 불가 시 무시
-  }
-}
-
-function loadTotalScore() {
-  try {
-    const v = parseInt(localStorage.getItem(CONFIG.TOTAL_SCORE_KEY) || '0', 10);
-    return isNaN(v) ? 0 : v;
-  } catch (e) {
-    return 0;
-  }
-}
-
-function saveTotalScore(value) {
-  try {
-    localStorage.setItem(CONFIG.TOTAL_SCORE_KEY, String(value));
-  } catch (e) {
-    // 무시
-  }
-}
-
-function loadUnlockedThemes() {
-  try {
-    const raw = localStorage.getItem(CONFIG.UNLOCKED_THEMES_KEY);
-    if (raw) {
-      const arr = JSON.parse(raw);
-      if (Array.isArray(arr) && arr.length > 0) return arr;
-    }
-  } catch (e) {
-    // 무시
-  }
-  return [CONFIG.THEMES[0].id]; // 첫 테마는 항상 기본 해금
-}
-
-function saveUnlockedThemes(idArray) {
-  try {
-    localStorage.setItem(CONFIG.UNLOCKED_THEMES_KEY, JSON.stringify(idArray));
-  } catch (e) {
-    // 무시
-  }
-}
-
-function loadSelectedTheme() {
-  const unlocked = loadUnlockedThemes();
-  try {
-    const id = localStorage.getItem(CONFIG.SELECTED_THEME_KEY);
-    if (id && unlocked.includes(id)) return id;
-  } catch (e) {
-    // 무시
-  }
-  return CONFIG.THEMES[0].id;
-}
-
-function saveSelectedTheme(id) {
-  try {
-    localStorage.setItem(CONFIG.SELECTED_THEME_KEY, id);
-  } catch (e) {
-    // 무시
   }
 }
 
@@ -1062,7 +1090,25 @@ const game = {
   pendingClearSnapshot: null, // 파티클 색상 계산용 스냅샷
   isNewRecord: false,         // 이번 판에서 최고기록을 넘었는지
   slow: { active: false, timer: 0, duration: 0 },  // 슬로우 아이템 효과 상태
-  freeze: { active: false, timer: 0, duration: 0 } // 정지 아이템 효과 상태
+  freeze: { active: false, timer: 0, duration: 0 }, // 정지 아이템 효과 상태
+  boss: {
+    active: false,
+    def: null,          // 현재 보스 정의 (CONFIG.BOSSES[i])
+    stageIndex: -1,      // 이 보스가 속한 스테이지 인덱스
+    hp: 0,
+    maxHp: 0,
+    timeRemaining: 0,    // ms, 남은 제한 시간
+    attackTimer: 0,      // ms, 다음 공격까지 누적된 시간(ATTACK_INTERVAL과 비교)
+    warningActive: false,
+    warningTimer: 0,
+    pendingAttack: null, // 경고 중 예약된 공격 종류
+    resolvedStages: new Set(), // 이미 승리/도주로 끝난 스테이지 id들 (재등장 방지)
+    effects: {
+      reverse: { active: false, timer: 0, duration: 0 }, // 🌀 좌우 반전
+      fog: { active: false, timer: 0, duration: 0 },     // 🌫️ 시야 가리기
+      speedUp: { active: false, timer: 0, duration: 0 }  // ⚡ 낙하 속도 증가
+    }
+  }
 };
 
 const input = { left: false, right: false, down: false };
@@ -1158,11 +1204,14 @@ function spawnFromQueue() {
 
 function lockCurrentPiece() {
   const cells = getCells(game.current.type, game.current.rotation, game.current.x, game.current.y);
-  const color = currentTheme.blockColors[game.current.type];
+  const type = game.current.type;
+  const color = currentStage.blockColors[type];
 
   cells.forEach(([cx, cy]) => {
     if (cy >= 0 && cy < CONFIG.BOARD_ROWS && cx >= 0 && cx < CONFIG.BOARD_COLS) {
-      game.board[cy][cx] = { color };
+      // type을 같이 저장해두면 스테이지가 바뀔 때 이 칸이 원래 어떤 블록이었는지 알 수 있어
+      // (예: I 블록) 새 스테이지의 색으로 정확히 다시 칠할 수 있다 (recolorBoardToStage 참고).
+      game.board[cy][cx] = { color, type };
     }
   });
   sfxLock();
@@ -1211,17 +1260,21 @@ function resolveLineClear() {
 function applyClearScore(cleared) {
   if (cleared <= 0) return;
 
-  game.score += CONFIG.SCORE_TABLE[cleared] * game.level;
+  // 정상적인 테트리스 규칙상 cleared는 1~4를 넘을 수 없지만, "채우기" 아이템이 여러
+  // 줄을 동시에 완성시키는 드문 경우를 대비해 테이블 조회는 4로 방어적으로 clamp한다.
+  const scoreKey = Math.min(cleared, 4);
+  game.score += CONFIG.SCORE_TABLE[scoreKey] * game.level;
   game.lines += cleared;
+  applyBossDamage(cleared); // 자연 클리어/채우기 아이템으로 지운 줄은 전부 보스 데미지로 이어진다
 
-  if (cleared === 4) {
+  if (cleared >= 4) {
     sfxQuadClear();
   } else {
     sfxLineClear(cleared);
   }
 
   game.combo++;
-  const baseCoin = CONFIG.COIN_TABLE[cleared] || 0;
+  const baseCoin = CONFIG.COIN_TABLE[scoreKey] || 0;
   let coinsEarned = baseCoin > 0
     ? Math.max(1, Math.round(baseCoin * Math.pow(CONFIG.COIN_LEVEL_DECAY, game.level - 1)))
     : 0;
@@ -1234,6 +1287,9 @@ function applyClearScore(cleared) {
   addCoins(coinsEarned);
 
   checkNewRecord();
+  checkStageTransition();
+  checkBossTrigger();
+  updateStageUI(); // 전환이 없었어도 "다음 스테이지까지 남은 점수" 진행 바는 매번 갱신
 
   const newLevel = Math.floor(game.lines / CONFIG.LINES_PER_LEVEL) + 1;
   if (newLevel > game.level) {
@@ -1242,7 +1298,7 @@ function applyClearScore(cleared) {
     sfxLevelUp();
   }
 
-  if (cleared === 4) {
+  if (cleared >= 4) {
     triggerQuadClearEffect();
   }
 }
@@ -1300,23 +1356,15 @@ function gameOver() {
   const best = Math.max(previousBest, game.score);
   saveBestScore(best);
 
-  const newTotal = loadTotalScore() + game.score;
-  saveTotalScore(newTotal);
-  const newlyUnlocked = checkThemeUnlocks(newTotal);
-  refreshThemeUI(); // 방금 해금된 테마가 있다면 게임오버 화면의 카드에도 바로 반영
-
   finalScoreEl.textContent = `점수: ${game.score}`;
   finalLinesEl.textContent = `지운 줄: ${game.lines}`;
   finalBestEl.textContent = `최고 기록: ${best}`;
   finalCoinsEl.textContent = `🪙 이번 판에서 모은 코인: ${coinsEarnedThisRun}`;
+  finalStageEl.textContent = `도달 스테이지: ${currentStageIndex() + 1} ${currentStage.icon} ${currentStage.name}`;
   trophyIcon.classList.toggle('hidden', !isRecord);
   newRecordLabel.classList.toggle('hidden', !isRecord);
 
   gameOverOverlay.classList.remove('hidden');
-
-  if (newlyUnlocked.length > 0) {
-    showThemeUnlockCelebration(newlyUnlocked);
-  }
 }
 
 function resetGameState() {
@@ -1340,6 +1388,26 @@ function resetGameState() {
   game.freeze.active = false;
   game.freeze.timer = 0;
   game.freeze.duration = 0;
+  game.boss.active = false;
+  game.boss.def = null;
+  game.boss.stageIndex = -1;
+  game.boss.hp = 0;
+  game.boss.maxHp = 0;
+  game.boss.timeRemaining = 0;
+  game.boss.attackTimer = 0;
+  game.boss.warningActive = false;
+  game.boss.warningTimer = 0;
+  game.boss.pendingAttack = null;
+  game.boss.resolvedStages = new Set();
+  game.boss.effects.reverse.active = false;
+  game.boss.effects.reverse.timer = 0;
+  game.boss.effects.reverse.duration = 0;
+  game.boss.effects.fog.active = false;
+  game.boss.effects.fog.timer = 0;
+  game.boss.effects.fog.duration = 0;
+  game.boss.effects.speedUp.active = false;
+  game.boss.effects.speedUp.timer = 0;
+  game.boss.effects.speedUp.duration = 0;
   bagQueue = [];
   game.nextQueue = [];
   while (game.nextQueue.length < CONFIG.NEXT_COUNT) {
@@ -1355,7 +1423,13 @@ function resetGameState() {
   effects.slowFlash.duration = 0;
   effects.freezeFlash.timer = 0;
   effects.freezeFlash.duration = 0;
+  effects.stageWipe.timer = 0;
+  effects.stageWipe.duration = 0;
+  effects.bossFlash.timer = 0;
+  effects.bossFlash.duration = 0;
+  resetToFirstStage(); // 스테이지는 판 단위이므로 항상 1번 스테이지부터 다시 시작
   resetRunEconomy(); // 코인/인벤토리는 판 단위 자원이므로 새 게임을 시작할 때마다 완전히 초기화
+  updateBossUI(); // 이전 판의 보스 패널이 남아있지 않도록 숨김 처리
   spawnFromQueue();
   game.state = 'playing';
   startBGM();
@@ -1373,7 +1447,7 @@ document.addEventListener('keydown', (e) => {
         input.left = true;
         das.left.phase = 'delay';
         das.left.timer = 0;
-        if (attemptMove(-1, 0)) sfxMove();
+        if (attemptHorizontalMove('left')) sfxMove();
       }
       break;
     case 'ArrowRight':
@@ -1382,7 +1456,7 @@ document.addEventListener('keydown', (e) => {
         input.right = true;
         das.right.phase = 'delay';
         das.right.timer = 0;
-        if (attemptMove(1, 0)) sfxMove();
+        if (attemptHorizontalMove('right')) sfxMove();
       }
       break;
     case 'ArrowDown':
@@ -1452,17 +1526,16 @@ function updateDAS(dt) {
     if (input[dir]) {
       const d = das[dir];
       d.timer += dt;
-      const delta = dir === 'left' ? -1 : 1;
       if (d.phase === 'delay') {
         if (d.timer >= CONFIG.DAS_DELAY) {
           d.phase = 'repeat';
           d.timer = 0;
-          if (attemptMove(delta, 0)) sfxMove();
+          if (attemptHorizontalMove(dir)) sfxMove();
         }
       } else if (d.phase === 'repeat') {
         while (d.timer >= CONFIG.ARR_RATE) {
           d.timer -= CONFIG.ARR_RATE;
-          if (attemptMove(delta, 0)) sfxMove();
+          if (attemptHorizontalMove(dir)) sfxMove();
         }
       }
     }
@@ -1493,19 +1566,19 @@ const finalScoreEl = document.getElementById('finalScore');
 const finalLinesEl = document.getElementById('finalLines');
 const finalBestEl = document.getElementById('finalBest');
 const finalCoinsEl = document.getElementById('finalCoins');
+const finalStageEl = document.getElementById('finalStage');
 const trophyIcon = document.getElementById('trophyIcon');
 const newRecordLabel = document.getElementById('newRecordLabel');
 const startBtn = document.getElementById('startBtn');
 const restartBtn = document.getElementById('restartBtn');
-const totalScoreDisplay = document.getElementById('totalScoreDisplay');
-const themeSelectRow = document.getElementById('themeSelectRow');
-const gameOverThemeSelectRow = document.getElementById('gameOverThemeSelectRow');
-const themeUnlockOverlay = document.getElementById('themeUnlockOverlay');
-const unlockThemeIcon = document.getElementById('unlockThemeIcon');
-const unlockThemeName = document.getElementById('unlockThemeName');
-const unlockThemePalette = document.getElementById('unlockThemePalette');
-const unlockConfirmBtn = document.getElementById('unlockConfirmBtn');
-const unlockPlayNowBtn = document.getElementById('unlockPlayNowBtn');
+const stageNameEl = document.getElementById('stageNameEl');
+const stageProgressFill = document.getElementById('stageProgressFill');
+const stageProgressLabel = document.getElementById('stageProgressLabel');
+const bossPanel = document.getElementById('bossPanel');
+const bossIcon = document.getElementById('bossIcon');
+const bossName = document.getElementById('bossName');
+const bossTimer = document.getElementById('bossTimer');
+const bossHpFill = document.getElementById('bossHpFill');
 
 const coinDisplay = document.getElementById('coinDisplay');
 const coinText = document.getElementById('coinText');
@@ -1531,6 +1604,33 @@ function drawBlock(ctx, px, py, size, color, alpha) {
   ctx.restore();
 }
 
+// "채우기" 아이템으로 채워진 칸 위에 살짝 얹는 반짝임 - 살짝 다른 색조로 이미 보이는
+// cell.color 위에, 은은하게 깜빡이는 별 하나를 더해 "아이템으로 채웠구나"를 알려준다.
+function renderFillSparkle(ctx, px, py, size) {
+  const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(performance.now() / 300 + (px + py) * 0.01));
+  ctx.save();
+  ctx.globalAlpha = twinkle * 0.5;
+  ctx.fillStyle = '#fff9d6';
+  ctx.fillRect(px + 2, py + 2, size - 4, size - 4);
+  ctx.globalAlpha = twinkle;
+  ctx.font = `${Math.floor(size * 0.4)}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('✦', px + size / 2, py + size / 2);
+  ctx.restore();
+}
+
+// 얼음 왕국 스테이지 전용: 고정된 블록 테두리가 은은하게 반짝인다.
+function renderIceSparkleBorder(r, c) {
+  const shimmer = 0.3 + 0.3 * Math.sin(performance.now() / 400 + (r * 7 + c * 13));
+  boardCtx.save();
+  boardCtx.globalAlpha = shimmer;
+  boardCtx.strokeStyle = '#e8fbff';
+  boardCtx.lineWidth = 1;
+  boardCtx.strokeRect(c * BS + 1, r * BS + 1, BS - 2, BS - 2);
+  boardCtx.restore();
+}
+
 function computeGhostY() {
   let gy = game.current.y;
   while (isValidPosition(game.board, getCells(game.current.type, game.current.rotation, game.current.x, gy + 1))) {
@@ -1541,11 +1641,12 @@ function computeGhostY() {
 
 function renderBoard() {
   boardCtx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
-  boardCtx.fillStyle = currentTheme.bgColor;
+  boardCtx.fillStyle = currentStage.bgColor;
   boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  renderStageBackground();
 
   // 격자 선
-  boardCtx.strokeStyle = currentTheme.gridColor;
+  boardCtx.strokeStyle = currentStage.gridColor;
   boardCtx.lineWidth = 1;
   for (let c = 0; c <= CONFIG.BOARD_COLS; c++) {
     boardCtx.beginPath();
@@ -1560,18 +1661,27 @@ function renderBoard() {
     boardCtx.stroke();
   }
 
-  // 고정된 블록
+  // 고정된 블록. 스테이지 전환 직후에는 fromColors -> 실제 색 사이를 부드럽게 보간해서 그린다.
+  const recoloring = boardRecolorTransition.active;
+  const recolorT = recoloring ? Math.min(1, boardRecolorTransition.timer / boardRecolorTransition.duration) : 1;
   for (let r = 0; r < CONFIG.BOARD_ROWS; r++) {
     for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
       const cell = game.board[r][c];
       if (cell) {
-        drawBlock(boardCtx, c * BS, r * BS, BS, cell.color, 1);
+        let color = cell.color;
+        if (recoloring) {
+          const fromColor = boardRecolorTransition.fromColors[r][c];
+          if (fromColor) color = lerpColor(fromColor, cell.color, recolorT);
+        }
+        drawBlock(boardCtx, c * BS, r * BS, BS, color, 1);
+        if (cell.filledByItem) renderFillSparkle(boardCtx, c * BS, r * BS, BS);
+        if (currentStage.bgEffect === 'snow') renderIceSparkleBorder(r, c);
       }
     }
   }
 
   if (game.current && (game.state === 'playing' || game.state === 'paused' || game.state === 'shop')) {
-    const color = currentTheme.blockColors[game.current.type];
+    const color = currentStage.blockColors[game.current.type];
 
     // 고스트
     const gy = computeGhostY();
@@ -1608,7 +1718,7 @@ function drawMiniPiece(ctx, entry, offsetX, offsetY, boxSize) {
   const shapeH = (maxR - minR + 1) * cellSize;
   const startX = offsetX + (boxSize - shapeW) / 2;
   const startY = offsetY + (boxSize - shapeH) / 2;
-  const color = currentTheme.blockColors[type];
+  const color = currentStage.blockColors[type];
 
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
@@ -1623,14 +1733,14 @@ function drawMiniPiece(ctx, entry, offsetX, offsetY, boxSize) {
 
 function renderHold() {
   holdCtx.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
-  holdCtx.fillStyle = currentTheme.bgColor;
+  holdCtx.fillStyle = currentStage.bgColor;
   holdCtx.fillRect(0, 0, holdCanvas.width, holdCanvas.height);
   drawMiniPiece(holdCtx, game.hold, 0, 0, holdCanvas.width);
 }
 
 function renderNext() {
   nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-  nextCtx.fillStyle = currentTheme.bgColor;
+  nextCtx.fillStyle = currentStage.bgColor;
   nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
   const slotH = nextCanvas.width; // 정사각형 슬롯
   for (let i = 0; i < CONFIG.NEXT_COUNT; i++) {
@@ -1726,7 +1836,9 @@ const effects = {
   shake: { timer: 0, duration: 0, magnitude: 0 },
   edgeFlash: { timer: 0, duration: 0, color: '#6bffb0' },
   slowFlash: { timer: 0, duration: 0 },
-  freezeFlash: { timer: 0, duration: 0 }
+  freezeFlash: { timer: 0, duration: 0 },
+  stageWipe: { timer: 0, duration: 0, color: '#ffffff' },
+  bossFlash: { timer: 0, duration: 0 }
 };
 
 function addParticle(p) {
@@ -1779,9 +1891,9 @@ function spawnLandingDust(cells) {
   });
 }
 
-// 현재 테마의 파티클 팔레트에서 무작위 색을 하나 뽑는다
-function randomThemeColor(theme) {
-  const palette = (theme || currentTheme).particleColors;
+// 현재 스테이지의 파티클 팔레트에서 무작위 색을 하나 뽑는다
+function randomStageColor(stage) {
+  const palette = (stage || currentStage).particleColors;
   return palette[Math.floor(Math.random() * palette.length)];
 }
 
@@ -1789,7 +1901,7 @@ function spawnQuadClearFireworks() {
   for (let burst = 0; burst < 4; burst++) {
     const bx = 40 + Math.random() * (boardCanvas.width - 80);
     const by = 60 + Math.random() * (boardCanvas.height * 0.5);
-    const color = randomThemeColor();
+    const color = randomStageColor();
     const particleCount = 16;
     for (let i = 0; i < particleCount; i++) {
       const angle = (Math.PI * 2) * (i / particleCount);
@@ -1831,7 +1943,7 @@ function showComboPopup(combo) {
     y: boardCanvas.height / 2,
     timer: 0,
     duration: CONFIG.COMBO_POPUP_DURATION,
-    color: currentTheme.uiAccent
+    color: currentStage.uiAccent
   });
 }
 
@@ -1843,11 +1955,11 @@ function triggerLevelUp(level) {
     y: boardCanvas.height / 2 - 60,
     timer: 0,
     duration: CONFIG.LEVELUP_BANNER_DURATION,
-    color: currentTheme.uiAccent
+    color: currentStage.uiAccent
   });
   effects.edgeFlash.timer = 0;
   effects.edgeFlash.duration = CONFIG.EDGE_FLASH_DURATION;
-  effects.edgeFlash.color = currentTheme.uiAccent;
+  effects.edgeFlash.color = currentStage.uiAccent;
 }
 
 function triggerQuadClearEffect() {
@@ -1858,7 +1970,7 @@ function triggerQuadClearEffect() {
     y: boardCanvas.height / 2,
     timer: 0,
     duration: CONFIG.QUAD_CLEAR_BANNER_DURATION,
-    color: randomThemeColor()
+    color: randomStageColor()
   });
   effects.shake.timer = 0;
   effects.shake.duration = CONFIG.SHAKE_DURATION;
@@ -1881,6 +1993,9 @@ function updateEffects(dt) {
   if (effects.edgeFlash.timer < effects.edgeFlash.duration) effects.edgeFlash.timer += dt;
   if (effects.slowFlash.timer < effects.slowFlash.duration) effects.slowFlash.timer += dt;
   if (effects.freezeFlash.timer < effects.freezeFlash.duration) effects.freezeFlash.timer += dt;
+  if (effects.stageWipe.timer < effects.stageWipe.duration) effects.stageWipe.timer += dt;
+  updateBoardRecolorTransition(dt);
+  updateBgEffects(dt);
 }
 
 function getShakeOffset() {
@@ -1914,7 +2029,11 @@ function drawBannerText(ctx, text, x, y, scale, alpha, color, fontSize) {
   ctx.restore();
 }
 
-const BANNER_FONT_SIZES = { quad: 32, bomb: 28, slow: 26, swap: 24, lineclear: 26, freeze: 26, levelup: 26, themeUnlock: 22 };
+const BANNER_FONT_SIZES = {
+  quad: 32, bomb: 28, slow: 26, swap: 24, fill: 26, freeze: 26, levelup: 26, stage: 30,
+  bossAppear: 24, bossWarning: 30, bossDamage: 26, bossAttackName: 20,
+  bossVictory: 28, bossReward: 20, bossFlee: 22
+};
 
 function renderPopup(pop) {
   const t = Math.min(1, pop.timer / pop.duration);
@@ -2008,6 +2127,9 @@ function renderEffects() {
   renderEdgeFlash();
   renderSlowFlash();
   renderFreezeFlash();
+  renderStageWipe();
+  renderBossFlash();
+  renderBossFog();
   effects.popups.forEach(renderPopup);
 }
 
@@ -2018,7 +2140,7 @@ function renderEffects() {
 // ITEMS에 { id, icon, name, desc, use } 형태로 항목을 추가하고
 // ITEM_ORDER에 순서(= 인벤토리 바의 1~5번 슬롯 순서)를 넣은 뒤,
 // CONFIG.ITEM_SHOP에 가격을 추가하면 된다.
-const ITEM_ORDER = ['bomb', 'slow', 'swap', 'lineclear', 'freeze'];
+const ITEM_ORDER = ['bomb', 'slow', 'swap', 'fill', 'freeze'];
 
 const ITEMS = {
   bomb: {
@@ -2029,8 +2151,9 @@ const ITEMS = {
     use() {
       const row = CONFIG.BOARD_ROWS - 1;
       game.board[row].forceClear = true;
-      clearMarkedLines(game.board);
+      const cleared = clearMarkedLines(game.board);
       triggerBombEffect(row);
+      applyBossDamage(cleared); // 폭탄으로 강제 제거한 줄도 보스 데미지로 이어진다
     }
   },
 
@@ -2071,20 +2194,17 @@ const ITEMS = {
     }
   },
 
-  lineclear: {
-    id: 'lineclear',
-    icon: '🧹',
-    name: '줄 청소',
-    desc: '아래 두 줄을 싹 치워요',
+  fill: {
+    id: 'fill',
+    icon: '🧱',
+    name: '채우기',
+    desc: '빈칸 5개를 콕콕 채워요',
     use() {
-      const rows = [];
-      for (let i = 0; i < CONFIG.LINECLEAR_ROWS; i++) {
-        const r = CONFIG.BOARD_ROWS - 1 - i;
-        if (r >= 0) rows.push(r);
-      }
-      rows.forEach(r => { game.board[r].forceClear = true; });
-      clearMarkedLines(game.board);
-      triggerLineClearEffect(rows);
+      const filledCells = fillEmptyCells(CONFIG.FILL_CELL_COUNT);
+      if (filledCells.length === 0) return; // 채울 수 있는 칸이 없으면 조용히 무시
+      triggerFillEffect(filledCells);
+      const rows = findFullRows(game.board);
+      if (rows.length > 0) resolveImmediateLineClear(rows);
     }
   },
 
@@ -2196,35 +2316,72 @@ function triggerSwapEffect() {
   });
 }
 
-function triggerLineClearEffect(rows) {
-  sfxLineClearItem();
-  rows.forEach(r => {
-    const cy = r * BS + BS / 2;
-    for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
-      const cx = c * BS + BS / 2;
-      addParticle({
-        x: cx, y: cy,
-        vx: (Math.random() * 2 - 1) * 180,
-        vy: -Math.random() * 180 - 40,
-        color: c % 2 === 0 ? '#ffe08a' : '#ffffff',
-        size: 3 + Math.random() * 3,
-        life: 450 + Math.random() * 250,
-        maxLife: 700,
-        gravity: 600
-      });
+// 보드에서 "이미 블록이 하나라도 있는 줄"의 빈칸만, 아래쪽 줄부터 우선으로 최대
+// count개까지 채운다. 완전히 빈 줄(허공)은 절대 건드리지 않는다 - 공중에 뜬 블록이
+//생기면 안 되기 때문이다. 반환값은 실제로 채운 칸 목록([{r,c}, ...], 채운 순서대로).
+function fillEmptyCells(count) {
+  const filled = [];
+  for (let r = CONFIG.BOARD_ROWS - 1; r >= 0 && filled.length < count; r--) {
+    const row = game.board[r];
+    const filledCount = row.filter(cell => cell).length;
+    if (filledCount === 0 || filledCount === CONFIG.BOARD_COLS) continue; // 완전히 빈 줄 / 이미 꽉 찬 줄은 건드리지 않음
+    for (let c = 0; c < CONFIG.BOARD_COLS && filled.length < count; c++) {
+      if (!row[c]) {
+        row[c] = { color: CONFIG.FILL_ITEM_COLOR, filledByItem: true };
+        filled.push({ r, c });
+      }
     }
+  }
+  return filled;
+}
+
+// 자연 클리어(락 직후 흰 플래시 -> beginLineClear/resolveLineClear)와 달리, 아이템으로
+// 완성된 클리어는 지금 낙하 중인 조각을 방해하면 안 된다 - state 전환도 spawnFromQueue도
+// 하지 않는 "즉시 처리" 전용 경로다. 점수/코인/레벨업/콤보는 applyClearScore를 그대로
+// 재사용해 자연 클리어와 동일하게 적용한다("정상적으로 클리어 처리"라는 요구사항).
+function resolveImmediateLineClear(rows) {
+  const snapshot = rows.map(r => game.board[r].slice());
+  const cleared = clearMarkedLines(game.board);
+  snapshot.forEach((rowCells, idx) => {
+    rowCells.forEach((cell, c) => {
+      if (cell) spawnClearParticles(c, rows[idx], cell.color);
+    });
   });
-  effects.shake.timer = 0;
-  effects.shake.duration = CONFIG.LINECLEAR_SHAKE_DURATION;
-  effects.shake.magnitude = CONFIG.LINECLEAR_SHAKE_MAGNITUDE;
+  applyClearScore(cleared);
+}
+
+// 채운 칸들을 순서대로 "톡톡" 튀는 파티클 + 반짝임으로 보여준다(약간의 시차를 둬서
+// 한 번에 팡 터지지 않고 아래→위로 차례차례 채워지는 느낌을 준다).
+function triggerFillEffect(filledCells) {
+  sfxFill(filledCells.length);
+  filledCells.forEach((cell, idx) => {
+    setTimeout(() => {
+      const px = cell.c * BS + BS / 2;
+      const py = cell.r * BS + BS / 2;
+      for (let i = 0; i < 8; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 60 + Math.random() * 100;
+        addParticle({
+          x: px, y: py,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 40,
+          color: CONFIG.FILL_ITEM_COLOR,
+          size: 2 + Math.random() * 3,
+          life: 300 + Math.random() * 150,
+          maxLife: 450,
+          gravity: 500
+        });
+      }
+    }, idx * CONFIG.FILL_STEP_STAGGER);
+  });
   effects.popups.push({
-    kind: 'lineclear',
-    text: 'CLEAN! 🧹',
+    kind: 'fill',
+    text: '채우기! 🧱',
     x: boardCanvas.width / 2,
     y: boardCanvas.height / 2,
     timer: 0,
-    duration: CONFIG.LINECLEAR_BANNER_DURATION,
-    color: '#ffe08a'
+    duration: CONFIG.FILL_BANNER_DURATION,
+    color: CONFIG.FILL_ITEM_COLOR
   });
 }
 
@@ -2432,42 +2589,89 @@ function toggleShop() {
 }
 
 // ============================================================
-// THEMES
+// STAGES
 // ============================================================
-// 테마 스킨 적용, 누적점수 기반 해금 판정, 테마 선택 UI
-let currentTheme = CONFIG.THEMES[0];
+// 테마 "선택/해금" 대신, 판이 진행되며 점수가 오르면 자동으로 바뀌는 스테이지 시스템.
+// 매 판은 항상 CONFIG.STAGES[0]에서 시작하고(resetToFirstStage), applyClearScore()가
+// 점수를 올릴 때마다 checkStageTransition()이 임계값을 확인해 필요하면 advanceToStage()로
+// 전환한다. 전환 연출(와이프/배너/폭죽/보드 리컬러/BGM 교체/보너스 코인)은 전부 여기 있다.
+let currentStage = CONFIG.STAGES[0];
 
-function getThemeById(id) {
-  return CONFIG.THEMES.find(t => t.id === id) || CONFIG.THEMES[0];
+function currentStageIndex() {
+  return CONFIG.STAGES.findIndex(s => s.id === currentStage.id);
 }
 
-function applyTheme(themeId) {
-  currentTheme = getThemeById(themeId);
-  document.documentElement.style.setProperty('--accent', currentTheme.uiAccent);
-  setBgmTrackForTheme(currentTheme.id); // 테마별 BGM 자동 재생 (재생 중이면 자연스럽게 곡 교체)
+// 새 게임을 시작할 때 호출 - 스테이지는 매 판 1번부터 다시 시작하므로 저장/불러오기가 없다.
+function resetToFirstStage() {
+  currentStage = CONFIG.STAGES[0];
+  document.documentElement.style.setProperty('--accent', currentStage.uiAccent);
+  switchBgmTrack(currentStage.bgmTrack);
+  boardRecolorTransition.active = false;
+  boardRecolorTransition.fromColors = null;
+  effects.stageWipe.timer = 0;
+  effects.stageWipe.duration = 0;
+  updateStageUI();
 }
 
-// 누적 점수 기준으로 새로 해금된 테마 목록을 반환하고, localStorage에 반영한다
-function checkThemeUnlocks(totalScore) {
-  const unlocked = loadUnlockedThemes();
-  const newly = [];
-  CONFIG.THEMES.forEach(theme => {
-    if (!unlocked.includes(theme.id) && totalScore >= theme.unlockScore) {
-      unlocked.push(theme.id);
-      newly.push(theme);
+// 이번 클리어로 점수가 넘어선 가장 높은 다음 스테이지를 찾아 한 번에 전환한다
+// (콤보/레벨 보너스로 점수가 크게 뛰어 여러 임계값을 동시에 넘는 경우에도 배너가
+// 여러 번 겹치지 않도록 가장 높은 단계로 바로 이동).
+function checkStageTransition() {
+  if (game.boss.active) return; // 보스전 중에는 스테이지가 바뀌지 않는다 - 전투가 끝나면 그때 다시 확인
+  const idx = currentStageIndex();
+  for (let i = CONFIG.STAGES.length - 1; i > idx; i--) {
+    if (game.score >= CONFIG.STAGES[i].scoreThreshold) {
+      advanceToStage(i);
+      return;
     }
-  });
-  if (newly.length > 0) saveUnlockedThemes(unlocked);
-  return newly;
+  }
 }
 
-// 테마 해금 시 캔버스 위에 축하 파티클 + 배너를 새 테마의 팔레트로 띄운다
-function triggerThemeUnlockEffect(theme) {
-  sfxThemeUnlock();
-  for (let burst = 0; burst < 5; burst++) {
+function advanceToStage(index) {
+  const stage = CONFIG.STAGES[index];
+  const fromSnapshot = game.board.map(row => row.map(cell => cell ? cell.color : null));
+  currentStage = stage;
+  document.documentElement.style.setProperty('--accent', stage.uiAccent);
+  switchBgmTrack(stage.bgmTrack);
+  recolorBoardToStage(stage, fromSnapshot);
+  triggerStageTransitionEffect(stage, index);
+  addCoins(CONFIG.STAGE_BONUS_COIN);
+  updateStageUI();
+}
+
+// 보드에 이미 고정된 블록들의 실제 색은 즉시 새 스테이지 팔레트로 바뀌지만, 화면에는
+// fromSnapshot -> 새 색 사이를 STAGE_RECOLOR_DURATION 동안 부드럽게 보간해서 보여준다
+// (renderBoard의 lerpColor 사용 부분 참고). 아이템으로 채운 칸(filledByItem)은
+// 원래 어떤 조각이었는지(type) 정보가 없으므로 스테이지 색으로 다시 칠하지 않는다.
+function recolorBoardToStage(stage, fromSnapshot) {
+  for (let r = 0; r < CONFIG.BOARD_ROWS; r++) {
+    for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
+      const cell = game.board[r][c];
+      if (cell && cell.type) cell.color = stage.blockColors[cell.type];
+    }
+  }
+  boardRecolorTransition.active = true;
+  boardRecolorTransition.timer = 0;
+  boardRecolorTransition.duration = CONFIG.STAGE_RECOLOR_DURATION;
+  boardRecolorTransition.fromColors = fromSnapshot;
+}
+
+// 전환 순간의 화면 와이프 + 대형 배너 + 폭죽 파티클 + 보너스 코인 배너 + 팡파레.
+function triggerStageTransitionEffect(stage, index) {
+  sfxStageUp();
+
+  effects.stageWipe.timer = 0;
+  effects.stageWipe.duration = CONFIG.STAGE_WIPE_DURATION;
+  effects.stageWipe.color = stage.uiAccent;
+
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.SHAKE_MAGNITUDE * 0.6;
+
+  for (let burst = 0; burst < CONFIG.STAGE_FIREWORK_BURSTS; burst++) {
     const bx = 40 + Math.random() * (boardCanvas.width - 80);
     const by = 60 + Math.random() * (boardCanvas.height * 0.6);
-    const color = randomThemeColor(theme);
+    const color = randomStageColor(stage);
     const particleCount = 16;
     for (let i = 0; i < particleCount; i++) {
       const angle = (Math.PI * 2) * (i / particleCount);
@@ -2484,112 +2688,568 @@ function triggerThemeUnlockEffect(theme) {
       });
     }
   }
+
   effects.popups.push({
-    kind: 'themeUnlock',
-    text: `새 테마 해금! ${theme.icon} ${theme.name}`,
+    kind: 'stage',
+    text: `STAGE ${index + 1} ${stage.icon} ${stage.name}!`,
     x: boardCanvas.width / 2,
     y: boardCanvas.height / 2,
     timer: 0,
-    duration: CONFIG.THEME_UNLOCK_BANNER_DURATION,
-    color: theme.uiAccent
+    duration: CONFIG.STAGE_BANNER_DURATION,
+    color: stage.uiAccent
+  });
+  effects.popups.push({
+    kind: 'stageBonus',
+    text: `스테이지 보너스! +${CONFIG.STAGE_BONUS_COIN}🪙`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 + 70,
+    timer: 0,
+    duration: CONFIG.STAGE_BANNER_DURATION,
+    color: '#fff56b'
   });
 }
 
-let unlockQueue = [];
-let currentUnlockDisplayTheme = null; // 해금 축하 오버레이에 지금 표시 중인 테마
-
-function showThemeUnlockCelebration(themes) {
-  unlockQueue = themes.slice();
-  showNextUnlock();
-}
-
-function showNextUnlock() {
-  if (unlockQueue.length === 0) {
-    currentUnlockDisplayTheme = null;
-    themeUnlockOverlay.classList.add('hidden');
-    return;
+// 게임 중 UI(현재 스테이지 이름/아이콘 + 다음 스테이지까지 진행 바)를 갱신한다.
+// applyClearScore()가 점수를 바꿀 때마다, 그리고 스테이지가 바뀔 때마다 호출된다.
+function updateStageUI() {
+  stageNameEl.textContent = `${currentStage.icon} ${currentStage.name}`;
+  const nextStage = CONFIG.STAGES[currentStageIndex() + 1];
+  if (nextStage) {
+    const span = nextStage.scoreThreshold - currentStage.scoreThreshold;
+    const progressed = Math.max(0, Math.min(span, game.score - currentStage.scoreThreshold));
+    const pct = span > 0 ? (progressed / span) * 100 : 100;
+    stageProgressFill.style.width = `${pct}%`;
+    const remaining = Math.max(0, nextStage.scoreThreshold - game.score);
+    stageProgressLabel.textContent = `다음 스테이지까지 ${remaining.toLocaleString()}점`;
+  } else {
+    stageProgressFill.style.width = '100%';
+    stageProgressLabel.textContent = '최고 스테이지! 🎉';
   }
-  const theme = unlockQueue.shift();
-  currentUnlockDisplayTheme = theme;
-  unlockThemeIcon.textContent = theme.icon;
-  unlockThemeName.textContent = theme.name;
-  unlockThemePalette.innerHTML = '';
-  ['I', 'O', 'T', 'S'].forEach(key => {
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.style.background = theme.blockColors[key];
-    unlockThemePalette.appendChild(chip);
-  });
-  unlockPlayNowBtn.textContent = `${theme.icon} 이 테마로 바로 하기`;
-  themeUnlockOverlay.classList.remove('hidden');
-  triggerThemeUnlockEffect(theme);
 }
 
-// 테마 카드 3장을 주어진 컨테이너에 그린다. 시작 화면(themeSelectRow)과
-// 게임오버 화면(gameOverThemeSelectRow) 양쪽에서 재사용한다.
-function renderThemeCards(container) {
-  const unlocked = loadUnlockedThemes();
-  const selected = loadSelectedTheme();
+// ------------------------------------------------------------
+// 보드 블록 색 부드러운 전환 (스테이지 전환 시)
+// ------------------------------------------------------------
+const boardRecolorTransition = { active: false, timer: 0, duration: 0, fromColors: null };
 
-  container.innerHTML = '';
-  CONFIG.THEMES.forEach(theme => {
-    const isUnlocked = unlocked.includes(theme.id);
-    const card = document.createElement('div');
-    card.className = 'theme-card'
-      + (isUnlocked ? '' : ' locked')
-      + (theme.id === selected ? ' selected' : '');
-    card.dataset.themeId = theme.id;
+function updateBoardRecolorTransition(dt) {
+  if (!boardRecolorTransition.active) return;
+  boardRecolorTransition.timer += dt;
+  if (boardRecolorTransition.timer >= boardRecolorTransition.duration) {
+    boardRecolorTransition.active = false;
+    boardRecolorTransition.fromColors = null;
+  }
+}
 
-    const icon = document.createElement('div');
-    icon.className = 'theme-card-icon';
-    icon.textContent = theme.icon;
+function hexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : { r: 255, g: 255, b: 255 };
+}
 
-    const name = document.createElement('div');
-    name.className = 'theme-card-name';
-    name.textContent = theme.name;
+function lerpColor(hexA, hexB, t) {
+  const a = hexToRgb(hexA);
+  const b = hexToRgb(hexB);
+  const r = Math.round(a.r + (b.r - a.r) * t);
+  const g = Math.round(a.g + (b.g - a.g) * t);
+  const bl = Math.round(a.b + (b.b - a.b) * t);
+  return `rgb(${r}, ${g}, ${bl})`;
+}
 
-    const chips = document.createElement('div');
-    chips.className = 'theme-card-chips';
-    ['I', 'O', 'T', 'S'].forEach(key => {
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.style.background = theme.blockColors[key];
-      chips.appendChild(chip);
+// ------------------------------------------------------------
+// 스테이지별 가벼운 배경 연출
+// ------------------------------------------------------------
+// 캔버스에 매 프레임 몇 개의 도형만 그리는 수준으로 가볍게 유지한다(무거운 이펙트 X).
+const bgEffectState = { stars: [], leaves: [], snow: [], embers: [] };
+
+function initBgEffectPools() {
+  bgEffectState.stars = Array.from({ length: 40 }, () => ({
+    x: Math.random() * boardCanvas.width, y: Math.random() * boardCanvas.height,
+    size: 1 + Math.random() * 1.5, speed: 20 + Math.random() * 40
+  }));
+  bgEffectState.leaves = Array.from({ length: 6 }, () => ({
+    x: Math.random() * boardCanvas.width, y: Math.random() * boardCanvas.height,
+    phase: Math.random() * Math.PI * 2, size: 10 + Math.random() * 8
+  }));
+  bgEffectState.snow = Array.from({ length: 30 }, () => ({
+    x: Math.random() * boardCanvas.width, y: Math.random() * boardCanvas.height,
+    size: 1.5 + Math.random() * 2, speed: 15 + Math.random() * 25, drift: Math.random() * Math.PI * 2
+  }));
+  bgEffectState.embers = [];
+}
+
+function updateBgEffects(dt) {
+  const dtS = dt / 1000;
+  const effect = currentStage.bgEffect;
+  if (effect === 'stars') {
+    bgEffectState.stars.forEach(s => {
+      s.y += s.speed * dtS;
+      if (s.y > boardCanvas.height) { s.y = -2; s.x = Math.random() * boardCanvas.width; }
     });
-
-    const lockBadge = document.createElement('div');
-    lockBadge.className = 'lock-badge';
-    lockBadge.textContent = '🔒';
-
-    const unlockReq = document.createElement('div');
-    unlockReq.className = 'unlock-req';
-    unlockReq.textContent = `누적 ${theme.unlockScore.toLocaleString()}점 필요`;
-
-    card.appendChild(icon);
-    card.appendChild(name);
-    card.appendChild(chips);
-    card.appendChild(lockBadge);
-    card.appendChild(unlockReq);
-
-    if (isUnlocked) {
-      // 즉시 선택 저장 + 적용: 게임오버 화면에서 눌러도 바로 반영되고,
-      // "다시 하기"를 누르면 이 테마로 새 게임이 시작된다.
-      card.addEventListener('click', () => {
-        saveSelectedTheme(theme.id);
-        applyTheme(theme.id);
-        refreshThemeUI();
+  } else if (effect === 'snow') {
+    bgEffectState.snow.forEach(s => {
+      s.y += s.speed * dtS;
+      s.x += Math.sin(performance.now() / 600 + s.drift) * 10 * dtS;
+      if (s.y > boardCanvas.height) { s.y = -2; s.x = Math.random() * boardCanvas.width; }
+    });
+  } else if (effect === 'volcano') {
+    if (Math.random() < dtS * 1.5) {
+      bgEffectState.embers.push({
+        x: Math.random() * boardCanvas.width, y: boardCanvas.height + 5,
+        size: 2 + Math.random() * 2, speed: 30 + Math.random() * 40, life: 2 + Math.random()
       });
     }
+    bgEffectState.embers.forEach(e => { e.y -= e.speed * dtS; e.life -= dtS; });
+    bgEffectState.embers = bgEffectState.embers.filter(e => e.life > 0 && e.y > -10);
+  }
+  // leaves/neonGlow는 performance.now() 기반이라 별도 상태 갱신이 필요 없다.
+}
 
-    container.appendChild(card);
+function renderStageBackground() {
+  const effect = currentStage.bgEffect;
+  if (effect === 'neonGlow') {
+    const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 1200);
+    boardCtx.save();
+    boardCtx.globalAlpha = 0.05 + pulse * 0.05;
+    boardCtx.fillStyle = currentStage.uiAccent;
+    boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+    boardCtx.restore();
+  } else if (effect === 'leaves') {
+    boardCtx.save();
+    boardCtx.globalAlpha = 0.18;
+    boardCtx.fillStyle = '#2f5233';
+    bgEffectState.leaves.forEach(leaf => {
+      const sway = Math.sin(performance.now() / 900 + leaf.phase) * 8;
+      boardCtx.beginPath();
+      boardCtx.ellipse(leaf.x + sway, leaf.y, leaf.size, leaf.size * 0.6, Math.PI / 4, 0, Math.PI * 2);
+      boardCtx.fill();
+    });
+    boardCtx.restore();
+  } else if (effect === 'stars') {
+    boardCtx.save();
+    boardCtx.fillStyle = '#ffffff';
+    bgEffectState.stars.forEach(s => {
+      boardCtx.globalAlpha = 0.4 + 0.4 * Math.sin(performance.now() / 500 + s.x);
+      boardCtx.fillRect(s.x, s.y, s.size, s.size);
+    });
+    boardCtx.restore();
+  } else if (effect === 'volcano') {
+    const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 700);
+    boardCtx.save();
+    boardCtx.globalAlpha = 0.08 + pulse * 0.07;
+    boardCtx.fillStyle = '#ff4d1a';
+    boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+    boardCtx.globalAlpha = 0.8;
+    boardCtx.fillStyle = '#ffb347';
+    bgEffectState.embers.forEach(e => boardCtx.fillRect(e.x, e.y, e.size, e.size));
+    boardCtx.restore();
+  } else if (effect === 'snow') {
+    boardCtx.save();
+    boardCtx.fillStyle = '#ffffff';
+    boardCtx.globalAlpha = 0.7;
+    bgEffectState.snow.forEach(s => boardCtx.fillRect(s.x, s.y, s.size, s.size));
+    boardCtx.restore();
+  }
+}
+
+// 화면 전체를 확 쓸고 지나가는 와이프(전환 순간용). 그라디언트 띠 하나만 그리므로 가볍다.
+function renderStageWipe() {
+  if (effects.stageWipe.duration === 0 || effects.stageWipe.timer >= effects.stageWipe.duration) return;
+  const t = effects.stageWipe.timer / effects.stageWipe.duration;
+  const bandWidth = boardCanvas.width * 0.5;
+  const x = -bandWidth + t * (boardCanvas.width + bandWidth * 2);
+  boardCtx.save();
+  boardCtx.globalAlpha = Math.sin(t * Math.PI);
+  const grad = boardCtx.createLinearGradient(x, 0, x + bandWidth, 0);
+  grad.addColorStop(0, 'rgba(255,255,255,0)');
+  grad.addColorStop(0.5, effects.stageWipe.color);
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  boardCtx.fillStyle = grad;
+  boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  boardCtx.restore();
+}
+
+// ============================================================
+// BOSS
+// ============================================================
+// 스테이지 시스템 위에 얹는 선택적 미니게임. game.state는 계속 'playing'을 유지한 채
+// game.boss가 병렬로 진행된다 - 그래서 상점/아이템/일시정지가 전부 그대로 작동하고,
+// updateBossFight(dt)는 updateEffects(dt)와 같은 조건(paused/start/shop이 아닐 때)에서만
+// 호출되므로 "상점을 열면 타이머가 멈춘다"가 별도 코드 없이 자연스럽게 성립한다.
+// 실패(시간초과)해도 게임오버가 아니다 - 그냥 보스가 도망가고 평소처럼 계속된다.
+
+const BOSS_ATTACK_LABELS = {
+  garbage: '🧱 쓰레기 줄!',
+  reverse: '🌀 반대로!',
+  fog: '🌫️ 안개!',
+  speedup: '⚡ 빨라짐!'
+};
+
+// 다음 스테이지 임계점. 마지막 스테이지는 "다음"이 없으므로, 스테이지 간 간격(현재 전부
+// 10,000점 동일)을 그대로 이어 붙여 가상의 종료 임계점을 계산한다.
+function nextStageThreshold(idx) {
+  const next = CONFIG.STAGES[idx + 1];
+  if (next) return next.scoreThreshold;
+  const span = CONFIG.STAGES[idx].scoreThreshold - (CONFIG.STAGES[idx - 1] ? CONFIG.STAGES[idx - 1].scoreThreshold : 0);
+  return CONFIG.STAGES[idx].scoreThreshold + span;
+}
+
+// 현재 스테이지의 보스를 아직 안 만났고, 점수가 등장 구간(다음 임계점 - OFFSET)에 들어섰으면 등장시킨다.
+function checkBossTrigger() {
+  if (game.boss.active) return;
+  const idx = currentStageIndex();
+  if (game.boss.resolvedStages.has(currentStage.id)) return;
+  const bossDef = CONFIG.BOSSES[idx];
+  if (!bossDef) return;
+  const threshold = nextStageThreshold(idx);
+  if (game.score >= threshold - CONFIG.BOSS_TRIGGER_OFFSET) {
+    startBossFight(bossDef, idx);
+  }
+}
+
+function startBossFight(bossDef, stageIndex) {
+  const boss = game.boss;
+  boss.active = true;
+  boss.def = bossDef;
+  boss.stageIndex = stageIndex;
+  boss.hp = bossDef.hp;
+  boss.maxHp = bossDef.hp;
+  boss.timeRemaining = CONFIG.BOSS_TIME_LIMIT;
+  boss.attackTimer = 0;
+  boss.warningActive = false;
+  boss.warningTimer = 0;
+  boss.pendingAttack = null;
+  boss.effects.reverse.active = false;
+  boss.effects.fog.active = false;
+  boss.effects.speedUp.active = false;
+  switchBgmTrack('boss');
+  triggerBossAppearEffect(bossDef);
+  updateBossUI();
+}
+
+// 매 게임 틱 호출(paused/start/shop이 아닐 때만 - update()에서 updateEffects(dt)와 나란히 호출됨).
+function updateBossFight(dt) {
+  if (!game.boss.active) return;
+  const boss = game.boss;
+
+  if (boss.warningActive) {
+    boss.warningTimer += dt;
+    if (boss.warningTimer >= CONFIG.BOSS_ATTACK_WARNING_DURATION) {
+      boss.warningActive = false;
+      executeBossAttack(boss.pendingAttack);
+      boss.pendingAttack = null;
+      boss.attackTimer = 0;
+    }
+  } else {
+    boss.attackTimer += dt;
+    if (boss.attackTimer >= CONFIG.BOSS_ATTACK_INTERVAL) {
+      beginBossAttackWarning();
+    }
+  }
+
+  updateBossActiveEffects(dt);
+
+  boss.timeRemaining -= dt;
+  if (boss.timeRemaining <= 0) {
+    boss.timeRemaining = 0;
+    updateBossUI();
+    fleeBossFight();
+    return;
+  }
+
+  updateBossUI();
+}
+
+function pickBossAttack(bossDef) {
+  const attacks = bossDef.attacks;
+  return attacks[Math.floor(Math.random() * attacks.length)];
+}
+
+function beginBossAttackWarning() {
+  const boss = game.boss;
+  boss.warningActive = true;
+  boss.warningTimer = 0;
+  boss.pendingAttack = pickBossAttack(boss.def);
+  sfxBossWarning();
+  effects.popups.push({
+    kind: 'bossWarning',
+    text: '⚠️ 경고!',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 - 150,
+    timer: 0,
+    duration: CONFIG.BOSS_ATTACK_WARNING_DURATION,
+    color: '#ff4d4d'
   });
 }
 
-// 누적 점수 표시 + 시작 화면/게임오버 화면의 테마 카드를 모두 최신 상태로 갱신
-function refreshThemeUI() {
-  totalScoreDisplay.textContent = `누적 ${loadTotalScore().toLocaleString()}점`;
-  renderThemeCards(themeSelectRow);
-  renderThemeCards(gameOverThemeSelectRow);
+function executeBossAttack(attackType) {
+  if (attackType === 'garbage') {
+    spawnGarbageRow();
+    sfxBossGarbage();
+  } else if (attackType === 'reverse') {
+    activateBossReverse();
+    sfxBossAttack();
+  } else if (attackType === 'fog') {
+    activateBossFog();
+    sfxBossAttack();
+  } else if (attackType === 'speedup') {
+    activateBossSpeedUp();
+    sfxBossAttack();
+  }
+  triggerBossAttackImpactEffect(attackType);
+}
+
+// 🧱 쓰레기 줄: 맨 위 줄이 사라지고(이미 블록이 있었다면 유실), 맨 아래에 구멍 하나 뚫린
+// 줄이 새로 밀려 들어온다. 계속 쌓이면 다음 조각 스폰 시 기존의 top-out 체크(spawnFromQueue)가
+// 자연스럽게 게임오버로 이어진다 - 별도의 게임오버 로직이 필요 없다.
+function spawnGarbageRow() {
+  const holeCol = Math.floor(Math.random() * CONFIG.BOARD_COLS);
+  game.board.shift();
+  const newRow = [];
+  for (let c = 0; c < CONFIG.BOARD_COLS; c++) {
+    newRow.push(c === holeCol ? null : { color: CONFIG.BOSS_GARBAGE_COLOR, garbage: true });
+  }
+  game.board.push(newRow);
+}
+
+function activateBossReverse() {
+  game.boss.effects.reverse.active = true;
+  game.boss.effects.reverse.timer = 0;
+  game.boss.effects.reverse.duration = CONFIG.BOSS_REVERSE_DURATION;
+}
+
+function activateBossFog() {
+  game.boss.effects.fog.active = true;
+  game.boss.effects.fog.timer = 0;
+  game.boss.effects.fog.duration = CONFIG.BOSS_FOG_DURATION;
+}
+
+function activateBossSpeedUp() {
+  game.boss.effects.speedUp.active = true;
+  game.boss.effects.speedUp.timer = 0;
+  game.boss.effects.speedUp.duration = CONFIG.BOSS_SPEEDUP_DURATION;
+}
+
+function updateBossActiveEffects(dt) {
+  const fx = game.boss.effects;
+  ['reverse', 'fog', 'speedUp'].forEach(key => {
+    if (fx[key].active) {
+      fx[key].timer += dt;
+      if (fx[key].timer >= fx[key].duration) fx[key].active = false;
+    }
+  });
+}
+
+// 좌우 이동 방향을 계산하는 공용 헬퍼. 보스의 🌀 블록 흔들기 공격이 활성화되어 있으면
+// 방향을 뒤집는다 - 키 입력 핸들러와 DAS 반복 이동이 이 함수 하나만 거치면 되게 통일했다.
+function attemptHorizontalMove(dir) {
+  let dx = dir === 'left' ? -1 : 1;
+  if (game.boss.active && game.boss.effects.reverse.active) dx = -dx;
+  return attemptMove(dx, 0);
+}
+
+// 줄 클리어 → 보스 데미지. applyClearScore(자연 클리어 + 채우기 아이템)와 폭탄 아이템
+// use()에서 각각 호출한다(둘 다 "몇 줄을 지웠는지"를 정확히 알고 있는 지점이기 때문).
+function applyBossDamage(cleared) {
+  if (!game.boss.active || cleared <= 0) return;
+  const dmg = CONFIG.BOSS_DAMAGE[Math.min(cleared, 4)] || 0;
+  if (dmg <= 0) return;
+  game.boss.hp = Math.max(0, game.boss.hp - dmg);
+  triggerBossDamageEffect(dmg);
+  updateBossUI();
+  if (game.boss.hp <= 0) winBossFight();
+}
+
+function winBossFight() {
+  const boss = game.boss;
+  const bossDef = boss.def;
+  const stageIdBeforeReward = currentStage.id;
+  boss.active = false;
+  boss.resolvedStages.add(stageIdBeforeReward);
+
+  triggerBossVictoryEffect(bossDef);
+  game.score += CONFIG.BOSS_REWARD_SCORE;
+  addCoins(CONFIG.BOSS_REWARD_COIN);
+  checkNewRecord();
+  checkStageTransition();
+  updateStageUI();
+  if (currentStage.id === stageIdBeforeReward) {
+    switchBgmTrack(currentStage.bgmTrack); // 스테이지가 안 바뀌었으면 보스곡 -> 원래 스테이지 곡으로 복귀
+  }
+  updateBossUI();
+}
+
+function fleeBossFight() {
+  const boss = game.boss;
+  const bossDef = boss.def;
+  const stageIdBeforeCheck = currentStage.id;
+  boss.active = false;
+  boss.resolvedStages.add(stageIdBeforeCheck);
+
+  triggerBossFleeEffect(bossDef);
+  checkStageTransition(); // 전투 중 못 넘던 점수가 이미 임계점을 넘어섰을 수 있으니 여기서 한 번 확인
+  updateStageUI();
+  if (currentStage.id === stageIdBeforeCheck) {
+    switchBgmTrack(currentStage.bgmTrack);
+  }
+  updateBossUI();
+}
+
+function formatBossTime(ms) {
+  const totalSec = Math.max(0, Math.ceil(ms / 1000));
+  const mm = Math.floor(totalSec / 60);
+  const ss = totalSec % 60;
+  return `${mm}:${String(ss).padStart(2, '0')}`;
+}
+
+function updateBossUI() {
+  const boss = game.boss;
+  if (!boss.active) {
+    bossPanel.classList.add('hidden');
+    return;
+  }
+  bossPanel.classList.remove('hidden');
+  bossIcon.textContent = boss.def.icon;
+  bossName.textContent = boss.def.name;
+  const pct = boss.maxHp > 0 ? Math.max(0, boss.hp / boss.maxHp) * 100 : 0;
+  bossHpFill.style.width = `${pct}%`;
+  const remainingSec = Math.ceil(boss.timeRemaining / 1000);
+  bossTimer.textContent = formatBossTime(boss.timeRemaining);
+  bossTimer.classList.toggle('urgent', remainingSec <= 30);
+}
+
+// --- 연출 ---
+
+function triggerBossAppearEffect(bossDef) {
+  sfxBossAppear();
+  effects.bossFlash.timer = 0;
+  effects.bossFlash.duration = CONFIG.BOSS_APPEAR_FLASH_DURATION;
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.SHAKE_MAGNITUDE * 0.7;
+  effects.popups.push({
+    kind: 'bossAppear',
+    text: `보스 등장! ⚠️ ${bossDef.icon} ${bossDef.name}`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.BOSS_APPEAR_BANNER_DURATION,
+    color: '#ff4d4d'
+  });
+}
+
+function triggerBossDamageEffect(dmg) {
+  sfxBossHit();
+  bossIcon.classList.remove('hit');
+  void bossIcon.offsetWidth; // 리플로우 강제 - 애니메이션 재시작
+  bossIcon.classList.add('hit');
+  effects.popups.push({
+    kind: 'bossDamage',
+    text: `-${dmg}!`,
+    x: boardCanvas.width / 2,
+    y: 110,
+    timer: 0,
+    duration: CONFIG.BOSS_DAMAGE_POPUP_DURATION,
+    color: '#ff4d4d'
+  });
+}
+
+function triggerBossAttackImpactEffect(attackType) {
+  effects.popups.push({
+    kind: 'bossAttackName',
+    text: BOSS_ATTACK_LABELS[attackType] || '공격!',
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height - 80,
+    timer: 0,
+    duration: CONFIG.BOSS_ATTACK_LABEL_DURATION,
+    color: '#ff8a5b'
+  });
+  effects.shake.timer = 0;
+  effects.shake.duration = 250;
+  effects.shake.magnitude = 8;
+}
+
+function triggerBossVictoryEffect(bossDef) {
+  sfxBossVictory();
+  for (let burst = 0; burst < 5; burst++) {
+    const bx = 40 + Math.random() * (boardCanvas.width - 80);
+    const by = 60 + Math.random() * (boardCanvas.height * 0.6);
+    const color = randomStageColor();
+    const particleCount = 16;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2) * (i / particleCount);
+      const speed = 140 + Math.random() * 140;
+      addParticle({
+        x: bx, y: by,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color,
+        size: 3 + Math.random() * 3,
+        life: 700 + Math.random() * 400,
+        maxLife: 1100,
+        gravity: 380
+      });
+    }
+  }
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.SHAKE_MAGNITUDE;
+  effects.popups.push({
+    kind: 'bossVictory',
+    text: `승리! 🎉 ${bossDef.icon} 격파!`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.BOSS_RESULT_BANNER_DURATION,
+    color: '#fff56b'
+  });
+  effects.popups.push({
+    kind: 'bossReward',
+    text: `+${CONFIG.BOSS_REWARD_SCORE}점 +${CONFIG.BOSS_REWARD_COIN}🪙`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 + 70,
+    timer: 0,
+    duration: CONFIG.BOSS_RESULT_BANNER_DURATION,
+    color: '#fff56b'
+  });
+}
+
+function triggerBossFleeEffect(bossDef) {
+  sfxBossFlee();
+  effects.popups.push({
+    kind: 'bossFlee',
+    text: `보스가 도망쳤다! 💨 ${bossDef.icon}`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2,
+    timer: 0,
+    duration: CONFIG.BOSS_RESULT_BANNER_DURATION,
+    color: '#cfcfe6'
+  });
+}
+
+function renderBossFlash() {
+  if (effects.bossFlash.duration === 0 || effects.bossFlash.timer >= effects.bossFlash.duration) return;
+  const t = effects.bossFlash.timer / effects.bossFlash.duration;
+  const alpha = Math.sin(t * Math.PI) * 0.5;
+  if (alpha <= 0) return;
+  boardCtx.save();
+  boardCtx.globalAlpha = alpha;
+  boardCtx.fillStyle = '#ff2d2d';
+  boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  boardCtx.restore();
+}
+
+// 🌫️ 시야 가리기: 보드 하단에 반투명 안개를 살짝 얹는다.
+function renderBossFog() {
+  if (!game.boss.active || !game.boss.effects.fog.active) return;
+  const fogHeight = boardCanvas.height * 0.4;
+  const y = boardCanvas.height - fogHeight;
+  const grad = boardCtx.createLinearGradient(0, y, 0, boardCanvas.height);
+  grad.addColorStop(0, 'rgba(220,220,230,0)');
+  grad.addColorStop(1, 'rgba(220,220,230,0.55)');
+  boardCtx.save();
+  boardCtx.fillStyle = grad;
+  boardCtx.fillRect(0, y, boardCanvas.width, fogHeight);
+  boardCtx.restore();
 }
 
 // ============================================================
@@ -3273,12 +3933,19 @@ function sfxSwap() {
   playFMTone(720, 0.11, { modRatio: 3, modIndex: 160, carrierType: 'square', gain: 0.16, attack: 0.001, decay: 0.02, sustainLevel: 0.4, release: 0.06, when: now + 0.1, delaySend: 0.1 });
 }
 
-// 쓸어내는 스윕음 (줄 청소): 필터가 위/아래로 스윕하는 노이즈 두 번 - 빗자루로 스윽스윽
-function sfxLineClearItem() {
+// 콕콕 채워지는 소리 (채우기): 칸이 채워지는 순서에 맞춰 짧은 "톡" 블립을 이어서 재생
+function sfxFill(count) {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
-  playNoiseBurst(0.14, { gain: 0.17, filterFreq: 900, filterFreqEnd: 4500, filterType: 'bandpass', q: 0.8, when: now });
-  playNoiseBurst(0.14, { gain: 0.16, filterFreq: 4500, filterFreqEnd: 900, filterType: 'bandpass', q: 0.8, when: now + 0.15 });
+  const notes = [660, 784, 880, 988, 1046.5].slice(0, Math.max(1, count));
+  const stepSec = CONFIG.FILL_STEP_STAGGER / 1000;
+  notes.forEach((freq, i) => {
+    playFilteredTone(freq, 0.08, {
+      type: 'square', gain: 0.13, attack: 0.001, decay: 0.015, sustainLevel: 0.4, release: 0.03,
+      filterStart: 4000, filterEnd: 1800, filterDecay: 0.03,
+      when: now + i * stepSec
+    });
+  });
 }
 
 // 얼어붙는 소리 (정지): FM 벨 3음 상승 + 딜레이로 얼음 결정이 맺히는 듯한 잔향
@@ -3292,6 +3959,72 @@ function sfxFreeze() {
       sustainLevel: 0.5, release: 0.3, when: now + i * 0.1, delaySend: isLast ? 0.3 : 0.12
     });
   });
+}
+
+// --- 보스전 SFX ---
+
+// 보스 등장: 낮게 미끄러져 올라오는 경고음 + 반음 충돌 화음(불길한 느낌)
+function sfxBossAppear() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playSlideTone(80, 200, 0.4, { type: 'sawtooth', gain: 0.22, attack: 0.01, release: 0.2 });
+  [220, 233.08].forEach(freq => {
+    playFilteredTone(freq, 0.5, {
+      type: 'sawtooth', gain: 0.16, attack: 0.02, decay: 0.1, sustainLevel: 0.5, release: 0.3,
+      filterStart: 2000, filterEnd: 400, filterDecay: 0.3, when: now + 0.1, delaySend: 0.2
+    });
+  });
+}
+
+// 공격 예고: 짧고 급한 삐-삐- 두 번 (대비할 시간을 알려주는 신호)
+function sfxBossWarning() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [0, 0.18].forEach(t => {
+    playEnvTone(1046.5, 0.08, { type: 'square', gain: 0.16, attack: 0.001, decay: 0.02, sustainLevel: 0.5, release: 0.03, when: now + t });
+  });
+}
+
+// 공격 발동: 둔탁한 타격음
+function sfxBossAttack() {
+  playNoiseBurst(0.2, { gain: 0.2, filterFreq: 1500, filterFreqEnd: 200, filterType: 'lowpass' });
+  playSlideTone(180, 60, 0.25, { type: 'sawtooth', gain: 0.18, attack: 0.001, decay: 0.04, release: 0.1 });
+}
+
+// 쓰레기 줄 등장: 무거운 쿵 소리 (FM 서브 그로울)
+function sfxBossGarbage() {
+  playNoiseBurst(0.18, { gain: 0.2, filterFreq: 600, filterType: 'lowpass' });
+  playFMTone(60, 0.3, { modRatio: 1.2, modIndex: 80, carrierType: 'sine', gain: 0.2, attack: 0.001, decay: 0.05, sustainLevel: 0.3, release: 0.2 });
+}
+
+// 보스 피격: 날카로운 타격음 (폭탄과 구분되는 "쨍" 한 느낌)
+function sfxBossHit() {
+  playFilteredTone(660, 0.12, {
+    type: 'square', gain: 0.2, attack: 0.001, decay: 0.02, sustainLevel: 0.4, release: 0.06,
+    filterStart: 6000, filterEnd: 1500, filterDecay: 0.05
+  });
+  playNoiseBurst(0.08, { gain: 0.15, filterFreq: 3000, filterType: 'highpass' });
+}
+
+// 보스 승리 팡파레: 6음 슈퍼소우 상승 + 에코
+function sfxBossVictory() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+  notes.forEach((freq, i) => {
+    const isLast = i === notes.length - 1;
+    playDetunedStack(freq, 0.22, {
+      type: 'sawtooth', voices: 3, spread: 12, gain: 0.17, attack: 0.002, decay: 0.02,
+      sustainLevel: 0.6, release: isLast ? 0.4 : 0.12,
+      filterStart: 6500, filterEnd: 2200, filterDecay: 0.08,
+      when: now + i * 0.08, delaySend: isLast ? 0.25 : 0
+    });
+  });
+}
+
+// 보스 도주: 힘없이 미끄러져 내려가는 소리 (페널티 없는 실패라 너무 슬프지 않게)
+function sfxBossFlee() {
+  playSlideTone(500, 120, 0.5, { type: 'sine', gain: 0.16, attack: 0.02, release: 0.3 });
 }
 
 // 밝은 3음 상승 + 스파클 - 상점 구매 성공음 "차링!"
@@ -3354,10 +4087,11 @@ function sfxGameOver() {
   });
 }
 
-// 밝고 신나는 축하 팡파레 (테마 해금, 슈퍼소우 + 에코)
-function sfxThemeUnlock() {
+// 밝고 신나는 축하 팡파레 (스테이지 전환) - 낮은 스웰 + 5음 슈퍼소우 상승 + 에코
+function sfxStageUp() {
   if (!audioCtx) return;
   const now = audioCtx.currentTime;
+  playSlideTone(120, 260, 0.3, { type: 'triangle', gain: 0.18, attack: 0.02, release: 0.15 });
   const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
   notes.forEach((freq, i) => {
     const isLast = i === notes.length - 1;
@@ -3560,12 +4294,46 @@ CONFIG.BGM_TRACKS = {
   }
 };
 
+// 화산 지대(volcano)/얼음 왕국(ice) 스테이지는 새로 작곡하는 대신, 기존 보스곡/우주곡을
+// 재사용하되 템포와 음정을 살짝 바꿔 변주한다("템포/음정을 살짝 바꿔 변주" 요구사항) -
+// 화산은 보스곡보다 더 급박하고 날카롭게, 얼음은 우주곡보다 더 느리고 깊게 가라앉은 느낌.
+function transposeSteps(steps, semitones) {
+  const factor = Math.pow(2, semitones / 12);
+  return steps.map(step => {
+    if (step === null || step === undefined) return null;
+    if (Array.isArray(step)) return step.map(f => f * factor);
+    return step * factor;
+  });
+}
+
+CONFIG.BGM_TRACKS.volcano = {
+  bpm: 178, // 보스곡(168)보다 더 급박하게 - 화산이 곧 터질 듯한 긴장감
+  totalSteps: 128,
+  tracks: {
+    melody: { ...CONFIG.BGM_TRACKS.boss.tracks.melody, steps: transposeSteps(bossMelody, 1) },
+    bass: { ...CONFIG.BGM_TRACKS.boss.tracks.bass, steps: transposeSteps(bossBass, 1) },
+    arp: { ...CONFIG.BGM_TRACKS.boss.tracks.arp, steps: transposeSteps(bossArp, 1) },
+    drums: CONFIG.BGM_TRACKS.boss.tracks.drums
+  }
+};
+
+CONFIG.BGM_TRACKS.ice = {
+  bpm: 84, // 우주곡(96)보다 더 느리고 가라앉게 - 얼어붙은 듯한 느낌
+  totalSteps: 128,
+  tracks: {
+    melody: { ...CONFIG.BGM_TRACKS.space.tracks.melody, steps: transposeSteps(spaceMelody, -2) },
+    bass: { ...CONFIG.BGM_TRACKS.space.tracks.bass, steps: transposeSteps(spaceBass, -2) },
+    arp: { ...CONFIG.BGM_TRACKS.space.tracks.arp, steps: transposeSteps(spaceArp, -2) },
+    drums: CONFIG.BGM_TRACKS.space.tracks.drums
+  }
+};
+
 // ------------------------------------------------------------
 // BGM 스케줄러 (currentTime 기반 lookahead)
 // ------------------------------------------------------------
 // setInterval/setTimeout 콜백 자체의 타이밍은 부정확할 수 있으므로, 실제 음 재생 시각은
 // 항상 audioCtx.currentTime을 기준으로 미리(최대 100ms 앞) 예약해 정확한 박자를 보장한다.
-let currentSongId = 'neon'; // applyTheme()이 즉시 테마에 맞는 곡으로 갱신한다
+let currentSongId = 'neon'; // resetToFirstStage()/advanceToStage()가 스테이지에 맞는 곡으로 갱신한다
 let bgmTimerId = null;
 let bgmStepIndex = 0;
 let bgmNextStepTime = 0;
@@ -3646,12 +4414,6 @@ function switchBgmTrack(songId) {
   }
 }
 
-// 테마 id와 곡 id가 1:1로 매칭된다(neon/dino/space). 매칭되는 곡이 없으면 neon으로 대체.
-function setBgmTrackForTheme(themeId) {
-  const songId = CONFIG.BGM_TRACKS[themeId] ? themeId : 'neon';
-  switchBgmTrack(songId);
-}
-
 // --- 음소거 버튼 ---
 const muteBtn = document.getElementById('muteBtn');
 updateMuteButton();
@@ -3668,6 +4430,7 @@ function update(dt) {
   updateEffects(dt);
   updateSlowTimer(dt);
   updateFreezeTimer(dt);
+  updateBossFight(dt); // paused/start/shop이 아닐 때만 이 지점까지 오므로, 상점을 열면 자동으로 멈춘다
 
   if (game.state === 'clearing') {
     game.clearTimer += dt;
@@ -3684,7 +4447,8 @@ function update(dt) {
   if (game.freeze.active) return; // 정지 아이템 효과: 낙하/락딜레이 완전 정지 (이동/회전은 위 updateDAS로 계속 동작)
 
   const baseInterval = input.down ? CONFIG.SOFT_DROP_INTERVAL : currentLevelSpeed();
-  const interval = game.slow.active ? baseInterval / CONFIG.SLOW_FACTOR : baseInterval;
+  let interval = game.slow.active ? baseInterval / CONFIG.SLOW_FACTOR : baseInterval;
+  if (game.boss.active && game.boss.effects.speedUp.active) interval = interval / CONFIG.BOSS_SPEEDUP_FACTOR; // ⚡ 보스 공격
   game.dropAcc += dt;
   while (game.dropAcc >= interval) {
     game.dropAcc -= interval;
@@ -3742,14 +4506,14 @@ function applyContainerTransform() {
 }
 
 function resizeContainer() {
-  currentScale = Math.min(window.innerWidth / 1280, window.innerHeight / 1050);
+  currentScale = Math.min(window.innerWidth / 1280, window.innerHeight / 1140);
   applyContainerTransform();
 }
 window.addEventListener('resize', resizeContainer);
 resizeContainer();
 
-applyTheme(loadSelectedTheme());
-refreshThemeUI();
+initBgEffectPools();
+resetToFirstStage();
 
 buildShopGrid();
 buildInventoryBar();
@@ -3762,37 +4526,18 @@ shopCloseBtn.addEventListener('click', closeShop);
 function startGame() {
   // 브라우저 자동재생 정책: 첫 사용자 입력(이 클릭) 시점에 AudioContext를 생성/resume
   ensureAudioResumed();
-  // 시작 화면에서 고른 테마가 확실히 반영되도록 시작 시점에 다시 한번 적용한다
-  applyTheme(loadSelectedTheme());
   startOverlay.classList.add('hidden');
-  resetGameState();
+  resetGameState(); // resetToFirstStage()를 포함해 항상 1번 스테이지부터 새로 시작한다
 }
 
 function restartGame() {
   ensureAudioResumed();
-  // 게임오버 화면에서 바꿨을 수 있는 테마를 시작 시점에 다시 한번 적용한다
-  applyTheme(loadSelectedTheme());
   gameOverOverlay.classList.add('hidden');
   resetGameState();
 }
 
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', restartGame);
-
-unlockConfirmBtn.addEventListener('click', () => {
-  showNextUnlock();
-});
-
-unlockPlayNowBtn.addEventListener('click', () => {
-  // 방금 해금한 테마를 바로 선택해서 게임오버 화면을 건너뛰고 새 게임을 시작한다
-  if (currentUnlockDisplayTheme) {
-    saveSelectedTheme(currentUnlockDisplayTheme.id);
-  }
-  unlockQueue = [];
-  currentUnlockDisplayTheme = null;
-  themeUnlockOverlay.classList.add('hidden');
-  restartGame();
-});
 
 bestText.textContent = loadBestScore();
 requestAnimationFrame(frame);
