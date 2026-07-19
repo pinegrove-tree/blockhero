@@ -218,6 +218,30 @@
     margin-top: 4px;
   }
 
+  .loop-box {
+    width: 160px;
+    box-sizing: border-box;
+    background: #23233a;
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 6px 10px;
+    text-align: center;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .loop-stars {
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .best-loop-note {
+    font-size: 14px;
+    color: #cfcfe6;
+    margin: 0;
+  }
+
   .new-record {
     display: block;
     margin-top: 2px;
@@ -646,6 +670,7 @@
       <div class="keycap-item"><span class="keycap">1~5</span><span class="keycap-label">아이템</span></div>
     </div>
     <div class="controls">🪙 줄을 지우면 코인을 받아요!<br>🛒 상점(S)에서 아이템을 사서 숫자키 1~5로 써보세요!</div>
+    <p id="bestLoopLabel" class="best-loop-note">🔁 최고 기록: 1회차</p>
     <button id="startBtn" class="bigBtn">시작하기</button>
   </div>
 
@@ -679,6 +704,7 @@
     <p id="finalLines">지운 줄: 0</p>
     <p id="finalBest">최고 기록: 0</p>
     <p id="finalCoins">🪙 이번 판에서 모은 코인: 0</p>
+    <p id="finalLoop">최고 회차: 1회차</p>
     <p id="finalStage">도달 스테이지: 1 🎮</p>
     <button id="restartBtn" class="bigBtn">다시 하기</button>
   </div>
@@ -710,10 +736,13 @@
         <div>지운 줄<br><span id="linesText">0</span></div>
         <div>최고 점수<br><span id="bestText">0</span></div>
       </div>
+      <div id="loopBox" class="loop-box">
+        <span id="loopText">1회차</span> <span id="loopStars" class="loop-stars">⭐</span>
+      </div>
       <div class="stage-box">
         <div id="stageNameEl" class="stage-name">🎮 네온 시티</div>
         <div class="stage-progress-track"><div id="stageProgressFill" class="stage-progress-fill"></div></div>
-        <div id="stageProgressLabel" class="stage-progress-label">다음 스테이지까지 10,000점</div>
+        <div id="stageProgressLabel" class="stage-progress-label">다음 스테이지까지 15,000점</div>
       </div>
       <button id="shopBtn" class="bigBtn small shop-btn">🛒 상점 (S)</button>
     </div>
@@ -757,6 +786,7 @@ const CONFIG = {
   ARR_RATE: 40,     // ms, 이후 반복 이동 간격
 
   STORAGE_KEY: 'bh_highScore', // 판을 넘어 계속 유지되는 유일한 진행 기록 (스테이지는 매 판 1번부터 다시 시작)
+  MAX_LOOP_KEY: 'bh_maxLoop', // 지금까지 도달한 최고 회차(New Game+ loop). 판을 넘어 영구 저장.
 
   // --- 연출(EFFECTS) 밸런싱 ---
   LINE_FLASH_DURATION: 150,     // ms, 줄 클리어 전 흰색 플래시 지속 시간
@@ -856,7 +886,7 @@ const CONFIG = {
       id: 'dino',
       name: '공룡 정글',
       icon: '🦖',
-      scoreThreshold: 10000,
+      scoreThreshold: 15000,
       blockColors: {
         I: '#2f9e44', O: '#d9a441', T: '#8b5a2b', S: '#57cc99',
         Z: '#c1440e', J: '#4a7c59', L: '#e0b34c'
@@ -872,7 +902,7 @@ const CONFIG = {
       id: 'space',
       name: '우주 정거장',
       icon: '🚀',
-      scoreThreshold: 20000,
+      scoreThreshold: 30000,
       blockColors: {
         I: '#00e5ff', O: '#7c4dff', T: '#536dfe', S: '#18ffff',
         Z: '#3d5afe', J: '#651fff', L: '#00b8d4'
@@ -888,7 +918,7 @@ const CONFIG = {
       id: 'volcano',
       name: '화산 지대',
       icon: '🌋',
-      scoreThreshold: 30000,
+      scoreThreshold: 45000,
       blockColors: {
         I: '#ff5e2c', O: '#ffb02e', T: '#c92a2a', S: '#ff8c42',
         Z: '#8b1e1e', J: '#ffdd57', L: '#e8590c'
@@ -904,7 +934,7 @@ const CONFIG = {
       id: 'ice',
       name: '얼음 왕국',
       icon: '❄️',
-      scoreThreshold: 40000,
+      scoreThreshold: 60000,
       blockColors: {
         I: '#7dd3fc', O: '#e0f2fe', T: '#a5b4fc', S: '#67e8f9',
         Z: '#38bdf8', J: '#c4e9ff', L: '#bae6fd'
@@ -920,7 +950,7 @@ const CONFIG = {
       id: 'siren',
       name: '세이렌의 바다',
       icon: '🌊',
-      scoreThreshold: 50000,
+      scoreThreshold: 75000,
       blockColors: {
         I: '#00b8b8', O: '#1c7a8c', T: '#0a3d62', S: '#38d9a9',
         Z: '#0c8599', J: '#155e75', L: '#2ec4b6'
@@ -936,7 +966,7 @@ const CONFIG = {
       id: 'underworld',
       name: '저승',
       icon: '💀',
-      scoreThreshold: 60000,
+      scoreThreshold: 90000,
       blockColors: {
         I: '#7c3aed', O: '#a78bfa', T: '#4c1d95', S: '#39ff88',
         Z: '#2d0a4e', J: '#5b21b6', L: '#8b5cf6'
@@ -953,7 +983,7 @@ const CONFIG = {
   // --- 보스전 밸런싱 ---
   // 스테이지 시스템 위에 얹는 선택적 미니게임. 실패해도 페널티가 없다(게임오버 아님) -
   // 9살 아이가 좌절하지 않게 하는 게 핵심 설계 원칙이다.
-  BOSS_TRIGGER_OFFSET: 2500,     // 다음 스테이지 임계점보다 이만큼 낮은 점수에서 보스 등장
+  BOSS_TRIGGER_OFFSET: 3500,     // 다음 스테이지 임계점보다 이만큼 낮은 점수에서 보스 등장
   BOSS_TIME_LIMIT: 180000,       // ms, 보스전 제한 시간(3분)
   BOSS_ATTACK_INTERVAL: 20000,   // ms, 보스 공격 주기
   BOSS_ATTACK_WARNING_DURATION: 1500, // ms, 공격 직전 "⚠️ 경고!" 예고 시간
@@ -993,7 +1023,21 @@ const CONFIG = {
     { id: 'icelord', name: '얼음 마왕', icon: '🧊', hp: 16, attacks: ['reverse', 'fog', 'speedup', 'garbage'] },
     { id: 'siren', name: '세이렌', icon: '🧜‍♀️', hp: 18, attacks: ['bigwave', 'luresong', 'garbage', 'speedup'] },
     { id: 'reaper', name: '저승사자', icon: '💀', hp: 22, attacks: ['itemseal', 'blackout', 'hellrise', 'reverse', 'fog'] }
-  ]
+  ],
+
+  // --- 회차(로그라이크 무한 반복 / New Game+) 밸런싱 ---
+  // 저승사자(마지막 스테이지 보스)를 처치하면 game.loop가 1 늘고 스테이지1로 돌아간다
+  // (winBossFight -> triggerLoopClear 참고). 점수/코인/인벤토리는 그대로 유지되고,
+  // 스테이지 임계값은 그 시점의 점수를 기준으로 "상대적으로" 다시 계산된다(loopBaseScore 참고).
+  // 난이도는 완만하게 오르되 MAX_EFFECTIVE_LOOP 이후로는 더 오르지 않아 좌절을 방지한다.
+  LOOP_HP_SCALE: 0.15,          // 회차당 보스 HP +15% (반올림 정수로 적용)
+  LOOP_SPEED_SCALE: 0.05,       // 회차당 낙하 속도 +5% 빨라짐
+  MAX_EFFECTIVE_LOOP: 5,        // 6회차부터는 난이도가 더 오르지 않음(순수 실력/최고점 도전 구간)
+  MIN_FALL_SPEED: 120,          // ms, 낙하 속도 하한 - 회차가 아무리 올라가도 이 아래로는 안 내려감(조작 불가능 방지)
+  LOOP_CLEAR_COIN: 100,         // 회차 클리어 시 지급 코인
+  LOOP_CLEAR_SCORE: 5000,       // 회차 클리어 시 지급 점수 보너스
+  LOOP_CLEAR_BANNER_DURATION: 2200, // ms, "N회차 클리어!" 대형 배너 지속 시간(스테이지 배너보다 길게)
+  LOOP_CLEAR_FIREWORK_BURSTS: 8     // 회차 클리어 폭죽 burst 수(스테이지 전환보다 화려하게)
 };
 
 // ============================================================
@@ -1012,6 +1056,23 @@ function loadBestScore() {
 function saveBestScore(value) {
   try {
     localStorage.setItem(CONFIG.STORAGE_KEY, String(value));
+  } catch (e) {
+    // localStorage 사용 불가 시 무시
+  }
+}
+
+function loadMaxLoop() {
+  try {
+    const v = parseInt(localStorage.getItem(CONFIG.MAX_LOOP_KEY) || '1', 10);
+    return isNaN(v) || v < 1 ? 1 : v;
+  } catch (e) {
+    return 1;
+  }
+}
+
+function saveMaxLoop(value) {
+  try {
+    localStorage.setItem(CONFIG.MAX_LOOP_KEY, String(value));
   } catch (e) {
     // localStorage 사용 불가 시 무시
   }
@@ -1166,6 +1227,8 @@ const game = {
   level: 1,
   lines: 0,
   combo: 0,
+  loop: 1,           // 현재 회차(New Game+ 반복 횟수). 1회차부터 시작
+  loopBaseScore: 0,  // 이번 회차가 시작된 시점의 점수. 스테이지 임계값은 이 값을 기준으로 상대 계산된다
   dropAcc: 0,
   lockTimer: 0,
   lockResets: 0,
@@ -1203,9 +1266,17 @@ const das = {
   right: { timer: 0, phase: 'idle' }
 };
 
+// 회차가 오를수록 조금씩 어려워지되 MAX_EFFECTIVE_LOOP 이후로는 더 이상 오르지 않는다
+// (1회차=0, 2회차=1, ... MAX_EFFECTIVE_LOOP회차 이상은 전부 MAX_EFFECTIVE_LOOP-1로 clamp).
+function loopEffectiveLevel() {
+  return Math.min(game.loop - 1, CONFIG.MAX_EFFECTIVE_LOOP - 1);
+}
+
 function currentLevelSpeed() {
   const idx = Math.min(game.level - 1, CONFIG.LEVEL_SPEEDS.length - 1);
-  return CONFIG.LEVEL_SPEEDS[idx];
+  const base = CONFIG.LEVEL_SPEEDS[idx];
+  const scaled = base * (1 - CONFIG.LOOP_SPEED_SCALE * loopEffectiveLevel());
+  return Math.max(CONFIG.MIN_FALL_SPEED, scaled);
 }
 
 function isGrounded() {
@@ -1441,11 +1512,14 @@ function gameOver() {
   const isRecord = game.score > previousBest;
   const best = Math.max(previousBest, game.score);
   saveBestScore(best);
+  const bestLoop = Math.max(loadMaxLoop(), game.loop);
+  saveMaxLoop(bestLoop);
 
   finalScoreEl.textContent = `점수: ${game.score}`;
   finalLinesEl.textContent = `지운 줄: ${game.lines}`;
   finalBestEl.textContent = `최고 기록: ${best}`;
   finalCoinsEl.textContent = `🪙 이번 판에서 모은 코인: ${coinsEarnedThisRun}`;
+  finalLoopEl.textContent = `최고 회차: ${bestLoop}회차`;
   finalStageEl.textContent = `도달 스테이지: ${currentStageIndex() + 1} ${currentStage.icon} ${currentStage.name}`;
   trophyIcon.classList.toggle('hidden', !isRecord);
   newRecordLabel.classList.toggle('hidden', !isRecord);
@@ -1459,6 +1533,8 @@ function resetGameState() {
   game.level = 1;
   game.lines = 0;
   game.combo = 0;
+  game.loop = 1;
+  game.loopBaseScore = 0;
   game.hold = null;
   game.holdUsed = false;
   game.dropAcc = 0;
@@ -1644,6 +1720,9 @@ const levelText = document.getElementById('levelText');
 const linesText = document.getElementById('linesText');
 const bestText = document.getElementById('bestText');
 const newRecordBadge = document.getElementById('newRecordBadge');
+const loopText = document.getElementById('loopText');
+const loopStars = document.getElementById('loopStars');
+const bestLoopLabel = document.getElementById('bestLoopLabel');
 
 const startOverlay = document.getElementById('startOverlay');
 const pausedOverlay = document.getElementById('pausedOverlay');
@@ -1653,6 +1732,7 @@ const finalLinesEl = document.getElementById('finalLines');
 const finalBestEl = document.getElementById('finalBest');
 const finalCoinsEl = document.getElementById('finalCoins');
 const finalStageEl = document.getElementById('finalStage');
+const finalLoopEl = document.getElementById('finalLoop');
 const trophyIcon = document.getElementById('trophyIcon');
 const newRecordLabel = document.getElementById('newRecordLabel');
 const startBtn = document.getElementById('startBtn');
@@ -1905,12 +1985,26 @@ function renderFreezeGauge() {
   boardCtx.restore();
 }
 
+// 회차가 아무리 높아도 별이 화면을 넘치게 채우지 않도록 10개까지만 찍고 그 이상은 "+N"으로 표시
+function loopStarString(loop) {
+  const capped = Math.min(loop, 10);
+  let s = '⭐'.repeat(capped);
+  if (loop > 10) s += ` +${loop - 10}`;
+  return s;
+}
+
+function updateLoopUI() {
+  loopText.textContent = `${game.loop}회차`;
+  loopStars.textContent = loopStarString(game.loop);
+}
+
 function updateStatsText() {
   scoreText.textContent = game.score;
   levelText.textContent = game.level;
   linesText.textContent = game.lines;
   bestText.textContent = loadBestScore();
   newRecordBadge.classList.toggle('hidden', !game.isNewRecord);
+  updateLoopUI();
 }
 
 function render() {
@@ -2129,7 +2223,8 @@ function drawBannerText(ctx, text, x, y, scale, alpha, color, fontSize) {
 const BANNER_FONT_SIZES = {
   quad: 32, bomb: 28, slow: 26, swap: 24, fill: 26, freeze: 26, levelup: 26, stage: 30,
   bossAppear: 24, bossWarning: 30, bossDamage: 26, bossAttackName: 20,
-  bossVictory: 28, bossReward: 20, bossFlee: 22
+  bossVictory: 28, bossReward: 20, bossFlee: 22,
+  loopClear: 26, loopClearReward: 18
 };
 
 function renderPopup(pop) {
@@ -2702,6 +2797,13 @@ function currentStageIndex() {
   return CONFIG.STAGES.findIndex(s => s.id === currentStage.id);
 }
 
+// 회차(New Game+)를 반영한 "실질" 스테이지 임계값. CONFIG.STAGES의 scoreThreshold는 절대값이 아니라
+// 1회차 기준 상대값으로 취급하고, 실제 비교는 여기에 game.loopBaseScore(이번 회차 시작 시점 점수)를
+// 더해서 한다 - 그래서 2회차는 "현재 점수 + 15,000"에서 스테이지2로 넘어가는 것처럼 동작한다.
+function stageThreshold(idx) {
+  return CONFIG.STAGES[idx].scoreThreshold + game.loopBaseScore;
+}
+
 // 새 게임을 시작할 때 호출 - 스테이지는 매 판 1번부터 다시 시작하므로 저장/불러오기가 없다.
 function resetToFirstStage() {
   currentStage = CONFIG.STAGES[0];
@@ -2721,7 +2823,7 @@ function checkStageTransition() {
   if (game.boss.active) return; // 보스전 중에는 스테이지가 바뀌지 않는다 - 전투가 끝나면 그때 다시 확인
   const idx = currentStageIndex();
   for (let i = CONFIG.STAGES.length - 1; i > idx; i--) {
-    if (game.score >= CONFIG.STAGES[i].scoreThreshold) {
+    if (game.score >= stageThreshold(i)) {
       advanceToStage(i);
       return;
     }
@@ -2814,13 +2916,15 @@ function triggerStageTransitionEffect(stage, index) {
 // applyClearScore()가 점수를 바꿀 때마다, 그리고 스테이지가 바뀔 때마다 호출된다.
 function updateStageUI() {
   stageNameEl.textContent = `${currentStage.icon} ${currentStage.name}`;
-  const nextStage = CONFIG.STAGES[currentStageIndex() + 1];
+  const curIdx = currentStageIndex();
+  const nextStage = CONFIG.STAGES[curIdx + 1];
   if (nextStage) {
-    const span = nextStage.scoreThreshold - currentStage.scoreThreshold;
-    const progressed = Math.max(0, Math.min(span, game.score - currentStage.scoreThreshold));
+    const span = nextStage.scoreThreshold - currentStage.scoreThreshold; // 임계값 "간격"이므로 loopBaseScore는 상쇄되어 그대로 사용 가능
+    const curThreshold = stageThreshold(curIdx);
+    const progressed = Math.max(0, Math.min(span, game.score - curThreshold));
     const pct = span > 0 ? (progressed / span) * 100 : 100;
     stageProgressFill.style.width = `${pct}%`;
-    const remaining = Math.max(0, nextStage.scoreThreshold - game.score);
+    const remaining = Math.max(0, stageThreshold(curIdx + 1) - game.score);
     stageProgressLabel.textContent = `다음 스테이지까지 ${remaining.toLocaleString()}점`;
   } else {
     stageProgressFill.style.width = '100%';
@@ -3075,12 +3179,12 @@ const BOSS_ATTACK_WARNING_DURATIONS = {
 };
 
 // 다음 스테이지 임계점. 마지막 스테이지는 "다음"이 없으므로, 스테이지 간 간격(현재 전부
-// 10,000점 동일)을 그대로 이어 붙여 가상의 종료 임계점을 계산한다.
+// 15,000점 동일)을 그대로 이어 붙여 가상의 종료 임계점을 계산한다.
 function nextStageThreshold(idx) {
   const next = CONFIG.STAGES[idx + 1];
-  if (next) return next.scoreThreshold;
+  if (next) return stageThreshold(idx + 1);
   const span = CONFIG.STAGES[idx].scoreThreshold - (CONFIG.STAGES[idx - 1] ? CONFIG.STAGES[idx - 1].scoreThreshold : 0);
-  return CONFIG.STAGES[idx].scoreThreshold + span;
+  return stageThreshold(idx) + span;
 }
 
 // 현재 스테이지의 보스를 아직 안 만났고, 점수가 등장 구간(다음 임계점 - OFFSET)에 들어섰으면 등장시킨다.
@@ -3105,13 +3209,19 @@ function clearAllBossEffects() {
   updateItemSealUI();
 }
 
+// 회차당 LOOP_HP_SCALE(15%)씩 완만하게 늘어나되 MAX_EFFECTIVE_LOOP 이후로는 더 늘지 않는다.
+function scaledBossHp(baseHp) {
+  return Math.round(baseHp * (1 + CONFIG.LOOP_HP_SCALE * loopEffectiveLevel()));
+}
+
 function startBossFight(bossDef, stageIndex) {
   const boss = game.boss;
   boss.active = true;
   boss.def = bossDef;
   boss.stageIndex = stageIndex;
-  boss.hp = bossDef.hp;
-  boss.maxHp = bossDef.hp;
+  const scaledHp = scaledBossHp(bossDef.hp);
+  boss.hp = scaledHp;
+  boss.maxHp = scaledHp;
   boss.timeRemaining = CONFIG.BOSS_TIME_LIMIT;
   boss.attackTimer = 0;
   boss.warningActive = false;
@@ -3312,6 +3422,9 @@ function winBossFight() {
   const boss = game.boss;
   const bossDef = boss.def;
   const stageIdBeforeReward = currentStage.id;
+  // 마지막 스테이지(저승)의 보스 = 저승사자. 이 보스를 처치하면 스테이지 전환이 아니라
+  // "회차 클리어"로 이어진다(triggerLoopClear 참고) - 일반 보스 승리 보상은 그대로 받은 뒤 분기한다.
+  const wasFinalBoss = boss.stageIndex === CONFIG.STAGES.length - 1;
   boss.active = false;
   boss.resolvedStages.add(stageIdBeforeReward);
   clearAllBossEffects(); // 승리 시점에 🔒/👁️ 등이 아직 활성 중이었어도 평소 플레이로 새지 않게 즉시 해제
@@ -3320,11 +3433,46 @@ function winBossFight() {
   game.score += CONFIG.BOSS_REWARD_SCORE;
   addCoins(CONFIG.BOSS_REWARD_COIN);
   checkNewRecord();
+
+  if (wasFinalBoss) {
+    triggerLoopClear();
+    return;
+  }
+
   checkStageTransition();
   updateStageUI();
   if (currentStage.id === stageIdBeforeReward) {
     switchBgmTrack(currentStage.bgmTrack); // 스테이지가 안 바뀌었으면 보스곡 -> 원래 스테이지 곡으로 복귀
   }
+  updateBossUI();
+}
+
+// 저승사자(마지막 스테이지 보스) 격파 = 한 회차의 클리어. 점수/코인/인벤토리는 그대로 유지한 채
+// 스테이지1(네온 시티)로 되돌아가고 game.loop를 1 늘린다. 다음 회차의 스테이지 임계값은
+// "지금 이 시점의 점수"(회차 클리어 보너스 포함)를 새 기준선(loopBaseScore)으로 상대 계산되므로
+// 항상 이전과 같은 간격(예: 스테이지2까지 +15,000)으로 진행된다. 보스 재등장을 위해
+// resolvedStages도 비운다(스테이지 id는 회차와 무관하게 재사용되기 때문).
+function triggerLoopClear() {
+  const clearedLoop = game.loop;
+  const stage = CONFIG.STAGES[0];
+  const fromSnapshot = game.board.map(row => row.map(cell => cell ? cell.color : null));
+
+  game.loop += 1;
+  game.score += CONFIG.LOOP_CLEAR_SCORE;
+  addCoins(CONFIG.LOOP_CLEAR_COIN);
+  checkNewRecord();
+
+  game.boss.resolvedStages = new Set();
+  game.loopBaseScore = game.score;
+
+  currentStage = stage;
+  document.documentElement.style.setProperty('--accent', stage.uiAccent);
+  switchBgmTrack(stage.bgmTrack); // 보스곡 -> 네온 시티 곡으로 전환(advanceToStage와 동일한 방식)
+  recolorBoardToStage(stage, fromSnapshot); // 지금 쌓여있는 블록도 새 회차의 스테이지1 색으로 부드럽게 리컬러
+
+  saveMaxLoop(Math.max(loadMaxLoop(), game.loop));
+  triggerLoopClearEffect(clearedLoop, game.loop);
+  updateStageUI();
   updateBossUI();
 }
 
@@ -3466,6 +3614,60 @@ function triggerBossVictoryEffect(bossDef) {
     y: boardCanvas.height / 2 + 70,
     timer: 0,
     duration: CONFIG.BOSS_RESULT_BANNER_DURATION,
+    color: '#fff56b'
+  });
+}
+
+// 회차 클리어(저승사자 격파) 전용 연출: 스테이지 전환보다 화려한 와이프 + 폭죽 + 대형 배너 + 팡파레.
+// triggerBossVictoryEffect(보스 격파 축하)에 이어서 재생되므로 배너는 살짝 아래쪽에 띄운다.
+function triggerLoopClearEffect(clearedLoop, newLoop) {
+  sfxLoopClear();
+
+  effects.stageWipe.timer = 0;
+  effects.stageWipe.duration = CONFIG.STAGE_WIPE_DURATION;
+  effects.stageWipe.color = currentStage.uiAccent;
+
+  effects.shake.timer = 0;
+  effects.shake.duration = CONFIG.SHAKE_DURATION;
+  effects.shake.magnitude = CONFIG.SHAKE_MAGNITUDE;
+
+  for (let burst = 0; burst < CONFIG.LOOP_CLEAR_FIREWORK_BURSTS; burst++) {
+    const bx = 30 + Math.random() * (boardCanvas.width - 60);
+    const by = 40 + Math.random() * (boardCanvas.height * 0.7);
+    const color = randomStageColor();
+    const particleCount = 20;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2) * (i / particleCount);
+      const speed = 150 + Math.random() * 150;
+      addParticle({
+        x: bx, y: by,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color,
+        size: 3 + Math.random() * 3,
+        life: 800 + Math.random() * 500,
+        maxLife: 1300,
+        gravity: 360
+      });
+    }
+  }
+
+  effects.popups.push({
+    kind: 'loopClear',
+    text: `🏆 ${clearedLoop}회차 클리어! ${newLoop}회차 시작!`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 + 150,
+    timer: 0,
+    duration: CONFIG.LOOP_CLEAR_BANNER_DURATION,
+    color: '#fff56b'
+  });
+  effects.popups.push({
+    kind: 'loopClearReward',
+    text: `회차 보너스! +${CONFIG.LOOP_CLEAR_SCORE.toLocaleString()}점 +${CONFIG.LOOP_CLEAR_COIN}🪙`,
+    x: boardCanvas.width / 2,
+    y: boardCanvas.height / 2 + 210,
+    timer: 0,
+    duration: CONFIG.LOOP_CLEAR_BANNER_DURATION,
     color: '#fff56b'
   });
 }
@@ -4361,6 +4563,24 @@ function sfxStageUp() {
   });
 }
 
+// 회차 클리어(New Game+) 전용 팡파레: 보스 승리음(sfxBossVictory)보다 한 옥타브 더 올라가고
+// 음표도 더 많은 "더 화려한" 상승 아르페지오로 차별화한다.
+function sfxLoopClear() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  playSlideTone(150, 320, 0.35, { type: 'triangle', gain: 0.2, attack: 0.02, release: 0.18 });
+  const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
+  notes.forEach((freq, i) => {
+    const isLast = i === notes.length - 1;
+    playDetunedStack(freq, 0.24, {
+      type: 'sawtooth', voices: 4, spread: 14, gain: 0.19, attack: 0.002, decay: 0.02,
+      sustainLevel: 0.6, release: isLast ? 0.5 : 0.14,
+      filterStart: 7000, filterEnd: 2200, filterDecay: 0.09,
+      when: now + i * 0.075, delaySend: isLast ? 0.3 : 0.05
+    });
+  });
+}
+
 // ------------------------------------------------------------
 // BGM: 노트 이름 헬퍼
 // ------------------------------------------------------------
@@ -4843,6 +5063,7 @@ startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', restartGame);
 
 bestText.textContent = loadBestScore();
+bestLoopLabel.textContent = `🔁 최고 기록: ${loadMaxLoop()}회차`;
 requestAnimationFrame(frame);
 </script>
 </body>
